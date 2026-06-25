@@ -1,0 +1,1 @@
+docker build -t webots-r2021b-forest .
