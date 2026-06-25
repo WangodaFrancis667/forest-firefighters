@@ -7,3 +7,11 @@ controllers/autonomous_mavic/fire_detection.jpg
 
 # Generated launch-position test worlds
 worlds/*static_launch_check*.wbt
+
+# Report build files
+assignment_docs/final_report/latex/*.aux
+assignment_docs/final_report/latex/*.fdb_latexmk
+assignment_docs/final_report/latex/*.fls
+assignment_docs/final_report/latex/*.log
+assignment_docs/final_report/latex/*.out
+assignment_docs/final_report/latex/*.synctex.gz
