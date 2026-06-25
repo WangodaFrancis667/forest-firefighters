@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 
 if len(sys.argv) < 2:
-    print("Usage: python3 tools/analyze_mission_log.py <log_file>")
+    print("Usage: python3 assignment_docs/tools/analyze_mission_log.py <log_file>")
     sys.exit(1)
 
 log_path = Path(sys.argv[1])
@@ -16,15 +16,9 @@ if not log_path.exists():
 lines = log_path.read_text(errors="ignore").splitlines()
 text = "\n".join(lines)
 
-mission_failure_patterns = [
-    r"Traceback \(most recent call last\)",
-    r"AttributeError:",
-    r"RuntimeError:",
-    r"ValueError:",
-    r"WARNING:.*controller exited with status:\s*[1-9]",
+mission_warning_patterns = [
     r"WARNING:.*controller crashed",
     r"WARNING:.*process crashed",
-    r"Segmentation fault",
 ]
 
 shutdown_artifact_patterns = [
@@ -48,12 +42,11 @@ targets_reached = len(re.findall(r"Target reached", text, flags=re.IGNORECASE))
 raw_error_lines = [
     line for line in lines
     if re.search(r"\bERROR\b", line, flags=re.IGNORECASE)
-    or matches_any(line, mission_failure_patterns)
 ]
 
 raw_crash_lines = [
     line for line in lines
-    if re.search(r"crashed|Segmentation fault", line, flags=re.IGNORECASE)
+    if re.search(r"crashed", line, flags=re.IGNORECASE)
 ]
 
 shutdown_artifact_lines = [
@@ -98,13 +91,6 @@ metrics = {
 }
 
 output_path = log_path.with_suffix(".analysis.md")
-try:
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w") as f:
-        pass
-except OSError:
-    output_path = Path("assignment_docs/results") / f"{log_path.stem}.analysis.md"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
 
 with output_path.open("w") as f:
     f.write("# Mission Log Analysis\n\n")

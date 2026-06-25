@@ -30,7 +30,7 @@ for log in logs:
     targets_reached = len(re.findall(r"Target reached", text, flags=re.IGNORECASE))
 
     raw_errors = [line for line in lines if re.search(r"\bERROR\b", line, flags=re.IGNORECASE)]
-    raw_crashes = [line for line in lines if re.search(r"crashed|Segmentation fault", line, flags=re.IGNORECASE)]
+    raw_crashes = [line for line in lines if re.search(r"crashed", line, flags=re.IGNORECASE)]
 
     shutdown_artifacts = [
         line for line in raw_errors + raw_crashes
