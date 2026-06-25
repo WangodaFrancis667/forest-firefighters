@@ -2,8 +2,15 @@
 # Local Webots GUI/cache files
 worlds/*.wbproj
 
+# Local upstream reference copy used for baseline review
+original/
+
 # Auto-generated controller preview image
 controllers/autonomous_mavic/fire_detection.jpg
+
+# Python cache files
+__pycache__/
+*.pyc
 
 # Generated launch-position test worlds
 worlds/*static_launch_check*.wbt

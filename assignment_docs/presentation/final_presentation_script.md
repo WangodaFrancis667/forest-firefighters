@@ -4,7 +4,7 @@
 
 Good day. My project is an autonomous forest firefighting robotics mission implemented in the Webots Forest Firefighters simulation environment. The aim was to program one or more robots to patrol a forest, detect fire or smoke using a camera, navigate toward the fire, and extinguish it by dropping water.
 
-For my implementation, I used four Mavic 2 Pro drones deployed across the four forest quadrants, supported by a Spot-like ground robot. The original project baseline had the drone and Spot robot. During development, I experimented with eight drones for maximum coverage, then six drones, and finally selected four drones plus Spot because the laptop has 6 GB of RTX A1000 VRAM. Four drones preserve full forest coverage while reducing Webots camera, controller, and overlay load.
+For my implementation, I used four Mavic 2 Pro drones deployed across the four forest quadrants, supported by a Spot-like ground robot. The original project baseline is retained in the `original/` folder for reference. The active project extends that reliable baseline by adding the two missing drones for full quadrant coverage while keeping the camera and controller load suitable for the 6 GB RTX A1000 laptop.
 
 ---
 
@@ -34,7 +34,7 @@ The Webots world provides the forest terrain, wildfire propagation, smoke, drone
 - IMU and gyro for stabilised locomotion.
 - Propeller motors for aerial control.
 - Custom data to trigger water dropping.
-- A 160 by 160 vision overlay for tree boxes, fire boxes, and red detection flashes.
+- A 160 by 160 vision overlay with a green normal bar and a red fire bar.
 
 The control loop is:
 
@@ -118,7 +118,7 @@ The third challenge was drone launch verification. Because the terrain is elevat
 
 The fourth challenge was a perception bug. The controller could crash when smoke was detected but no valid contour was selected. I fixed it by safely initialising `coord_fire` so the function returns an empty list instead of crashing.
 
-The fifth challenge was choosing the fleet size. Eight drones maximised coverage but increased rendering and controller load. Six drones still produced Webots instability in the GPU container. Four drones plus Spot is the final balanced architecture for this laptop.
+The fifth challenge was choosing the fleet size. The original project baseline had two drones, which was reliable but did not provide full quadrant coverage. The active world adds two drones for a four-drone layout, while avoiding the heavier six- or eight-drone experiments that overload this laptop.
 
 ---
 
@@ -145,4 +145,4 @@ For an interactive demo:
 webots worlds/forest_firefighters.wbt
 ```
 
-During the demo, I show the four drone camera overlays, point out the green tree boxes and red fire/smoke boxes, and select Spot to demonstrate the `D` water-burst command.
+During the demo, I show the four drone camera overlays, point out the green normal bars and red fire bars, and select Spot to demonstrate the `D` water-burst command.

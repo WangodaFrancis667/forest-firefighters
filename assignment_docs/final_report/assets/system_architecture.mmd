@@ -6,10 +6,10 @@ flowchart TD
     A --> D[Spot-like Ground Robot]
 
     C --> C1[Quadrant waypoint patrol]
-    C --> C2[Camera plus Webots recognition]
+    C --> C2[Camera plus status-bar overlay]
     C --> C3[GPS, IMU, and gyro state estimate]
     C2 --> E[OpenCV HSV smoke/fire detection]
-    E --> E1[Fire box and red overlay flash]
+    E --> E1[Green normal bar or red fire bar]
     C1 --> F[Visual approach to detected fire]
     C3 --> F
     E1 --> F

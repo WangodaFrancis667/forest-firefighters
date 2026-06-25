@@ -7,7 +7,7 @@ Autonomous Forest Firefighting Mission using Webots Robots
 - State the mission objective.
 - Mention Webots Forest Firefighters project.
 - Mention the original drone plus Spot baseline.
-- Explain the fleet evolution: eight experimental drones, six intermediate drones, final four drones plus Spot for RTX A1000 stability.
+- Explain the fleet evolution: original two-drone baseline preserved in `original/`, active four-drone world adds the two missing drones for quadrant coverage.
 
 ## 2. System Architecture
 - Webots world.
