@@ -86,7 +86,7 @@ The system is organised as a closed-loop multi-robot firefighting pipeline. The 
 \node[team] (mavic) at (-4.35,-3.05) {Aerial Team\\4 Mavic 2 Pro drones\\quadrant patrol};
 \node[team] (spot) at (4.35,-3.05) {Ground Team\\Spot-like robot\\support water platform};
 
-\node[process] (vision) at (-6.25,-4.75) {Camera + Recognition\\tree boxes};
+\node[process] (vision) at (-6.25,-4.75) {Camera + Recognition\\sparse tree boxes};
 \node[process] (state) at (-2.45,-4.75) {GPS, IMU, Gyro\\state estimate};
 \node[process] (posture) at (2.45,-4.75) {Stable Spot Posture\\support mode};
 \node[process] (manual) at (6.25,-4.75) {Keyboard Water Burst\\operator support};
@@ -130,7 +130,7 @@ The Mavic drone is controlled using four propeller motors. The controller comput
 Each drone receives patrol coordinates through controller arguments in the world file. The controller stores these coordinates as a waypoint list. During flight, the drone compares its GPS position with the current target waypoint. When it reaches the waypoint within the precision threshold, it automatically switches to the next target. This implements continuous patrol of the forest area.
 
 \subsection{Camera-Based Fire and Smoke Detection}
-The onboard camera captures a downward-facing image. The image is converted into an OpenCV-compatible format and then transformed into HSV colour space. A colour threshold isolates bright low-saturation smoke regions, avoiding the orange and brown terrain colours that previously caused false fire detections. Contours are extracted from the binary mask, and the largest valid contour is only accepted after repeated confirmation across consecutive frames. The output is an image coordinate $(x,y)$ used by the approach controller.
+The onboard camera captures a downward-facing image. The image is converted into an OpenCV-compatible format and then transformed into HSV colour space. A colour threshold isolates bright low-saturation smoke regions, avoiding the orange and brown terrain colours that previously caused false fire detections. Contours are extracted from the binary mask, and the largest valid contour is only accepted after confirmation across consecutive frames. The manual display overlay is reserved for confirmed fire/smoke boxes so tree recognition does not congest the camera feed. The output is an image coordinate $(x,y)$ used by the approach controller.
 
 \subsection{Fire Approach and Water Drop}
 After a fire is detected, the controller compares the detected image coordinate with the centre of the camera frame. If the fire is not centred, yaw and pitch disturbances guide the drone toward it. When the fire is centred below the drone, the controller triggers a water-drop command using the drone custom data field. The drone then clears the current target and continues the patrol loop, allowing it to respond to additional propagated fires.

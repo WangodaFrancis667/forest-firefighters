@@ -98,6 +98,13 @@ metrics = {
 }
 
 output_path = log_path.with_suffix(".analysis.md")
+try:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w") as f:
+        pass
+except OSError:
+    output_path = Path("assignment_docs/results") / f"{log_path.stem}.analysis.md"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
 with output_path.open("w") as f:
     f.write("# Mission Log Analysis\n\n")

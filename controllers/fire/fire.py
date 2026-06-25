@@ -210,8 +210,10 @@ class Fire(Supervisor):
             if tree.fire_count > 1:  # already burnt
                 return
             tree.fire_scale = tree.scale
+            fire_name = "fire " + tree.node.getField('name').getSFString()
             fire = f'Fire {{ translation {tree.translation[0]} {tree.translation[1]} {tree.translation[2]} ' \
-                   f'scale {tree.fire_scale} {tree.fire_scale} {tree.fire_scale} }}'
+                   f'scale {tree.fire_scale} {tree.fire_scale} {tree.fire_scale} ' \
+                   f'name "{fire_name}" }}'
             self.children.importMFNodeFromString(-1, fire)
             tree.fire = self.children.getMFNode(-1)
             tree.fire_translation_field = tree.fire.getField('translation')
