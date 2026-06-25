@@ -206,18 +206,20 @@ class Mavic (Robot):
         yaw = (self.current_pose[5] + 2*np.pi) % (2*np.pi)
         self.world_fire_quadrants = [0, 0]
 
-        center_tolerance = 30
-        if abs(x_img-resolutionX/2) > center_tolerance:
-            self.world_fire_quadrants[0] = np.sign(x_img-resolutionX/2)
-        if abs(y_img-resolutionY/2) > center_tolerance:
-            self.world_fire_quadrants[1] = np.sign(y_img-resolutionY/2)
-        self.world_fire_quadrants[1] *= np.sign(yaw)
-        self.world_fire_quadrants[0] *= -np.sign(yaw)
+        center_tolerance = 50
+        offset_x = x_img - resolutionX / 2
+        offset_y = y_img - resolutionY / 2
+        if abs(offset_x) > center_tolerance:
+            self.world_fire_quadrants[0] = np.sign(offset_x)
+        if abs(offset_y) > center_tolerance:
+            self.world_fire_quadrants[1] = np.sign(offset_y)
 
-        yaw_disturbance = self.world_fire_quadrants[0]*clamp(
-            abs(x_img-resolutionX/2), 0, self.MAX_YAW_DISTURBANCE)
-        pitch_disturbance = self.world_fire_quadrants[1]*clamp(
-            abs(y_img-resolutionY/2), 0, abs(self.MAX_PITCH_DISTURBANCE))
+        # Map image offsets to yaw/pitch: the rotated+flipped image means
+        # positive x-offset → turn right (negative yaw), positive y-offset → go forward (negative pitch)
+        yaw_disturbance = -self.world_fire_quadrants[0] * clamp(
+            abs(offset_x) / (resolutionX / 2), 0, self.MAX_YAW_DISTURBANCE)
+        pitch_disturbance = -self.world_fire_quadrants[1] * clamp(
+            abs(offset_y) / (resolutionY / 2), 0, abs(self.MAX_PITCH_DISTURBANCE))
 
         if self.world_fire_quadrants == [0, 0]:
             self.water_to_drop = 25
@@ -235,35 +237,40 @@ class Mavic (Robot):
 
         width = self.display.getWidth()
         height = self.display.getHeight()
+        bar_height = 14
 
-        if fire_detected:
-            self.display.setOpacity(0.25)
-            self.display.setColor(0xFF0000)
-            self.display.fillRectangle(0, 0, width, height)
+        # Status bar at the top of the camera feed
+        if self.WaterDropStatus:
+            # Blue bar — dropping water / cooldown
+            self.display.setOpacity(0.85)
+            self.display.setColor(0x2196F3)
+            self.display.fillRectangle(0, 0, width, bar_height)
             self.display.setOpacity(1.0)
+            self.display.setColor(0xFFFFFF)
+            self.display.drawText(self.name + " WATER DROP", 4, 2)
+        elif fire_detected:
+            # Red bar — fire detected
+            self.display.setOpacity(0.85)
+            self.display.setColor(0xFF2200)
+            self.display.fillRectangle(0, 0, width, bar_height)
+            self.display.setOpacity(1.0)
+            self.display.setColor(0xFFFFFF)
+            self.display.drawText(self.name + " FIRE", 4, 2)
 
-        self.display.setOpacity(0.9)
-        self.display.setColor(0xFFFFFF)
-        self.display.drawText(self.name, 6, 6)
-
-        if self.camera.hasRecognition() and self.tree_overlay_limit > 0:
-            tree_boxes = []
-            for obj in self.camera.getRecognitionObjects():
-                box = self.get_recognition_box(obj, width, height)
-                if box is None:
-                    continue
-                tree_boxes.append(box)
-            tree_boxes.sort(key=lambda item: item[2] * item[3], reverse=True)
-            for x, y, w, h in tree_boxes[:self.tree_overlay_limit]:
-                self.display.setColor(0x33CC66)
+            # Draw a single bounding box around the detected fire
+            if self.fire_bbox:
+                x, y, w, h = self.fire_bbox
+                self.display.setColor(0xFF3300)
                 self.display.drawRectangle(x, y, w, h)
-
-        if self.fire_bbox:
-            x, y, w, h = self.fire_bbox
-            self.display.setColor(0xFF3300)
-            self.display.drawRectangle(x, y, w, h)
-            self.display.drawRectangle(max(0, x - 1), max(0, y - 1), w + 2, h + 2)
-            self.display.drawText("fire/smoke", x, max(0, y - 12))
+                self.display.drawRectangle(max(0, x - 1), max(0, y - 1), w + 2, h + 2)
+        else:
+            # Green bar — patrolling, no fire
+            self.display.setOpacity(0.85)
+            self.display.setColor(0x4CAF50)
+            self.display.fillRectangle(0, 0, width, bar_height)
+            self.display.setOpacity(1.0)
+            self.display.setColor(0xFFFFFF)
+            self.display.drawText(self.name, 4, 2)
 
     def reset_fire_candidate(self):
         self.pending_fire_coord = []
@@ -451,16 +458,23 @@ class Mavic (Robot):
                         yaw_disturbance, pitch_disturbance = self.move_to_target(
                             waypoints)
                     t1 = self.getTime()
-                # Fire detection
+                # Fire detection — keep running even during approach so
+                # coordinates stay fresh and the drone can converge on fire
                 if self.getTime() >= detection_ready_time and self.getTime() - t2 > options.detection_interval:
                     if not self.WaterDropStatus:
-                        self.img_coord_fire = self.fire_detection(
+                        new_detection = self.fire_detection(
                             required_confirmations=options.fire_confirmations)
+                        if new_detection:
+                            self.img_coord_fire = new_detection
+                        elif self.img_coord_fire:
+                            # Lost sight of fire — abandon approach
+                            self.img_coord_fire = []
+                            self.fire_bbox = None
                     t2 = self.getTime()
 
                 if not self.WaterDropStatus:
                     t3 = self.getTime()
-                if self.getTime() - t3 > 15:  # Wait 15 times to avoid detection of the dropping water as smoke
+                if self.getTime() - t3 > 8:  # Cooldown after water drop before re-detecting
                     self.WaterDropStatus = False
 
             roll_input = self.K_ROLL_P * \
