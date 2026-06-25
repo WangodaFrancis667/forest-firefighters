@@ -55,14 +55,14 @@
 \vspace{-0.4em}
 
 \section{Introduction}
-This project implements an autonomous forest firefighting mission in the Webots Forest Firefighters simulation environment. The mission objective is to use aerial robots to patrol a forest, detect fire or smoke using onboard cameras, navigate toward the detected fire, and extinguish it by dropping water. The final solution uses eight Mavic drone controllers deployed at four forest corners (two drones per corner), providing maximum forest coverage, faster response to multiple fires, and system redundancy.
+This project implements an autonomous forest firefighting mission in the Webots Forest Firefighters simulation environment. The mission objective is to use robots to patrol a forest, detect fire or smoke using onboard cameras, navigate toward the detected fire, and extinguish it by dropping water. The final solution uses four Mavic drone controllers deployed across the four forest quadrants, supported by a Spot-like ground robot. This configuration preserves full forest coverage while reducing camera, controller, and overlay load on the NVIDIA RTX A1000 6 GB GPU.
 
-The implementation was executed in a stable Webots R2021b Docker environment with NVIDIA GPU OpenGL rendering. Before each mission test, a preflight checker verified that all eight drones started from the correct base positions at their assigned corners:
+The implementation was executed in a stable Webots R2021b Docker environment with NVIDIA GPU OpenGL rendering. Before each mission test, a preflight checker verified that all four drones started from separate quadrant base positions:
 \begin{itemize}
-    \item \textbf{SW Corner}: Drones 1 \& 2 at $(4.0, 4.0, 17.4)$ and $(4.0, 3.0, 17.43)$
-    \item \textbf{NW Corner}: Drones 3 \& 4 at $(2.0, 24.0, 17.92)$ and $(2.0, 26.0, 18.82)$
-    \item \textbf{SE Corner}: Drones 5 \& 6 at $(26.0, 3.0, 15.25)$ and $(28.0, 3.0, 16.33)$
-    \item \textbf{NE Corner}: Drones 7 \& 8 at $(28.0, 26.0, 19.34)$ and $(28.0, 28.0, 17.98)$
+    \item \textbf{SW Quadrant}: Drone 1 at $(4.0, 4.0, 17.4)$
+    \item \textbf{NW Quadrant}: Drone 2 at $(2.0, 26.0, 18.82)$
+    \item \textbf{SE Quadrant}: Drone 3 at $(26.0, 3.0, 15.25)$
+    \item \textbf{NE Quadrant}: Drone 4 at $(28.0, 26.0, 19.34)$
 \end{itemize}
 This ensured that all later results measured mission behaviour rather than incorrect spawn placement.
 
@@ -79,7 +79,7 @@ The system is organised as a closed-loop autonomous robotics pipeline. The Webot
 ]
 \node[block] (world) {Webots Forest\\Firefighters World};
 \node[block, below left=of world] (fire) {Fire Controller\\Propagation};
-\node[block, below right=of world] (drones) {Eight Mavic\\Drones\\(4 Corners)};
+\node[block, below right=of world] (drones) {Four Mavic\\Drones\\(Quadrants)};
 
 \node[sensor, below=of drones, xshift=-2.4cm] (camera) {Camera};
 \node[sensor, below=of drones] (gps) {GPS};
@@ -168,7 +168,7 @@ Shutdown warnings appeared in some runs. & The analyzer separated mission perfor
 \end{table}
 
 \section{Conclusion}
-The final system demonstrates an autonomous aerial firefighting mission using eight Mavic drones deployed at four forest corners in Webots. The drones patrol their assigned forest quadrants, detect smoke/fire with camera-based OpenCV processing, navigate toward detected fire regions, drop water, and continue patrolling for additional propagated fires. The clean primary runs confirm stable operation with multiple detections and water drops across all drones, satisfying the mission requirements for locomotion, perception, navigation, integration, and documentation.
+The final system demonstrates an autonomous firefighting mission using four Mavic drones deployed across four forest quadrants in Webots, supported by a Spot-like ground robot. The drones patrol their assigned forest quadrants, detect smoke/fire with camera-based OpenCV processing, navigate toward detected fire regions, drop water, and continue patrolling for additional propagated fires. The updated four-drone configuration reduces simulation load while preserving full-area coverage, satisfying the mission requirements for locomotion, perception, navigation, integration, and documentation.
 
 \end{document}
 ```

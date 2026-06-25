@@ -273,66 +273,61 @@ Mavic2Pro {
   name "Mavic 2 PRO(1)"
   controller "autonomous_mavic"
   controllerArgs [
-    "--target_altitude=46"
-    "--patrol_coords=6 6, 12 6, 12 12, 6 12"
+    "--target_altitude=42"
+    "--patrol_coords=5 5, 14 5, 14 14, 5 14"
+    "--detection_interval=0.5"
   ]
   customData "0"
-  cameraSlot [
-    Camera {
-      width 200
-      height 200
+  bodySlot [
+    Display {
+      name "vision overlay"
+      width 160
+      height 160
     }
   ]
-}
-Mavic2Pro {
-  translation 4 3 17.43
-  rotation 0 0 1 0
-  name "Mavic 2 PRO(2)"
-  controller "autonomous_mavic"
-  controllerArgs [
-    "--target_altitude=44"
-    "--patrol_coords=12 12, 6 12, 6 6, 12 6"
-  ]
-  customData "0"
   cameraSlot [
     Camera {
-      width 200
-      height 200
-    }
-  ]
-}
-
-Mavic2Pro {
-  translation 2 24 17.92
-  rotation 0 0 1 0
-  name "Mavic 2 PRO(3)"
-  controller "autonomous_mavic"
-  controllerArgs [
-    "--target_altitude=45"
-    "--patrol_coords=6 18, 12 18, 12 26, 6 26"
-  ]
-  customData "0"
-  cameraSlot [
-    Camera {
-      width 200
-      height 200
+      width 160
+      height 160
+      recognition Recognition {
+        maxRange 70
+        maxObjects 8
+        occlusion 0
+        frameColor 0 1 0
+        frameThickness 2
+      }
     }
   ]
 }
 Mavic2Pro {
   translation 2 26 18.82
   rotation 0 0 1 0
-  name "Mavic 2 PRO(4)"
+  name "Mavic 2 PRO(2)"
   controller "autonomous_mavic"
   controllerArgs [
-    "--target_altitude=43"
-    "--patrol_coords=12 26, 6 26, 6 18, 12 18"
+    "--target_altitude=42"
+    "--patrol_coords=5 16, 14 16, 14 27, 5 27"
+    "--detection_interval=0.5"
   ]
   customData "0"
+  bodySlot [
+    Display {
+      name "vision overlay"
+      width 160
+      height 160
+    }
+  ]
   cameraSlot [
     Camera {
-      width 200
-      height 200
+      width 160
+      height 160
+      recognition Recognition {
+        maxRange 70
+        maxObjects 8
+        occlusion 0
+        frameColor 0 1 0
+        frameThickness 2
+      }
     }
   ]
 }
@@ -340,35 +335,64 @@ Mavic2Pro {
 Mavic2Pro {
   translation 26 3 15.25
   rotation 0 0 1 0
-  name "Mavic 2 PRO(5)"
+  name "Mavic 2 PRO(3)"
   controller "autonomous_mavic"
   controllerArgs [
     "--target_altitude=42"
-    "--patrol_coords=18 6, 26 6, 26 12, 18 12"
+    "--patrol_coords=16 5, 27 5, 27 14, 16 14"
+    "--detection_interval=0.5"
   ]
   customData "0"
+  bodySlot [
+    Display {
+      name "vision overlay"
+      width 160
+      height 160
+    }
+  ]
   cameraSlot [
     Camera {
-      width 200
-      height 200
+      width 160
+      height 160
+      recognition Recognition {
+        maxRange 70
+        maxObjects 8
+        occlusion 0
+        frameColor 0 1 0
+        frameThickness 2
+      }
     }
   ]
 }
 Mavic2Pro {
-  translation 28 3 16.33
+  translation 28 26 19.34
   rotation 0 0 1 0
-  name "Mavic 2 PRO(6)"
+  name "Mavic 2 PRO(4)"
   controller "autonomous_mavic"
   controllerArgs [
-    "--target_altitude=40"
-    "--patrol_coords=26 12, 18 12, 18 6, 26 6"
+    "--target_altitude=42"
+    "--patrol_coords=16 16, 27 16, 27 27, 16 27"
+    "--detection_interval=0.5"
   ]
   customData "0"
+  bodySlot [
+    Display {
+      name "vision overlay"
+      width 160
+      height 160
+    }
+  ]
   cameraSlot [
     Camera {
-      width 200
-      height 200
+      width 160
+      height 160
+      recognition Recognition {
+        maxRange 70
+        maxObjects 8
+        occlusion 0
+        frameColor 0 1 0
+        frameThickness 2
+      }
     }
   ]
 }
-

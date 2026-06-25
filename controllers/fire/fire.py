@@ -122,8 +122,8 @@ class Robot():
         return self.node.getField('translation').getSFVec3f()[2]
 
 class Wind():
-    INTENSITY_EVOLVE = 0.01
-    ANGLE_EVOLVE = 0.005
+    INTENSITY_EVOLVE = 0.004
+    ANGLE_EVOLVE = 0.002
     RANDOM_EVOLUTION = True
 
     def __init__(self):
@@ -156,10 +156,11 @@ class Wind():
 
 class Fire(Supervisor):
     FLAME_CYCLE = 13        # there are 13 images in the flame animation
-    FLAME_PEAK = 17         # after 13 flame cycles, the fire starts to decrease
-    MAX_PROPAGATION = 50    # the maximum distance that the fire can propagate in meter
-    MAX_EXTINCTION = 4      # the maximum distance from a tree where water can stop its fire in meter
-    FIRE_DURATION = 50
+    FLAME_PEAK = 20         # after 20 flame cycles, the fire starts to decrease
+    MAX_PROPAGATION = 32    # the maximum distance that the fire can propagate in meter
+    MAX_EXTINCTION = 5      # the maximum distance from a tree where water can stop its fire in meter
+    FIRE_DURATION = 90
+    MAX_ACTIVE_FIRES = 4
 
     def __init__(self):
         super(Fire, self).__init__()
@@ -344,7 +345,7 @@ class Fire(Supervisor):
                 # and limit concurrent fires to prevent memory exhaustion
                 if True in extinction:
                     active_fires = sum(1 for tree in self.trees if tree.fire)
-                    if active_fires < 8:  # Limit to 8 concurrent fires
+                    if active_fires < self.MAX_ACTIVE_FIRES:
                         try:
                             self.ignite(random.choice(self.trees))
                         except:

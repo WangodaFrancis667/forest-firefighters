@@ -4,7 +4,7 @@
 
 Good day. My project is an autonomous forest firefighting robotics mission implemented in the Webots Forest Firefighters simulation environment. The aim was to program one or more robots to patrol a forest, detect fire or smoke using a camera, navigate toward the fire, and extinguish it by dropping water.
 
-For my implementation, I used eight Mavic 2 Pro drones deployed at four forest corners (two drones per corner). This multi-drone architecture provides maximum forest coverage, faster response to multiple fires, and redundancy. Aerial robots give wider forest coverage, faster movement, and direct top-down camera visibility of smoke and fire regions.
+For my implementation, I used four Mavic 2 Pro drones deployed across the four forest quadrants, supported by a Spot-like ground robot. I reduced the previous six-drone setup to four drones because the laptop has 6 GB of RTX A1000 VRAM, and four drones preserve full forest coverage while reducing Webots camera, controller, and overlay load. Aerial robots give wider forest coverage, faster movement, and direct top-down camera visibility of smoke and fire regions.
 
 ---
 
@@ -14,11 +14,11 @@ The simulation was run in a Docker-based Webots R2021b environment on Pop!_OS. I
 
 The Docker container was configured to use NVIDIA GPU rendering. I verified GPU rendering inside the container using `nvidia-smi` and `glxinfo`, where the OpenGL renderer showed the NVIDIA RTX A1000 GPU.
 
-Before every mission run, I used a preflight checker to confirm that all 8 drones start from the correct base positions at the four forest corners:
-- **SW Corner**: Drones 1 & 2 start at (4.0, 4.0, 17.4) and (4.0, 3.0, 17.43)
-- **NW Corner**: Drones 3 & 4 start at (2.0, 24.0, 17.92) and (2.0, 26.0, 18.82)
-- **SE Corner**: Drones 5 & 6 start at (26.0, 3.0, 15.25) and (28.0, 3.0, 16.33)
-- **NE Corner**: Drones 7 & 8 start at (28.0, 26.0, 19.34) and (28.0, 28.0, 17.98)
+Before every mission run, I used a preflight checker to confirm that all 4 drones start from separate quadrant base positions:
+- **SW Quadrant**: Drone 1 starts at (4.0, 4.0, 17.4)
+- **NW Quadrant**: Drone 2 starts at (2.0, 26.0, 18.82)
+- **SE Quadrant**: Drone 3 starts at (26.0, 3.0, 15.25)
+- **NE Quadrant**: Drone 4 starts at (28.0, 26.0, 19.34)
 
 This prevents testing with drones floating incorrectly in space and ensures each drone is positioned to patrol its assigned forest quadrant.
 
@@ -28,12 +28,13 @@ This prevents testing with drones floating incorrectly in space and ensures each
 
 The system is organised as a closed-loop robotics pipeline.
 
-The Webots world provides the forest terrain, wildfire propagation, smoke, drones, sensors, and water-drop mechanism. The fire controller starts and propagates the wildfire. Each Mavic drone uses:
+The Webots world provides the forest terrain, wildfire propagation, smoke, drones, Spot, sensors, and water-drop mechanism. The fire controller starts and propagates the wildfire. Each Mavic drone uses:
 - Camera for fire and smoke perception.
 - GPS for localisation and waypoint navigation.
 - IMU and gyro for stabilised locomotion.
 - Propeller motors for aerial control.
 - Custom data to trigger water dropping.
+- A 160 by 160 vision overlay for tree boxes, fire boxes, and red detection flashes.
 
 The control loop is:
 
@@ -126,4 +127,3 @@ First, start the Webots Docker container from the host:
 ```bash
 cd ~/Desktop/ros/webots-r2021b-gpu
 ./run-gpu.sh              Inside the container:
-

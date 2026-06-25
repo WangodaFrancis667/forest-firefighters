@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 
 if len(sys.argv) < 2:
-    print("Usage: python3 assignment_docs/tools/analyze_mission_log.py <log_file>")
+    print("Usage: python3 tools/analyze_mission_log.py <log_file>")
     sys.exit(1)
 
 log_path = Path(sys.argv[1])

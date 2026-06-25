@@ -1,100 +1,157 @@
-# Forest Firefighters
+# Forest Firefighters Robotics Assignment
 
-This simulation features a small forest wildfire and a few firefighter robots: a couple of drones and legged robots equipped with cameras.
-Users can run the wildfire simulation and program the behavior of the robots to fight the fire.
-They can also improve the models of the robot and even design new ones.
+Webots R2021b simulation for an autonomous forest-firefighting mission using a four-drone Mavic team and a Spot-like ground robot. The current setup is tuned for a laptop with an NVIDIA RTX A1000 6 GB GPU: it reduces the previous six-drone load, keeps camera resolution modest, slows fire propagation, and adds lightweight OpenCV/Webots visual feedback for detection.
 
-**Warning**: This project works only with Webots R2021b.
+## Mission Scope
 
+The assignment objective is to patrol a forest, detect fire or smoke with cameras, navigate to the fire, drop water accurately, and continue handling propagated fires during a 5-8 minute simulation.
 
-![fire](https://user-images.githubusercontent.com/12995815/131650395-876f5ce5-ecdc-4eb7-83bc-a86f94709e32.png)
-Connect at www.forestfirehub.com for more information about this project.
+Current implementation:
 
+- Four `Mavic2Pro` drones patrol SW, NW, SE, and NE quadrants.
+- Each drone uses OpenCV color segmentation for smoke/fire detection.
+- Each drone has a `vision overlay` display that attaches to the camera feed and draws:
+  - green tree boxes from Webots camera recognition,
+  - red fire/smoke boxes from OpenCV contours,
+  - a red flash over the camera display when fire/smoke is detected.
+- Spot remains active for the full run and can throw water with `D`.
+- Fire propagation remains enabled, but spread rate and active-fire count are capped for stable assignment demos.
+- Operational scripts live in the root-level `tools/` folder.
 
-# Demo Videos
-This video shows a wildfire propagating into one tree until the tree is completely burnt:
+## Project Structure
 
-https://user-images.githubusercontent.com/1264964/130241653-c0fd0966-1ce2-41d1-aeae-452a187b95be.mp4
+```text
+.
+├── controllers/
+│   ├── autonomous_mavic/      # Four-drone patrol, OpenCV detection, camera overlay drawing
+│   ├── fire/                  # Supervisor controlling fire, wind, propagation, and water extinction
+│   ├── mavic/                 # Manual Mavic example controller
+│   └── spot/                  # Spot gait loop and water-drop keyboard control
+├── protos/                    # Local fire, smoke, tree, terrain, and water PROTO assets
+├── worlds/
+│   └── forest_firefighters.wbt
+├── tools/
+│   ├── preflight_check.py     # Validates the four-drone world configuration
+│   ├── run_mission_test.sh    # Runs Webots, captures logs, and analyzes results
+│   ├── analyze_mission_log.py # Creates per-run metrics
+│   └── summarize_runs.py      # Summarizes repeated stability logs
+├── assignment_docs/
+│   ├── archive/               # Archived one-off helper scripts
+│   ├── backups/               # Historical controller/world snapshots
+│   ├── final_report/          # Report source, PDF, diagrams, and section drafts
+│   ├── notes/                 # Engineering notes and rubric mapping
+│   ├── presentation/          # Demo notes and presentation script
+│   ├── results/               # Webots run logs and generated analysis files
+│   └── screenshots/           # Visual evidence
+├── Dockerfile
+└── Robotics Q and A guiding questions.pdf
+```
 
-This video shows a Mavic Pro 2 that fights against a wildfire (speed x2):
+## Run Commands
 
-https://user-images.githubusercontent.com/12995815/131981332-7b0c6105-5910-4962-8e67-b953e10be9d6.mp4
+### 1. Start the Webots GPU Container
 
-This video shows two autonomous drones patroling over the forest, detecting and dropping water on wildfires:
+From the host machine, start the existing Webots R2021b GPU environment:
 
-https://user-images.githubusercontent.com/48200998/135884718-92a00c63-9f73-4557-96ce-58445ba5eb83.mp4
+```bash
+cd ~/Desktop/ros/webots-r2021b-gpu
+./run-gpu.sh
+```
 
+Inside the container, do not use `~cd`. Use normal `cd`:
 
-# Creating Your Own Firefighter Robots
+```bash
+cd /workspace
+```
 
-In order to contribute to this simulation by developing your own robot models and program their behavior you will have to follow these steps:
+### 2. Clone or Enter the Repository
 
-1. download and install [Webots](https://cyberbotics.com) on your computer.
-2. install [python 3.8](https://www.python.org/downloads/) on your computer if not already installed.
-3. follow the [Webots Tutorials](https://cyberbotics.com/doc/guide/tutorials) to get familiar with the software.
-4. [clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository) this repository on your computer: `git clone https://github.com/cyberbotics/webots-projects.git` or download it from [here](https://github.com/cyberbotics/webots-projects/archive/refs/heads/master.zip) and unzip it.
-5. run the simulation by opening the [forest_firefighter.wbt](worlds/forest_firefighter.wbt) world file in Webots.
-6. edit the robot controllers to change their behavior.
-7. create new robot models (or improve existing ones) and use them in the simulation.
+If the repository is not already present:
 
-For steps 6 and 7, please refer to the Webots [User Guide](https://cyberbotics.com/doc/guide/index) and [Reference Manual](https://cyberbotics.com/doc/reference/index) to get started with robot programming and robot modeling.
+```bash
+mkdir -p /workspace/webots-projects/projects
+cd /workspace/webots-projects/projects
+git clone <repository-url> forest_firefighters
+cd forest_firefighters
+```
 
+If it is already mounted/cloned:
 
-# Technical Details
+```bash
+cd /workspace/webots-projects/projects/forest_firefighters
+```
 
-## Forest Generation
-An efficient and customizable forest can be generated using the proto `protos/UnevenForest.proto`.
-The size of the trees, the dimension and the density of the forest are all parameters of the proto. To do so, you need to delete the current solid `uneven forest`, add the proto `UnevenForest`, change its parameters as you want, Right-Click on the proto and select `Convert Root to Base Node(s)` to make the tree protos accessible for the Supervisor.
+### 3. Run Preflight Checks
 
-Half burned forest using the forest generator:
-![burned](https://user-images.githubusercontent.com/12995815/131650414-fb5fe445-c74d-4c89-bc05-562f6a304ef3.png)
+```bash
+python3 tools/preflight_check.py
+```
 
-## Fire
-The fire starts randomly at one of the trees of the forest.
-It propagates randomly and according to the wind to other trees close to it.
-The fire of a tree stops naturally once the tree is completely burned.
-If some water dropped by a robot goes sufficiently close to a tree on fire and if the fire is not too big compared to the amount of water dropped, it extinguishes the fire instantly.
-The fire is run by a supervisor which can be found in [controllers/fire/fire.py](controllers/fire/fire.py).
-Some fire parameters can be changed in this file: 
+Expected result: `PREFLIGHT PASSED`.
 
-- `Fire.MAX_PROPAGATION`: the maximum distance that the fire can propagate in meter.
+### 4. Run a Timed Mission Test
 
-- `Fire.MAX_EXTINCTION`: the maximum distance from which water can extinguish the fire.
-  
-- `Fire.FIRE_DURATION`: the duration of a fire to consume a tree completely.
-  
-- `Wind.INTENSITY_EVOLVE`: the speed at which the intensity of the wind evolve.
-   
-- `Wind.ANGLE_EVOLVE`: the speed at which the angle of the wind evolve.
-  
-- `Wind.RANDOM_EVOLUTION`: true if there the wind evolves randomly, false otherwise.
-   
-- `Tree.ROBUSTNESS_VARIATION`: the variation in the robustness of the trees (if a tree is more robust, it is less likely to burn).
+```bash
+./tools/run_mission_test.sh live_demo_four_drone
+```
 
-## Wind Window
-The Wind window allows the user to modify the intensity and the direction of the wind during a simulation.
-The random evolution of the wind can activated/deactivated.
+This writes:
 
-<div align="center"><img src="https://user-images.githubusercontent.com/12995815/131666969-df9b520f-338d-42fc-a533-8e0a161edcc1.png"></div>
+- `assignment_docs/results/live_demo_four_drone.log`
+- `assignment_docs/results/live_demo_four_drone.analysis.md`
 
-## Mavic Pro 2 Demo Controller
-The Mavic controller is a simple example controller.
-The keyboard can be used to move the robot and drop water on the forest fire.
+### 5. Run the Interactive Demo
 
-![mavic](https://user-images.githubusercontent.com/12995815/131667338-302ff820-19ff-4736-8195-b48d1c55a3ad.png)
+```bash
+webots worlds/forest_firefighters.wbt
+```
 
-## Spot Demo Controller
-The Spot controller is a basic controller that just moves the legs of the robot. The keyboard can also be used to throw water on the forest fire. 
+In Webots:
 
-## Autonomous Mavic Controller
+- Select each drone and enable its `vision overlay` display from `Robot > Display Devices` if it is not already visible.
+- Tile the four display overlays in a 2x2 layout so all drones are visible.
+- Keep camera/display windows at 160x160 unless the machine has spare GPU headroom.
+- Press `D` while Spot is selected to throw water from Spot.
 
-The autonomous Mavic drone moves between chosen coordinates above a forest in order to patrol and detect a fire.
-The altitude and world coordinates can be chosen through the controller args.
-Each time a fire is detected, the drone goes above the fire and drop a quantity of water to stop the fire.
-The project is using OpenCV to detect the smoke color range, and a naive approach to move above the fire (moves until the fire is in the center of the image).
-An alternative approach could be to use monoplotting to compute the world coordinates from the image coordinates of the fire (for example based on [this method](http://sar.kangwon.ac.kr/etc/rs_note/rsnote/cp9/cp9-6.htm)).
+## Design Notes
 
-It is also possible to add multiple drones to increase chances of detecting a fire.
-Please note that the fire is starting only when the drone has reached an altitude of 40m.
+Four drones are used instead of six because the previous six-drone setup started six camera pipelines and six controllers, then crashed Webots with a segmentation fault during the mission. Four quadrant drones are a better match for a 6 GB VRAM laptop: coverage remains complete while reducing camera rendering, controller CPU, and overlay pressure.
 
-To use the project, please install OpenCV `pip install opencv-python`.
+The drone cameras use 160x160 images. OpenCV detection runs every 0.5 seconds by default, and debug image writing is disabled unless `--debug_images` is passed. This avoids repeated disk writes and unnecessary GPU-to-CPU image transfer overhead.
+
+Fire growth is intentionally slower than the upstream demo. Wind still evolves and fire can still propagate, but the supervisor caps active fires and increases burn duration so the mission tests navigation and extinguishing rather than simulator overload.
+
+## Key Files
+
+- `worlds/forest_firefighters.wbt`: four-drone world layout and overlay devices.
+- `controllers/autonomous_mavic/autonomous_mavic.py`: drone patrol, perception, fire approach, water drop, and overlay drawing.
+- `controllers/fire/fire.py`: wildfire supervisor, wind model, propagation, and extinction logic.
+- `controllers/spot/spot.py`: continuous Spot behavior and keyboard water burst.
+- `tools/preflight_check.py`: structural validation before running Webots.
+- `tools/run_mission_test.sh`: repeatable timed mission runner.
+
+## Verification Workflow
+
+Run these before a demo or submission:
+
+```bash
+python3 tools/preflight_check.py
+python3 -m py_compile controllers/autonomous_mavic/autonomous_mavic.py controllers/fire/fire.py controllers/spot/spot.py tools/*.py
+./tools/run_mission_test.sh stability_repeat_01
+python3 tools/summarize_runs.py
+```
+
+Manual checks in Webots:
+
+- Four drones launch from separate quadrants.
+- The Spot controller remains running.
+- Tree boxes appear in green on drone overlays.
+- Fire/smoke detection draws red boxes or flashes the overlay red.
+- Water drops are logged when a drone centers on a detected fire.
+- The simulator runs for the target 5-8 minute assignment window without a Webots segmentation fault.
+
+## References Used
+
+- Webots Camera reference: camera overlays, recognition frames, camera sampling, and BGRA image format.
+- Webots Display reference: attaching a camera to a display and drawing rectangles/text over the feed.
+- Webots Recognition reference: recognition colors, bounding boxes, and performance tradeoffs.
