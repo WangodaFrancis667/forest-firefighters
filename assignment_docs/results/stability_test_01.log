@@ -1,43 +1,66 @@
 Info: Sandboxing disabled by user.
-INFO: fire: Starting controller: python3 -u fire.py
+INFO: fire: Starting controller: python3 -u fire.py --start_delay=40 --mission_duration=300
 INFO: spot: Starting controller: python3 -u spot.py
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=46 "--patrol_coords=6 6, 12 6, 12 12, 6 12"
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=44 "--patrol_coords=12 12, 6 12, 6 6, 12 6"
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=45 "--patrol_coords=6 18, 12 18, 12 26, 6 26"
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=43 "--patrol_coords=12 26, 6 26, 6 18, 12 18"
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=18 6, 26 6, 26 12, 18 12"
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=40 "--patrol_coords=26 12, 18 12, 18 6, 26 6"
-Starting wildfire in a forest of 27 sassafras trees.
-You can throw water from Spot robot with your computer keyboard by pressing 'D'.
-First target:  [26.0, 12.0]
-First target:  [12.0, 26.0]
-First target:  [12.0, 12.0]
-First target:  [18.0, 6.0]
-First target:  [6.0, 18.0]
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=6 6, 14 8, 14 14, 8 14, 10 10" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=6 24, 14 22, 14 16, 8 16, 10 20" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=24 6, 16 8, 16 14, 24 14, 20 10" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=24 24, 16 22, 16 16, 24 16, 20 20" --detection_interval=0.5
+Forest ready with 27 sassafras trees.
+Wildfire scheduled to start after 40.0 seconds.
+Spot support active in stable posture. Press 'D' to throw water from Spot.
+First target:  [24.0, 24.0]
+First target:  [6.0, 24.0]
 First target:  [6.0, 6.0]
-fire detected, coordinates (103.5, 161.375)
-fire detected, coordinates (55.0, 101.0)
-fire detected, coordinates (102.76087188720703, 176.4130401611328)
-fire detected, coordinates (54.02631759643555, 101.7631607055664)
-fire detected, coordinates (102.12963104248047, 175.90740966796875)
-fire detected, coordinates (55.0, 90.83333587646484)
-fire detected, coordinates (101.0, 172.5)
-fire detected, coordinates (61.3684196472168, 76.2631607055664)
-fire detected, coordinates (100.3828125, 168.296875)
-fire detected, coordinates (73.13636016845703, 56.5)
-fire detected, coordinates (100.64286041259766, 163.40475463867188)
-fire detected, coordinates (89.42079162597656, 52.678218841552734)
-fire detected, coordinates (99.46575164794922, 156.9109649658203)
-fire detected, coordinates (100.5, 57.0)
-fire detected, coordinates (99.31407165527344, 150.84170532226562)
-fire detected, coordinates (103.65384674072266, 63.57692337036133)
-fire detected, coordinates (98.90384674072266, 144.1923065185547)
-fire detected, coordinates (103.9375, 70.375)
-fire detected, coordinates (98.0540542602539, 136.81080627441406)
-fire detected, coordinates (103.76923370361328, 79.0)
-fire detected, coordinates (98.25, 128.6875)
-fire detected, coordinates (102.99431610107422, 87.96591186523438)
-fire detected, coordinates (97.64286041259766, 119.92857360839844)
-Water dropped on fire target: [6.0, 18.0] at position [7.00288818772569, 24.255265450648977]
-Water dropped on fire target: [12.0, 26.0] at position [7.6758817176037955, 24.60318286618882]
-/usr/local/webots/webots: line 90:  2446 Segmentation fault      (core dumped) "$webots_home/bin/webots-bin" "$@"
+First target:  [24.0, 6.0]
+Target reached! New target:  [14.0, 22.0]
+Starting wildfire in a forest of 27 sassafras trees at t=40.0s.
+Target reached! New target:  [14.0, 8.0]
+Target reached! New target:  [16.0, 22.0]
+fire detected, coordinates (98.5, 43.0)
+fire detected, coordinates (98.6568603515625, 40.04901885986328)
+fire detected, coordinates (99.5, 41.5)
+fire detected, coordinates (99.26470947265625, 45.382354736328125)
+fire detected, coordinates (99.5, 49.0)
+fire detected, coordinates (100.17646789550781, 53.411766052246094)
+Target reached! New target:  [16.0, 8.0]
+fire detected, coordinates (100.0, 58.0)
+Water dropped on fire target: [14.0, 22.0] at position [14.322413143955716, 21.434194426348864]
+Target reached! New target:  [14.0, 16.0]
+Target reached! New target:  [16.0, 14.0]
+Target reached! New target:  [16.0, 16.0]
+Target reached! New target:  [14.0, 14.0]
+Target reached! New target:  [8.0, 16.0]
+Target reached! New target:  [24.0, 14.0]
+Target reached! New target:  [24.0, 16.0]
+Target reached! New target:  [8.0, 14.0]
+Target reached! New target:  [10.0, 20.0]
+Target reached! New target:  [20.0, 10.0]
+Target reached! New target:  [10.0, 10.0]
+Target reached! New target:  [20.0, 20.0]
+Target reached! New target:  [6.0, 24.0]
+Target reached! New target:  [24.0, 6.0]
+Target reached! New target:  [6.0, 6.0]
+Target reached! New target:  [14.0, 22.0]
+Target reached! New target:  [24.0, 24.0]
+Target reached! New target:  [16.0, 8.0]
+Target reached! New target:  [14.0, 8.0]
+Target reached! New target:  [16.0, 22.0]
+Target reached! New target:  [14.0, 16.0]
+Target reached! New target:  [16.0, 14.0]
+Target reached! New target:  [8.0, 16.0]
+Target reached! New target:  [14.0, 14.0]
+Target reached! New target:  [16.0, 16.0]
+Target reached! New target:  [24.0, 14.0]
+Target reached! New target:  [10.0, 20.0]
+Target reached! New target:  [8.0, 14.0]
+Target reached! New target:  [24.0, 16.0]
+Target reached! New target:  [6.0, 24.0]
+Target reached! New target:  [20.0, 10.0]
+Target reached! New target:  [10.0, 10.0]
+Target reached! New target:  [20.0, 20.0]
+INFO: fire: Terminating.
+INFO: spot: Terminating.
+INFO: autonomous_mavic: Terminating.
+INFO: autonomous_mavic: Terminating.
+INFO: autonomous_mavic: Terminating.
+INFO: autonomous_mavic: Terminating.

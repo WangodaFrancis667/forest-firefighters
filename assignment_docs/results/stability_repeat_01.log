@@ -1,126 +1,180 @@
 Info: Sandboxing disabled by user.
-INFO: fire: Starting controller: python3 -u fire.py
+INFO: fire: Starting controller: python3 -u fire.py --start_delay=40 --mission_duration=300
 INFO: spot: Starting controller: python3 -u spot.py
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=45 "--patrol_coords=11 11, 21 11, 21 21, 11 21"
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=43 "--patrol_coords=21 21, 11 21, 11 11, 21 11"
-Starting wildfire in a forest of 27 sassafras trees.
-You can throw water from Spot robot with your computer keyboard by pressing 'D'.
-First target:  [21.0, 21.0]
-First target:  [11.0, 11.0]
-INFO: 'spot' controller exited successfully.
-fire detected, coordinates (163.0, 0.5)
-fire detected, coordinates (153.0, 1.0)
-fire detected, coordinates (103.38888549804688, 5.796296119689941)
-fire detected, coordinates (94.9800033569336, 2.5799999237060547)
-fire detected, coordinates (90.5, 8.399999618530273)
-fire detected, coordinates (89.0, 15.0)
-fire detected, coordinates (87.68181610107422, 21.772727966308594)
-fire detected, coordinates (87.5, 28.399999618530273)
-fire detected, coordinates (87.64286041259766, 35.880950927734375)
-fire detected, coordinates (87.18965148925781, 42.568965911865234)
-fire detected, coordinates (87.0, 49.45000076293945)
-fire detected, coordinates (86.5, 56.400001525878906)
-fire detected, coordinates (86.40217590332031, 63.4782600402832)
-fire detected, coordinates (86.19999694824219, 70.0)
-fire detected, coordinates (86.1875, 76.9375)
-fire detected, coordinates (86.0, 84.0)
-Water dropped on fire target: [21.0, 21.0] at position [23.794858383179854, 14.105823967883152]
-Target reached! New target:  [21.0, 11.0]
-fire detected, coordinates (27.5, 133.5)
-fire detected, coordinates (20.714284896850586, 134.85714721679688)
-fire detected, coordinates (17.314815521240234, 109.05555725097656)
-fire detected, coordinates (146.5, 28.0)
-fire detected, coordinates (24.0, 68.5)
-fire detected, coordinates (135.0, 15.0)
-fire detected, coordinates (43.61538314819336, 33.10256576538086)
-fire detected, coordinates (111.0, 11.0)
-fire detected, coordinates (73.56896209716797, 17.189655303955078)
-fire detected, coordinates (89.19620513916016, 14.613924026489258)
-fire detected, coordinates (107.0, 16.545454025268555)
-fire detected, coordinates (79.70513153076172, 21.576923370361328)
-fire detected, coordinates (128.86363220214844, 27.18181800842285)
-fire detected, coordinates (83.57894897460938, 26.289474487304688)
-fire detected, coordinates (129.67822265625, 34.57920837402344)
-fire detected, coordinates (92.88888549804688, 30.844444274902344)
-fire detected, coordinates (116.39215850830078, 37.29411697387695)
-fire detected, coordinates (96.30555725097656, 37.38888931274414)
-fire detected, coordinates (104.18181610107422, 42.1363639831543)
-fire detected, coordinates (98.1617660522461, 43.44117736816406)
-fire detected, coordinates (99.57920837402344, 49.321781158447266)
-fire detected, coordinates (98.18181610107422, 50.6363639831543)
-fire detected, coordinates (97.85869598388672, 56.543479919433594)
-fire detected, coordinates (98.0, 56.5)
-fire detected, coordinates (97.11946868896484, 63.68584060668945)
-fire detected, coordinates (98.19620513916016, 63.38607406616211)
-fire detected, coordinates (97.16666412353516, 71.33333587646484)
-fire detected, coordinates (97.2368392944336, 69.96052551269531)
-fire detected, coordinates (96.76470947265625, 78.61764526367188)
-fire detected, coordinates (97.30000305175781, 76.5)
-fire detected, coordinates (96.83333587646484, 85.66666412353516)
-Water dropped on fire target: [21.0, 21.0] at position [20.448733791777556, 12.623512583610333]
-fire detected, coordinates (97.01063537597656, 83.35106658935547)
-Water dropped on fire target: [21.0, 11.0] at position [18.91635315340205, 11.815239071353206]
-Target reached! New target:  [21.0, 21.0]
-Target reached! New target:  [11.0, 21.0]
-fire detected, coordinates (97.0, 54.0)
-fire detected, coordinates (119.04901885986328, 39.343135833740234)
-fire detected, coordinates (108.0, 0.5)
-fire detected, coordinates (120.5, 40.5)
-fire detected, coordinates (108.5, 0.5)
-fire detected, coordinates (93.0, 44.0)
-fire detected, coordinates (120.60144805908203, 46.5579719543457)
-fire detected, coordinates (107.77645111083984, 6.3054609298706055)
-fire detected, coordinates (120.90697479248047, 54.151161193847656)
-fire detected, coordinates (108.376708984375, 16.445205688476562)
-fire detected, coordinates (121.0999984741211, 62.900001525878906)
-fire detected, coordinates (108.2427749633789, 28.491329193115234)
-fire detected, coordinates (121.5, 72.0)
-fire detected, coordinates (107.09556579589844, 40.943214416503906)
-fire detected, coordinates (121.96835327148438, 81.74050903320312)
-fire detected, coordinates (106.820556640625, 53.59756088256836)
-Target reached! New target:  [11.0, 21.0]
-fire detected, coordinates (122.36451721191406, 92.24193572998047)
-fire detected, coordinates (106.60942077636719, 66.32978820800781)
-fire detected, coordinates (122.59494018554688, 103.35443115234375)
-fire detected, coordinates (106.03678131103516, 79.0340576171875)
-fire detected, coordinates (122.83333587646484, 115.5)
-fire detected, coordinates (105.68421173095703, 91.4868392944336)
-Water dropped on fire target: [11.0, 21.0] at position [11.213373449796205, 22.646858585306937]
-fire detected, coordinates (63.19780349731445, 149.53297424316406)
-fire detected, coordinates (55.449459075927734, 151.5649871826172)
-fire detected, coordinates (47.49171447753906, 131.86187744140625)
-fire detected, coordinates (47.907405853271484, 104.31481170654297)
-fire detected, coordinates (193.5, 5.0)
-fire detected, coordinates (92.79467010498047, 80.55015563964844)
-fire detected, coordinates (60.5625, 72.0)
-fire detected, coordinates (105.07746124267578, 74.03520965576172)
-fire detected, coordinates (79.7272720336914, 52.04545593261719)
-fire detected, coordinates (112.30952453613281, 85.43650817871094)
-fire detected, coordinates (98.49263000488281, 54.866092681884766)
-fire detected, coordinates (111.64286041259766, 98.78571319580078)
-fire detected, coordinates (108.0204086303711, 66.38775634765625)
-fire detected, coordinates (151.5, 0.0)
-fire detected, coordinates (107.57353210449219, 110.88235473632812)
-fire detected, coordinates (108.88578796386719, 78.33248901367188)
-fire detected, coordinates (139.0, 2.0)
-fire detected, coordinates (102.82432556152344, 122.85134887695312)
-fire detected, coordinates (107.38888549804688, 90.72222137451172)
-fire detected, coordinates (112.42265319824219, 3.4060773849487305)
-Water dropped on fire target: [11.0, 21.0] at position [11.643513917160462, 23.85277083779981]
-fire detected, coordinates (66.13333129882812, 16.413333892822266)
-fire detected, coordinates (92.22000122070312, 11.899999618530273)
-fire detected, coordinates (59.35714340209961, 31.035715103149414)
-fire detected, coordinates (85.25531768798828, 23.631206512451172)
-fire detected, coordinates (3.5, 49.5)
-fire detected, coordinates (8.568965911865234, 31.189655303955078)
-fire detected, coordinates (27.91666603088379, 9.983333587646484)
-fire detected, coordinates (145.32177734375, 6.420792102813721)
-fire detected, coordinates (100.5, 1.5)
-fire detected, coordinates (152.5, 11.5)
-fire detected, coordinates (106.5, 2.0)
-fire detected, coordinates (154.86985778808594, 21.363014221191406)
-fire detected, coordinates (108.5, 8.5)
-fire detected, coordinates (154.86207580566406, 30.310344696044922)
-fire detected, coordinates (109.0, 18.25)
-fire detected, coordinates (154.840576171875, 39.956520080566406)
-fire detected, coordinates (109.0, 28.25)
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=6 6, 14 8, 14 14, 8 14, 10 10" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=6 24, 14 22, 14 16, 8 16, 10 20" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=24 6, 16 8, 16 14, 24 14, 20 10" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=24 24, 16 22, 16 16, 24 16, 20 20" --detection_interval=0.5
+Forest ready with 27 sassafras trees.
+Wildfire scheduled to start after 40.0 seconds.
+Spot support active in stable posture. Press 'D' to throw water from Spot.
+First target:  [24.0, 24.0]
+First target:  [6.0, 24.0]
+First target:  [6.0, 6.0]
+First target:  [24.0, 6.0]
+Target reached! New target:  [14.0, 22.0]
+Starting wildfire in a forest of 27 sassafras trees at t=40.0s.
+Target reached! New target:  [14.0, 8.0]
+Target reached! New target:  [16.0, 22.0]
+Target reached! New target:  [14.0, 16.0]
+fire detected, coordinates (83.36206817626953, 53.39655303955078)
+fire detected, coordinates (82.9375, 50.3125)
+Target reached! New target:  [16.0, 8.0]
+fire detected, coordinates (82.5, 52.0)
+fire detected, coordinates (82.25, 54.375)
+fire detected, coordinates (82.26470947265625, 57.382354736328125)
+Water dropped on fire target: [14.0, 8.0] at position [8.881579635271075, 6.992460167385666]
+Target reached! New target:  [16.0, 14.0]
+Target reached! New target:  [16.0, 16.0]
+Target reached! New target:  [14.0, 14.0]
+Target reached! New target:  [8.0, 16.0]
+fire detected, coordinates (158.0, 20.5)
+fire detected, coordinates (156.0, 6.8214287757873535)
+fire detected, coordinates (89.5, 2.5)
+fire detected, coordinates (89.5, 6.0)
+fire detected, coordinates (89.25, 10.5)
+fire detected, coordinates (89.09091186523438, 15.909090995788574)
+fire detected, coordinates (89.39473724365234, 21.552631378173828)
+fire detected, coordinates (89.02173614501953, 26.978260040283203)
+Target reached! New target:  [24.0, 14.0]
+fire detected, coordinates (88.75, 32.75)
+fire detected, coordinates (88.5, 38.5)
+fire detected, coordinates (88.4459457397461, 44.121620178222656)
+fire detected, coordinates (88.4148941040039, 49.73404312133789)
+fire detected, coordinates (88.0086669921875, 55.67919158935547)
+fire detected, coordinates (87.83333587646484, 61.72222137451172)
+Water dropped on fire target: [8.0, 16.0] at position [8.214209195880812, 16.322203452824905]
+Target reached! New target:  [10.0, 20.0]
+Target reached! New target:  [24.0, 16.0]
+Target reached! New target:  [8.0, 14.0]
+fire detected, coordinates (102.5, 1.5)
+fire detected, coordinates (100.5, 2.0)
+Target reached! New target:  [6.0, 24.0]
+fire detected, coordinates (99.72222137451172, 7.638888835906982)
+fire detected, coordinates (101.5, 1.5)
+Target reached! New target:  [20.0, 10.0]
+fire detected, coordinates (102.6219482421875, 3.1097559928894043)
+fire detected, coordinates (103.44999694824219, 7.25)
+fire detected, coordinates (104.16666412353516, 10.666666984558105)
+fire detected, coordinates (101.49390411376953, 14.317072868347168)
+fire detected, coordinates (96.42105102539062, 17.63157844543457)
+fire detected, coordinates (93.28894805908203, 21.886934280395508)
+fire detected, coordinates (91.58121490478516, 26.92131996154785)
+fire detected, coordinates (91.0, 31.75)
+fire detected, coordinates (90.72222137451172, 38.22222137451172)
+fire detected, coordinates (90.79508209228516, 44.48360824584961)
+fire detected, coordinates (90.72222137451172, 51.22222137451172)
+Target reached! New target:  [10.0, 10.0]
+fire detected, coordinates (90.7631607055664, 58.23684310913086)
+Water dropped on fire target: [6.0, 24.0] at position [12.703987890812115, 22.388236797788995]
+Target reached! New target:  [20.0, 20.0]
+Target reached! New target:  [24.0, 6.0]
+fire detected, coordinates (78.5, 53.5)
+fire detected, coordinates (79.5, 45.5)
+fire detected, coordinates (80.27777862548828, 47.16666793823242)
+fire detected, coordinates (80.66666412353516, 49.08333206176758)
+fire detected, coordinates (80.75, 51.625)
+fire detected, coordinates (80.75, 54.625)
+fire detected, coordinates (80.9186019897461, 57.569766998291016)
+Water dropped on fire target: [24.0, 6.0] at position [19.553313980897876, 9.163602252965935]
+Target reached! New target:  [6.0, 6.0]
+Target reached! New target:  [24.0, 24.0]
+Target reached! New target:  [14.0, 22.0]
+Target reached! New target:  [14.0, 8.0]
+Target reached! New target:  [16.0, 8.0]
+Target reached! New target:  [16.0, 22.0]
+fire detected, coordinates (119.5, 0.5)
+fire detected, coordinates (116.5, 0.5)
+fire detected, coordinates (106.0, 0.0)
+fire detected, coordinates (90.0, 1.0)
+fire detected, coordinates (74.0, 2.5)
+fire detected, coordinates (65.31818389892578, 8.045454978942871)
+fire detected, coordinates (60.5, 16.289474487304688)
+fire detected, coordinates (58.14706039428711, 23.676469802856445)
+fire detected, coordinates (57.0906982421875, 31.034883499145508)
+fire detected, coordinates (57.0, 38.0)
+fire detected, coordinates (56.92856979370117, 45.07143020629883)
+fire detected, coordinates (57.37434387207031, 52.086387634277344)
+fire detected, coordinates (57.4375, 58.79166793823242)
+Water dropped on fire target: [14.0, 22.0] at position [11.409149794688261, 19.73397619789602]
+fire detected, coordinates (61.57143020629883, 109.28571319580078)
+fire detected, coordinates (60.63793182373047, 121.60344696044922)
+fire detected, coordinates (128.72222900390625, 30.83333396911621)
+fire detected, coordinates (59.66128921508789, 122.56451416015625)
+fire detected, coordinates (128.3333282470703, 24.08333396911621)
+fire detected, coordinates (60.0, 122.0)
+fire detected, coordinates (122.83333587646484, 19.83333396911621)
+fire detected, coordinates (59.03658676147461, 120.93902587890625)
+fire detected, coordinates (112.5, 13.5)
+fire detected, coordinates (58.272727966308594, 119.09091186523438)
+fire detected, coordinates (98.0, 9.857142448425293)
+fire detected, coordinates (58.382354736328125, 116.73529052734375)
+fire detected, coordinates (84.0, 10.0)
+fire detected, coordinates (58.0, 114.5)
+fire detected, coordinates (74.5, 12.5)
+fire detected, coordinates (57.735294342041016, 112.38235473632812)
+fire detected, coordinates (69.03571319580078, 16.053571701049805)
+fire detected, coordinates (57.465518951416016, 109.37931060791016)
+fire detected, coordinates (65.62068939208984, 19.534482955932617)
+fire detected, coordinates (57.097015380859375, 106.42537689208984)
+Target reached! New target:  [14.0, 16.0]
+fire detected, coordinates (63.926231384277344, 23.172130584716797)
+fire detected, coordinates (56.90909194946289, 103.21212005615234)
+Water dropped on fire target: [16.0, 8.0] at position [19.658493568429186, 8.530671134664956]
+fire detected, coordinates (62.375, 27.25)
+fire detected, coordinates (61.5, 31.0)
+Target reached! New target:  [16.0, 16.0]
+fire detected, coordinates (61.5, 35.0)
+fire detected, coordinates (61.15217208862305, 39.065216064453125)
+fire detected, coordinates (60.85211181640625, 43.345069885253906)
+fire detected, coordinates (60.730770111083984, 47.269229888916016)
+Target reached! New target:  [16.0, 14.0]
+Target reached! New target:  [24.0, 16.0]
+fire detected, coordinates (126.94444274902344, 144.27777099609375)
+fire detected, coordinates (132.56451416015625, 154.33871459960938)
+fire detected, coordinates (142.5, 147.5)
+fire detected, coordinates (153.0625, 132.53125)
+fire detected, coordinates (157.0, 58.0)
+fire detected, coordinates (154.5238037109375, 48.28571319580078)
+fire detected, coordinates (147.52438354492188, 27.109756469726562)
+fire detected, coordinates (134.07142639160156, 12.5)
+fire detected, coordinates (115.56977081298828, 1.1279069185256958)
+fire detected, coordinates (71.9186019897461, 8.569766998291016)
+fire detected, coordinates (59.617645263671875, 4.205882549285889)
+fire detected, coordinates (51.5, 7.5)
+fire detected, coordinates (50.0, 11.0)
+fire detected, coordinates (55.264705657958984, 11.617647171020508)
+fire detected, coordinates (66.375, 11.4375)
+fire detected, coordinates (77.20587921142578, 13.264705657958984)
+fire detected, coordinates (84.13157653808594, 16.394737243652344)
+Target reached! New target:  [24.0, 14.0]
+fire detected, coordinates (89.0, 20.5)
+Target reached! New target:  [8.0, 16.0]
+fire detected, coordinates (91.3431396484375, 24.04901885986328)
+fire detected, coordinates (92.89024353027344, 28.475608825683594)
+fire detected, coordinates (93.66666412353516, 31.77777862548828)
+fire detected, coordinates (93.61764526367188, 35.264705657958984)
+fire detected, coordinates (94.0, 39.0)
+fire detected, coordinates (94.125, 42.625)
+fire detected, coordinates (142.26470947265625, 2.2058823108673096)
+fire detected, coordinates (93.95098114013672, 46.343135833740234)
+fire detected, coordinates (93.625, 49.875)
+fire detected, coordinates (133.4130401611328, 1.39130437374115)
+fire detected, coordinates (93.5, 53.5)
+fire detected, coordinates (93.3125, 57.0)
+Water dropped on fire target: [14.0, 8.0] at position [22.713696934115212, 8.079706829303673]
+fire detected, coordinates (104.56977081298828, 1.1279069185256958)
+INFO: fire: Terminating.
+INFO: spot: Terminating.
+INFO: autonomous_mavic: Terminating.
+INFO: autonomous_mavic: Terminating.
+INFO: autonomous_mavic: Terminating.
+INFO: autonomous_mavic: Terminating.
+WARNING: fire: The process crashed some time after starting successfully.
+WARNING: 'fire' controller crashed.
+WARNING: spot: The process crashed some time after starting successfully.
+WARNING: 'spot' controller crashed.
+WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+WARNING: 'autonomous_mavic' controller crashed.
+WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+WARNING: 'autonomous_mavic' controller crashed.

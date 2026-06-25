@@ -1,6 +1,6 @@
 # Mission Log Analysis
 
-Generated: 2026-06-14 18:35:18.012919
+Generated: 2026-06-25 17:12:51.757355
 
 Analyzed log: `assignment_docs/results/stability_repeat_01.log`
 
@@ -8,42 +8,50 @@ Analyzed log: `assignment_docs/results/stability_repeat_01.log`
 
 | Metric | Count |
 |---|---:|
-| Controller Starts | 4 |
+| Controller Starts | 6 |
 | Wildfires Started | 1 |
-| Fire Detections | 107 |
-| Water Drops | 5 |
-| Targets Reached | 4 |
+| Fire Detections | 114 |
+| Water Drops | 7 |
+| Targets Reached | 30 |
 | Mission Errors | 0 |
 | Mission Crashes | 0 |
-| Shutdown Artifacts | 0 |
+| Shutdown Artifacts | 16 |
 
 ## Water Drop Events
 
-- Water dropped on fire target: [21.0, 21.0] at position [23.794858383179854, 14.105823967883152]
-- Water dropped on fire target: [21.0, 21.0] at position [20.448733791777556, 12.623512583610333]
-- Water dropped on fire target: [21.0, 11.0] at position [18.91635315340205, 11.815239071353206]
-- Water dropped on fire target: [11.0, 21.0] at position [11.213373449796205, 22.646858585306937]
-- Water dropped on fire target: [11.0, 21.0] at position [11.643513917160462, 23.85277083779981]
+- Water dropped on fire target: [14.0, 8.0] at position [8.881579635271075, 6.992460167385666]
+- Water dropped on fire target: [8.0, 16.0] at position [8.214209195880812, 16.322203452824905]
+- Water dropped on fire target: [6.0, 24.0] at position [12.703987890812115, 22.388236797788995]
+- Water dropped on fire target: [24.0, 6.0] at position [19.553313980897876, 9.163602252965935]
+- Water dropped on fire target: [14.0, 22.0] at position [11.409149794688261, 19.73397619789602]
+- Water dropped on fire target: [16.0, 8.0] at position [19.658493568429186, 8.530671134664956]
+- Water dropped on fire target: [14.0, 8.0] at position [22.713696934115212, 8.079706829303673]
 
 ## First 10 Fire Detection Events
 
-- fire detected, coordinates (163.0, 0.5)
-- fire detected, coordinates (153.0, 1.0)
-- fire detected, coordinates (103.38888549804688, 5.796296119689941)
-- fire detected, coordinates (94.9800033569336, 2.5799999237060547)
-- fire detected, coordinates (90.5, 8.399999618530273)
-- fire detected, coordinates (89.0, 15.0)
-- fire detected, coordinates (87.68181610107422, 21.772727966308594)
-- fire detected, coordinates (87.5, 28.399999618530273)
-- fire detected, coordinates (87.64286041259766, 35.880950927734375)
-- fire detected, coordinates (87.18965148925781, 42.568965911865234)
+- fire detected, coordinates (83.36206817626953, 53.39655303955078)
+- fire detected, coordinates (82.9375, 50.3125)
+- fire detected, coordinates (82.5, 52.0)
+- fire detected, coordinates (82.25, 54.375)
+- fire detected, coordinates (82.26470947265625, 57.382354736328125)
+- fire detected, coordinates (158.0, 20.5)
+- fire detected, coordinates (156.0, 6.8214287757873535)
+- fire detected, coordinates (89.5, 2.5)
+- fire detected, coordinates (89.5, 6.0)
+- fire detected, coordinates (89.25, 10.5)
 
 ## First 10 Target Navigation Events
 
-- Target reached! New target:  [21.0, 11.0]
-- Target reached! New target:  [21.0, 21.0]
-- Target reached! New target:  [11.0, 21.0]
-- Target reached! New target:  [11.0, 21.0]
+- Target reached! New target:  [14.0, 22.0]
+- Target reached! New target:  [14.0, 8.0]
+- Target reached! New target:  [16.0, 22.0]
+- Target reached! New target:  [14.0, 16.0]
+- Target reached! New target:  [16.0, 8.0]
+- Target reached! New target:  [16.0, 14.0]
+- Target reached! New target:  [16.0, 16.0]
+- Target reached! New target:  [14.0, 14.0]
+- Target reached! New target:  [8.0, 16.0]
+- Target reached! New target:  [24.0, 14.0]
 
 ## Mission Error Lines
 
@@ -55,4 +63,19 @@ Analyzed log: `assignment_docs/results/stability_repeat_01.log`
 
 ## Shutdown Artifacts
 
-- No shutdown artifacts found.
+- WARNING: fire: The process crashed some time after starting successfully.
+- WARNING: 'fire' controller crashed.
+- WARNING: spot: The process crashed some time after starting successfully.
+- WARNING: 'spot' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.
+- WARNING: fire: The process crashed some time after starting successfully.
+- WARNING: 'fire' controller crashed.
+- WARNING: spot: The process crashed some time after starting successfully.
+- WARNING: 'spot' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.

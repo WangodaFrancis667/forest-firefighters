@@ -1,6 +1,6 @@
 # Mission Log Analysis
 
-Generated: 2026-06-14 19:36:17.794286
+Generated: 2026-06-25 18:23:40.465116
 
 Analyzed log: `assignment_docs/results/final_demo_test.log`
 
@@ -8,42 +8,49 @@ Analyzed log: `assignment_docs/results/final_demo_test.log`
 
 | Metric | Count |
 |---|---:|
-| Controller Starts | 4 |
+| Controller Starts | 6 |
 | Wildfires Started | 1 |
-| Fire Detections | 46 |
-| Water Drops | 4 |
-| Targets Reached | 5 |
+| Fire Detections | 120 |
+| Water Drops | 6 |
+| Targets Reached | 31 |
 | Mission Errors | 0 |
 | Mission Crashes | 0 |
-| Shutdown Artifacts | 3 |
+| Shutdown Artifacts | 0 |
 
 ## Water Drop Events
 
-- Water dropped on fire target: [21.0, 21.0] at position [15.770372604195895, 19.399643345928922]
-- Water dropped on fire target: [21.0, 21.0] at position [15.436282477583134, 22.59061880156107]
-- Water dropped on fire target: [21.0, 11.0] at position [19.09153617946591, 9.157047926836412]
-- Water dropped on fire target: [11.0, 21.0] at position [11.419108145300434, 16.187716614638667]
+- Water dropped on fire target: [16.0, 8.0] at position [21.289452417519673, 11.2556115642895]
+- Water dropped on fire target: [16.0, 8.0] at position [15.007593697398178, 8.145991683651447]
+- Water dropped on fire target: [10.0, 10.0] at position [6.083392994697495, 8.722327986671214]
+- Water dropped on fire target: [14.0, 16.0] at position [11.013657868172913, 16.760804436253682]
+- Water dropped on fire target: [16.0, 8.0] at position [20.273994298165277, 8.139358511141323]
+- Water dropped on fire target: [24.0, 16.0] at position [20.136412706759312, 14.801279931873625]
 
 ## First 10 Fire Detection Events
 
-- fire detected, coordinates (2.0, 7.0)
-- fire detected, coordinates (7.0, 6.0)
-- fire detected, coordinates (64.5, 1.0)
-- fire detected, coordinates (96.5, 2.6666667461395264)
-- fire detected, coordinates (102.0, 2.0)
-- fire detected, coordinates (103.44117736816406, 7.5)
-- fire detected, coordinates (104.13157653808594, 16.973684310913086)
-- fire detected, coordinates (103.9300537109375, 27.199481964111328)
-- fire detected, coordinates (103.58695983886719, 37.71739196777344)
-- fire detected, coordinates (103.41150665283203, 48.446903228759766)
+- fire detected, coordinates (111.94444274902344, 11.277777671813965)
+- fire detected, coordinates (111.56451416015625, 4.661290168762207)
+- fire detected, coordinates (91.5, 5.5)
+- fire detected, coordinates (80.0, 10.5)
+- fire detected, coordinates (77.56521606445312, 2.7391304969787598)
+- fire detected, coordinates (76.0, 5.0)
+- fire detected, coordinates (74.5, 7.5)
+- fire detected, coordinates (73.875, 10.375)
+- fire detected, coordinates (73.5, 12.5)
+- fire detected, coordinates (73.09677124023438, 15.77419376373291)
 
 ## First 10 Target Navigation Events
 
-- Target reached! New target:  [21.0, 11.0]
-- Target reached! New target:  [11.0, 21.0]
-- Target reached! New target:  [21.0, 21.0]
-- Target reached! New target:  [11.0, 11.0]
-- Target reached! New target:  [11.0, 21.0]
+- Target reached! New target:  [14.0, 22.0]
+- Target reached! New target:  [14.0, 8.0]
+- Target reached! New target:  [16.0, 22.0]
+- Target reached! New target:  [14.0, 16.0]
+- Target reached! New target:  [16.0, 8.0]
+- Target reached! New target:  [16.0, 16.0]
+- Target reached! New target:  [14.0, 14.0]
+- Target reached! New target:  [8.0, 16.0]
+- Target reached! New target:  [24.0, 16.0]
+- Target reached! New target:  [10.0, 20.0]
 
 ## Mission Error Lines
 
@@ -55,6 +62,4 @@ Analyzed log: `assignment_docs/results/final_demo_test.log`
 
 ## Shutdown Artifacts
 
-- [1503:1503:0614/191653.774791:ERROR:zygote_communication_linux.cc(281)] Failed to send GetTerminationStatus message to zygote
-- [1503:1503:0614/191653.805624:ERROR:network_service_instance_impl.cc(262)] Network service crashed, restarting service.
-- [1503:1503:0614/191653.805624:ERROR:network_service_instance_impl.cc(262)] Network service crashed, restarting service.
+- No shutdown artifacts found.

@@ -1,6 +1,6 @@
 # Mission Log Analysis
 
-Generated: 2026-06-19 20:18:54.384447
+Generated: 2026-06-25 17:00:06.796771
 
 Analyzed log: `assignment_docs/results/stability_test_01.log`
 
@@ -8,36 +8,41 @@ Analyzed log: `assignment_docs/results/stability_test_01.log`
 
 | Metric | Count |
 |---|---:|
-| Controller Starts | 8 |
+| Controller Starts | 6 |
 | Wildfires Started | 1 |
-| Fire Detections | 23 |
-| Water Drops | 2 |
-| Targets Reached | 0 |
+| Fire Detections | 7 |
+| Water Drops | 1 |
+| Targets Reached | 37 |
 | Mission Errors | 0 |
 | Mission Crashes | 0 |
 | Shutdown Artifacts | 0 |
 
 ## Water Drop Events
 
-- Water dropped on fire target: [6.0, 18.0] at position [7.00288818772569, 24.255265450648977]
-- Water dropped on fire target: [12.0, 26.0] at position [7.6758817176037955, 24.60318286618882]
+- Water dropped on fire target: [14.0, 22.0] at position [14.322413143955716, 21.434194426348864]
 
 ## First 10 Fire Detection Events
 
-- fire detected, coordinates (103.5, 161.375)
-- fire detected, coordinates (55.0, 101.0)
-- fire detected, coordinates (102.76087188720703, 176.4130401611328)
-- fire detected, coordinates (54.02631759643555, 101.7631607055664)
-- fire detected, coordinates (102.12963104248047, 175.90740966796875)
-- fire detected, coordinates (55.0, 90.83333587646484)
-- fire detected, coordinates (101.0, 172.5)
-- fire detected, coordinates (61.3684196472168, 76.2631607055664)
-- fire detected, coordinates (100.3828125, 168.296875)
-- fire detected, coordinates (73.13636016845703, 56.5)
+- fire detected, coordinates (98.5, 43.0)
+- fire detected, coordinates (98.6568603515625, 40.04901885986328)
+- fire detected, coordinates (99.5, 41.5)
+- fire detected, coordinates (99.26470947265625, 45.382354736328125)
+- fire detected, coordinates (99.5, 49.0)
+- fire detected, coordinates (100.17646789550781, 53.411766052246094)
+- fire detected, coordinates (100.0, 58.0)
 
 ## First 10 Target Navigation Events
 
-- No target navigation event found.
+- Target reached! New target:  [14.0, 22.0]
+- Target reached! New target:  [14.0, 8.0]
+- Target reached! New target:  [16.0, 22.0]
+- Target reached! New target:  [16.0, 8.0]
+- Target reached! New target:  [14.0, 16.0]
+- Target reached! New target:  [16.0, 14.0]
+- Target reached! New target:  [16.0, 16.0]
+- Target reached! New target:  [14.0, 14.0]
+- Target reached! New target:  [8.0, 16.0]
+- Target reached! New target:  [24.0, 14.0]
 
 ## Mission Error Lines
 

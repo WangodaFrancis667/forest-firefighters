@@ -1,6 +1,6 @@
 # Mission Log Analysis
 
-Generated: 2026-06-14 18:35:18.034016
+Generated: 2026-06-25 17:25:39.952453
 
 Analyzed log: `assignment_docs/results/stability_repeat_02.log`
 
@@ -8,44 +8,47 @@ Analyzed log: `assignment_docs/results/stability_repeat_02.log`
 
 | Metric | Count |
 |---|---:|
-| Controller Starts | 4 |
+| Controller Starts | 6 |
 | Wildfires Started | 1 |
-| Fire Detections | 79 |
-| Water Drops | 7 |
-| Targets Reached | 4 |
+| Fire Detections | 75 |
+| Water Drops | 4 |
+| Targets Reached | 16 |
 | Mission Errors | 0 |
-| Mission Crashes | 2 |
-| Shutdown Artifacts | 3 |
+| Mission Crashes | 0 |
+| Shutdown Artifacts | 16 |
 
 ## Water Drop Events
 
-- Water dropped on fire target: [21.0, 21.0] at position [12.782794413681394, 6.999994390678038]
-- Water dropped on fire target: [11.0, 11.0] at position [13.183031926637216, 5.572997468881416]
-- Water dropped on fire target: [11.0, 11.0] at position [8.234405678078549, 15.520623720333582]
-- Water dropped on fire target: [11.0, 21.0] at position [11.78940612059259, 22.317166276341737]
-- Water dropped on fire target: [11.0, 21.0] at position [10.704325530748788, 22.910800712787736]
-- Water dropped on fire target: [11.0, 11.0] at position [9.875112647640965, 8.505020542072105]
-- Water dropped on fire target: [21.0, 11.0] at position [17.31715436286507, 13.080417291056916]
+- Water dropped on fire target: [14.0, 22.0] at position [7.658340664461708, 23.818107085375846]
+- Water dropped on fire target: [14.0, 14.0] at position [15.060641449441038, 7.784394576297815]
+- Water dropped on fire target: [8.0, 16.0] at position [8.221974657115485, 16.27422020022912]
+- Water dropped on fire target: [20.0, 20.0] at position [21.28175100295724, 19.883511710625243]
 
 ## First 10 Fire Detection Events
 
-- fire detected, coordinates (115.0, 32.5)
-- fire detected, coordinates (116.0, 32.5)
-- fire detected, coordinates (131.7941131591797, 39.735294342041016)
-- fire detected, coordinates (116.32257843017578, 37.51612854003906)
-- fire detected, coordinates (126.0, 35.0)
-- fire detected, coordinates (116.87349700927734, 42.909637451171875)
-- fire detected, coordinates (109.5, 33.5)
-- fire detected, coordinates (116.85713958740234, 48.92856979370117)
-- fire detected, coordinates (95.0, 37.5)
-- fire detected, coordinates (117.21739196777344, 54.565216064453125)
+- fire detected, coordinates (52.44736862182617, 145.1842041015625)
+- fire detected, coordinates (41.20588302612305, 142.61764526367188)
+- fire detected, coordinates (32.0, 154.5)
+- fire detected, coordinates (20.245454788208008, 144.42727661132812)
+- fire detected, coordinates (9.754545211791992, 127.5727310180664)
+- fire detected, coordinates (3.534482717514038, 105.37931060791016)
+- fire detected, coordinates (4.5, 79.0)
+- fire detected, coordinates (13.0, 45.83333206176758)
+- fire detected, coordinates (29.962499618530273, 15.149999618530273)
+- fire detected, coordinates (53.5, 2.25)
 
 ## First 10 Target Navigation Events
 
-- Target reached! New target:  [11.0, 21.0]
-- Target reached! New target:  [11.0, 11.0]
-- Target reached! New target:  [21.0, 11.0]
-- Target reached! New target:  [21.0, 21.0]
+- Target reached! New target:  [14.0, 22.0]
+- Target reached! New target:  [14.0, 8.0]
+- Target reached! New target:  [16.0, 22.0]
+- Target reached! New target:  [16.0, 8.0]
+- Target reached! New target:  [16.0, 14.0]
+- Target reached! New target:  [16.0, 16.0]
+- Target reached! New target:  [14.0, 14.0]
+- Target reached! New target:  [14.0, 16.0]
+- Target reached! New target:  [24.0, 16.0]
+- Target reached! New target:  [8.0, 16.0]
 
 ## Mission Error Lines
 
@@ -53,11 +56,23 @@ Analyzed log: `assignment_docs/results/stability_repeat_02.log`
 
 ## Mission Crash Lines
 
-- WARNING: fire: The process crashed some time after starting successfully.
-- WARNING: 'fire' controller crashed.
+- No mission crash lines found.
 
 ## Shutdown Artifacts
 
-- [903:903:0614/182136.602149:ERROR:zygote_communication_linux.cc(281)] Failed to send GetTerminationStatus message to zygote
-- [903:903:0614/182136.634030:ERROR:network_service_instance_impl.cc(262)] Network service crashed, restarting service.
-- [903:903:0614/182136.634030:ERROR:network_service_instance_impl.cc(262)] Network service crashed, restarting service.
+- WARNING: fire: The process crashed some time after starting successfully.
+- WARNING: 'fire' controller crashed.
+- WARNING: spot: The process crashed some time after starting successfully.
+- WARNING: 'spot' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.
+- WARNING: fire: The process crashed some time after starting successfully.
+- WARNING: 'fire' controller crashed.
+- WARNING: spot: The process crashed some time after starting successfully.
+- WARNING: 'spot' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.
+- WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+- WARNING: 'autonomous_mavic' controller crashed.
