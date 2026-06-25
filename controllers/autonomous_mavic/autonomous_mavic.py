@@ -25,10 +25,10 @@ class Mavic (Robot):
     K_ROLL_P = 50.0           # P constant of the roll PID.
     K_PITCH_P = 30.0          # P constant of the pitch PID.
 
-    MAX_YAW_DISTURBANCE = 0.65
-    MAX_PITCH_DISTURBANCE = -1.35
+    MAX_YAW_DISTURBANCE = 0.4
+    MAX_PITCH_DISTURBANCE = -1
     # Precision between the target position and the robot position in meters
-    target_precision = 0.8
+    target_precision = 0.5
 
     def __init__(self):
         Robot.__init__(self)
@@ -206,7 +206,7 @@ class Mavic (Robot):
         yaw = (self.current_pose[5] + 2*np.pi) % (2*np.pi)
         self.world_fire_quadrants = [0, 0]
 
-        center_tolerance = 40
+        center_tolerance = 20
         if abs(x_img - resolutionX / 2) > center_tolerance:
             self.world_fire_quadrants[0] = np.sign(x_img - resolutionX / 2)
         if abs(y_img - resolutionY / 2) > center_tolerance:
@@ -222,7 +222,7 @@ class Mavic (Robot):
             abs(y_img - resolutionY / 2), 0, abs(self.MAX_PITCH_DISTURBANCE))
 
         if self.world_fire_quadrants == [0, 0]:
-            self.water_to_drop = 25
+            self.water_to_drop = 15
             if verbose:
                 print("Water dropped on fire target: {} at position {}".format(
                     self.target_position[0:2], self.current_pose[0:2]))
@@ -324,8 +324,11 @@ class Mavic (Robot):
         for obj in objects:
             # getModel() / get_model() returns the PROTO 'model' field
             model = self.call_recognition_method(obj, "getModel", "get_model")
-            if model and ('fire' in model.lower() or 'smoke' in model.lower()):
-                fire_objects.append(obj)
+            if model:
+                if isinstance(model, bytes):
+                    model = model.decode('utf-8', errors='ignore')
+                if 'fire' in model.lower() or 'smoke' in model.lower():
+                    fire_objects.append(obj)
         return fire_objects
 
     def fire_detection(self, verbose=True, required_confirmations=3):
