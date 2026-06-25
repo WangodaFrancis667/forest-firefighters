@@ -1,66 +1,84 @@
 Info: Sandboxing disabled by user.
 INFO: fire: Starting controller: python3 -u fire.py
 INFO: spot: Starting controller: python3 -u spot.py
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=5 5, 14 5, 14 14, 5 14" --detection_interval=0.5
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=5 16, 14 16, 14 27, 5 27" --detection_interval=0.5
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=16 5, 27 5, 27 14, 16 14" --detection_interval=0.5
-INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=16 16, 27 16, 27 27, 16 27" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=5 5, 14 5, 14 14, 5 14" --detection_interval=1.0 --detection_start_delay=10 --fire_confirmations=3
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=5 16, 14 16, 14 27, 5 27" --detection_interval=1.0 --detection_start_delay=10 --fire_confirmations=3
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=16 5, 27 5, 27 14, 16 14" --detection_interval=1.0 --detection_start_delay=10 --fire_confirmations=3
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=16 16, 27 16, 27 27, 16 27" --detection_interval=1.0 --detection_start_delay=10 --fire_confirmations=3
 Starting wildfire in a forest of 27 sassafras trees.
-Spot patrol active. Press 'D' to throw water from Spot.
-WARNING: Smoke (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
-Traceback (most recent call last):
-  File "autonomous_mavic.py", line 428, in <module>
-    robot.run()
-  File "autonomous_mavic.py", line 394, in run
-    self.img_coord_fire = self.fire_detection()
-  File "autonomous_mavic.py", line 265, in fire_detection
-    model = (obj.getModel() or "").lower()
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
-    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
-    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
-AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
+Spot support active in stable posture. Press 'D' to throw water from Spot.
 First target:  [16.0, 16.0]
-WARNING: 'autonomous_mavic' controller exited with status: 1.
-Traceback (most recent call last):
-  File "autonomous_mavic.py", line 428, in <module>
-    robot.run()
-  File "autonomous_mavic.py", line 394, in run
-    self.img_coord_fire = self.fire_detection()
-  File "autonomous_mavic.py", line 265, in fire_detection
-    model = (obj.getModel() or "").lower()
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
-    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
-    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
-AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
 First target:  [5.0, 16.0]
-WARNING: 'autonomous_mavic' controller exited with status: 1.
-Traceback (most recent call last):
-  File "autonomous_mavic.py", line 428, in <module>
-    robot.run()
-  File "autonomous_mavic.py", line 394, in run
-    self.img_coord_fire = self.fire_detection()
-  File "autonomous_mavic.py", line 265, in fire_detection
-    model = (obj.getModel() or "").lower()
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
-    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
-    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
-AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
 First target:  [5.0, 5.0]
-WARNING: 'autonomous_mavic' controller exited with status: 1.
-Traceback (most recent call last):
-  File "autonomous_mavic.py", line 428, in <module>
-    robot.run()
-  File "autonomous_mavic.py", line 394, in run
-    self.img_coord_fire = self.fire_detection()
-  File "autonomous_mavic.py", line 265, in fire_detection
-    model = (obj.getModel() or "").lower()
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
-    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
-  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
-    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
-AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
 First target:  [16.0, 5.0]
+Target reached! New target:  [14.0, 5.0]
+Target reached! New target:  [14.0, 16.0]
+Target reached! New target:  [27.0, 16.0]
+Target reached! New target:  [27.0, 5.0]
+Traceback (most recent call last):
+  File "autonomous_mavic.py", line 476, in <module>
+    robot.run()
+  File "autonomous_mavic.py", line 441, in run
+    self.img_coord_fire = self.fire_detection(
+  File "autonomous_mavic.py", line 364, in fire_detection
+    confirmed = self.confirm_fire_candidate(
+  File "autonomous_mavic.py", line 282, in confirm_fire_candidate
+    self.pending_fire_coord = [float(coord_fire[0]), float(coord_fire[1])]
+IndexError: list index out of range
 WARNING: 'autonomous_mavic' controller exited with status: 1.
+Target reached! New target:  [14.0, 14.0]
+Traceback (most recent call last):
+  File "autonomous_mavic.py", line 476, in <module>
+    robot.run()
+  File "autonomous_mavic.py", line 441, in run
+    self.img_coord_fire = self.fire_detection(
+  File "autonomous_mavic.py", line 364, in fire_detection
+    confirmed = self.confirm_fire_candidate(
+  File "autonomous_mavic.py", line 282, in confirm_fire_candidate
+    self.pending_fire_coord = [float(coord_fire[0]), float(coord_fire[1])]
+IndexError: list index out of range
+WARNING: 'autonomous_mavic' controller exited with status: 1.
+Target reached! New target:  [14.0, 27.0]
+fire detected, coordinates (12.073770523071289, 114.82786560058594)
+fire detected, coordinates (35.39361572265625, 125.03191375732422)
+fire detected, coordinates (59.5, 147.1666717529297)
+fire detected, coordinates (83.0, 156.0)
+fire detected, coordinates (93.5, 158.5)
+Traceback (most recent call last):
+  File "autonomous_mavic.py", line 476, in <module>
+    robot.run()
+  File "autonomous_mavic.py", line 441, in run
+    self.img_coord_fire = self.fire_detection(
+  File "autonomous_mavic.py", line 364, in fire_detection
+    confirmed = self.confirm_fire_candidate(
+  File "autonomous_mavic.py", line 274, in confirm_fire_candidate
+    np.array(coord_fire) - np.array(self.pending_fire_coord))
+ValueError: operands could not be broadcast together with shapes (0,) (2,) 
+WARNING: 'autonomous_mavic' controller exited with status: 1.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+Target reached! New target:  [5.0, 27.0]
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: Fire (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+WARNING: fire: The process crashed some time after starting successfully.
+WARNING: 'fire' controller crashed.
+WARNING: spot: The process crashed some time after starting successfully.
+WARNING: 'spot' controller crashed.
+WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+WARNING: 'autonomous_mavic' controller crashed.
+[1179:1179:0625/091830.099630:ERROR:network_service_instance_impl.cc(262)] Network service crashed, restarting service.
+[1179:1179:0625/091830.251836:ERROR:zygote_communication_linux.cc(281)] Failed to send GetTerminationStatus message to zygote
+Warning: QXcbConnection: XCB error: 3 (BadWindow), sequence: 13059, resource id: 2097305, major code: 40 (TranslateCoords), minor code: 0
