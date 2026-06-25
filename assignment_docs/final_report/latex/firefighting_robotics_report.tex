@@ -67,7 +67,7 @@ The implementation was executed in a stable Webots R2021b Docker environment wit
 This ensured that all later results measured mission behaviour rather than incorrect spawn placement.
 
 \section{System Architecture}
-The system is organised as a closed-loop multi-robot firefighting pipeline. The Webots world provides terrain, fire propagation, smoke, robot bodies, sensors, and the water-drop mechanism. The four Mavic drones provide aerial coverage, camera perception, GPS localisation, and stabilised flight. The Spot-like ground robot remains active as a support platform with a simple gait loop and keyboard-triggered water burst.
+The system is organised as a closed-loop multi-robot firefighting pipeline. The Webots world provides terrain, fire propagation, smoke, robot bodies, sensors, and the water-drop mechanism. The four Mavic drones provide aerial coverage, camera perception, GPS localisation, and stabilised flight. The Spot-like ground robot remains active as a stable support platform with a keyboard-triggered water burst.
 
 \begin{figure}[H]
 \centering
@@ -88,7 +88,7 @@ The system is organised as a closed-loop multi-robot firefighting pipeline. The 
 
 \node[process] (vision) at (-6.25,-4.75) {Camera + Recognition\\tree boxes};
 \node[process] (state) at (-2.45,-4.75) {GPS, IMU, Gyro\\state estimate};
-\node[process] (gait) at (2.45,-4.75) {Spot Gait Loop\\continuous motion};
+\node[process] (posture) at (2.45,-4.75) {Stable Spot Posture\\support mode};
 \node[process] (manual) at (6.25,-4.75) {Keyboard Water Burst\\operator support};
 
 \node[action] (detect) at (-4.35,-6.25) {OpenCV HSV Detection\\fire/smoke box + red display flash};
@@ -102,12 +102,12 @@ The system is organised as a closed-loop multi-robot firefighting pipeline. The 
 
 \draw[arrow] (mavic) -- (vision);
 \draw[arrow] (mavic) -- (state);
-\draw[arrow] (spot) -- (gait);
+\draw[arrow] (spot) -- (posture);
 \draw[arrow] (spot) -- (manual);
 
 \draw[arrow] (vision) -- (detect);
 \draw[arrow] (state) -- (nav);
-\draw[arrow] (gait) -- (drop);
+\draw[arrow] (posture) -- (drop);
 \draw[arrow] (manual) -- (drop);
 \draw[arrow] (detect) -- (nav);
 \draw[arrow] (drop) -- (nav);
@@ -130,13 +130,13 @@ The Mavic drone is controlled using four propeller motors. The controller comput
 Each drone receives patrol coordinates through controller arguments in the world file. The controller stores these coordinates as a waypoint list. During flight, the drone compares its GPS position with the current target waypoint. When it reaches the waypoint within the precision threshold, it automatically switches to the next target. This implements continuous patrol of the forest area.
 
 \subsection{Camera-Based Fire and Smoke Detection}
-The onboard camera captures a downward-facing image. The image is converted into an OpenCV-compatible format and then transformed into HSV colour space. A colour threshold isolates bright low-saturation smoke/fire regions. Contours are extracted from the binary mask, and the largest valid contour is selected as the active fire target. The output is an image coordinate $(x,y)$ used by the approach controller.
+The onboard camera captures a downward-facing image. The image is converted into an OpenCV-compatible format and then transformed into HSV colour space. A colour threshold isolates bright low-saturation smoke regions, avoiding the orange and brown terrain colours that previously caused false fire detections. Contours are extracted from the binary mask, and the largest valid contour is only accepted after repeated confirmation across consecutive frames. The output is an image coordinate $(x,y)$ used by the approach controller.
 
 \subsection{Fire Approach and Water Drop}
 After a fire is detected, the controller compares the detected image coordinate with the centre of the camera frame. If the fire is not centred, yaw and pitch disturbances guide the drone toward it. When the fire is centred below the drone, the controller triggers a water-drop command using the drone custom data field. The drone then clears the current target and continues the patrol loop, allowing it to respond to additional propagated fires.
 
 \subsection{Spot Ground Robot Support}
-The Spot-like robot is retained from the original project baseline as a ground support robot. Its controller keeps it alive for the full mission, cycles a simple gait, and accepts a keyboard-triggered water burst. In the final architecture, Spot is not the main search platform; it provides visible legged-robot integration and a secondary water-delivery path while the Mavic drones perform wide-area patrol and visual detection.
+The Spot-like robot is retained from the original project baseline as a ground support robot. Its controller keeps it alive for the full mission, holds a stable support posture, and accepts a keyboard-triggered water burst. In the final architecture, Spot is not the main search platform; it provides visible legged-robot integration and a secondary water-delivery path while the Mavic drones perform wide-area patrol and visual detection.
 
 \section{Performance Results}
 Three repeated mission tests were executed after the launch-position preflight check passed. The first repeat was the cleanest run and is used as the primary demonstration result.

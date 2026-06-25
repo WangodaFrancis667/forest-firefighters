@@ -24,6 +24,7 @@ mission_failure_patterns = [
     r"WARNING:.*controller exited with status:\s*[1-9]",
     r"WARNING:.*controller crashed",
     r"WARNING:.*process crashed",
+    r"Segmentation fault",
 ]
 
 shutdown_artifact_patterns = [
@@ -52,7 +53,7 @@ raw_error_lines = [
 
 raw_crash_lines = [
     line for line in lines
-    if re.search(r"crashed", line, flags=re.IGNORECASE)
+    if re.search(r"crashed|Segmentation fault", line, flags=re.IGNORECASE)
 ]
 
 shutdown_artifact_lines = [

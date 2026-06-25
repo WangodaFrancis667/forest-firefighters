@@ -36,6 +36,9 @@ for index, block in enumerate(mavic_blocks, start=1):
     controller = re.search(r'controller\s+"([^"]+)"', block)
     patrol_coords = re.search(r'--patrol_coords=([^"]+)', block)
     target_altitude = re.search(r'--target_altitude=([0-9.\-]+)', block)
+    detection_interval = re.search(r'--detection_interval=([0-9.\-]+)', block)
+    detection_start_delay = re.search(r'--detection_start_delay=([0-9.\-]+)', block)
+    fire_confirmations = re.search(r'--fire_confirmations=([0-9]+)', block)
 
     if not translation:
         errors.append(fail(f"Mavic {index}: missing translation."))
@@ -63,6 +66,18 @@ for index, block in enumerate(mavic_blocks, start=1):
         errors.append(fail(f"Mavic {index}: missing --target_altitude argument."))
     elif float(target_altitude.group(1)) < 40:
         errors.append(fail(f"Mavic {index}: target altitude must be at least 40 m to start the wildfire."))
+    if not detection_interval:
+        errors.append(fail(f"Mavic {index}: missing --detection_interval argument."))
+    elif float(detection_interval.group(1)) < 1.0:
+        errors.append(fail(f"Mavic {index}: detection interval must be at least 1.0 s for the RTX A1000 profile."))
+    if not detection_start_delay:
+        errors.append(fail(f"Mavic {index}: missing --detection_start_delay argument."))
+    elif float(detection_start_delay.group(1)) < 8.0:
+        errors.append(fail(f"Mavic {index}: detection start delay must be at least 8 s to avoid launch-time false positives."))
+    if not fire_confirmations:
+        errors.append(fail(f"Mavic {index}: missing --fire_confirmations argument."))
+    elif int(fire_confirmations.group(1)) < 3:
+        errors.append(fail(f"Mavic {index}: fire confirmations must be at least 3 frames."))
 
     if 'Display {' not in block or 'name "vision overlay"' not in block:
         errors.append(fail(f"Mavic {index}: missing vision overlay Display."))
@@ -86,7 +101,7 @@ if errors:
 
 print("\nPREFLIGHT PASSED")
 print("- 4 autonomous drones configured across SW, NW, SE, and NE quadrants")
-print("- Each drone has patrol coordinates, 160x160 camera, recognition, and vision overlay")
+print("- Each drone has patrol coordinates, confirmed smoke detection, 160x160 camera, recognition, and vision overlay")
 print("- Fire supervisor and Spot controller are present")
 
 if warnings:

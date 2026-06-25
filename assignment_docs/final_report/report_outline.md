@@ -13,7 +13,7 @@ Autonomous Forest Firefighting Mission using Webots Robots
 - Webots world.
 - Fire controller.
 - Four Mavic drone controllers deployed across SW, NW, SE, and NE quadrants.
-- Spot-like ground robot as a support robot with continuous gait and keyboard-triggered water burst.
+- Spot-like ground robot as a stable support robot with keyboard-triggered water burst.
 - Each drone: camera, recognition overlay, GPS, IMU, gyro.
 - OpenCV perception and red fire/smoke overlays.
 - Water-drop mechanism through drone custom data and Spot support burst.

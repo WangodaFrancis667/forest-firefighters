@@ -275,7 +275,9 @@ Mavic2Pro {
   controllerArgs [
     "--target_altitude=42"
     "--patrol_coords=5 5, 14 5, 14 14, 5 14"
-    "--detection_interval=0.5"
+    "--detection_interval=1.0"
+    "--detection_start_delay=10"
+    "--fire_confirmations=3"
   ]
   customData "0"
   bodySlot [
@@ -307,7 +309,9 @@ Mavic2Pro {
   controllerArgs [
     "--target_altitude=42"
     "--patrol_coords=5 16, 14 16, 14 27, 5 27"
-    "--detection_interval=0.5"
+    "--detection_interval=1.0"
+    "--detection_start_delay=10"
+    "--fire_confirmations=3"
   ]
   customData "0"
   bodySlot [
@@ -340,7 +344,9 @@ Mavic2Pro {
   controllerArgs [
     "--target_altitude=42"
     "--patrol_coords=16 5, 27 5, 27 14, 16 14"
-    "--detection_interval=0.5"
+    "--detection_interval=1.0"
+    "--detection_start_delay=10"
+    "--fire_confirmations=3"
   ]
   customData "0"
   bodySlot [
@@ -372,7 +378,9 @@ Mavic2Pro {
   controllerArgs [
     "--target_altitude=42"
     "--patrol_coords=16 16, 27 16, 27 27, 16 27"
-    "--detection_interval=0.5"
+    "--detection_interval=1.0"
+    "--detection_start_delay=10"
+    "--fire_confirmations=3"
   ]
   customData "0"
   bodySlot [

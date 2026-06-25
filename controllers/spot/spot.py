@@ -30,7 +30,7 @@ class Spot (Robot):
             self.motors.append(motor)
 
         # Display manual control message.
-        print("Spot patrol active. Press 'D' to throw water from Spot.")
+        print("Spot support active in stable posture. Press 'D' to throw water from Spot.")
 
     def robotStep(self):
         if self.step(self.time_step) == -1:
@@ -87,22 +87,21 @@ class Spot (Robot):
                              0.40,  -0.90, 1.18]   # Rear right
         return self.movementDecomposition(motors_target_pos, duration)
 
-    def trotForward(self, duration):
-        gait = [
-            [-0.18, 0.18, -0.18, 0.18, 0.18, -0.18, 0.18, -0.18, -0.18, 0.18, -0.18, 0.18],
-            [0.18, -0.18, 0.18, -0.18, -0.18, 0.18, -0.18, 0.18, 0.18, -0.18, 0.18, -0.18],
-        ]
-        for motors_target_pos in gait:
-            if not self.movementDecomposition(motors_target_pos, duration):
-                return False
-        return True
+    def holdSupportPosture(self):
+        motors_target_pos = [-0.20, -0.40, -0.19,  # Front left leg
+                             0.20,  -0.40, -0.19,  # Front right leg
+                             -0.40, -0.90, 1.18,   # Rear left leg
+                             0.40,  -0.90, 1.18]   # Rear right
+        for i in range(self.NUMBER_OF_JOINTS):
+            self.motors[i].setPosition(motors_target_pos[i])
 
     def run(self):
-        if not self.standUp(1.5):
+        if not self.sitDown(1.5):
             return
 
         while True:
-            if not self.trotForward(0.35):
+            self.holdSupportPosture()
+            if not self.robotStep():
                 return
 
 

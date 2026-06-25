@@ -25,7 +25,7 @@ The active world uses:
 | Subsystem | Role |
 |---|---|
 | Four Mavic 2 Pro drones | Quadrant patrol, camera perception, visual approach, water drop |
-| Spot-like ground robot | Continuous gait demonstration and keyboard-triggered water burst |
+| Spot-like ground robot | Stable support posture and keyboard-triggered water burst |
 | Fire supervisor | Wind evolution, fire spread, active-fire cap, water extinction checks |
 | OpenCV perception | HSV smoke/fire segmentation and contour-based target selection |
 | Webots recognition overlays | Tree bounding boxes on drone camera displays |
@@ -54,7 +54,7 @@ The final configuration is intentionally not the largest fleet. It is the most p
 │   ├── autonomous_mavic/      # Four-drone patrol, OpenCV detection, overlay drawing
 │   ├── fire/                  # Wildfire supervisor, wind, propagation, extinction logic
 │   ├── mavic/                 # Manual Mavic example controller
-│   └── spot/                  # Spot gait loop and keyboard water burst
+│   └── spot/                  # Stable Spot support posture and keyboard water burst
 ├── protos/                    # Fire, smoke, tree, terrain, and water PROTO assets
 ├── worlds/
 │   └── forest_firefighters.wbt
@@ -163,7 +163,7 @@ In Webots:
 
 ### Spot Controller
 
-`controllers/spot/spot.py` keeps the Spot-like robot active for the full mission. It cycles a simple gait and uses the keyboard `D` command for a water burst. Spot is treated as a support robot, while the drones remain the primary search and response platform.
+`controllers/spot/spot.py` keeps the Spot-like robot active for the full mission. It holds a stable low support posture and uses the keyboard `D` command for a water burst. Spot is treated as a support robot, while the drones remain the primary search and response platform.
 
 ### Fire Supervisor
 

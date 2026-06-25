@@ -48,7 +48,7 @@ For locomotion, the drone uses four propeller motors. The controller calculates 
 
 GPS gives the current position and altitude, while the inertial unit and gyro provide orientation and angular velocity. This allows the drone to take off, stabilise at its target altitude, patrol between waypoints, and hover above detected fire targets before dropping water.
 
-The Spot robot remains active using a simple continuous gait loop and supports the mission with a keyboard-triggered water burst. This addresses the locomotion requirement with both aerial movement and a visible legged-robot component.
+The Spot robot remains active in a stable support posture and supports the mission with a keyboard-triggered water burst. This keeps the ground robot available during the demo without destabilising the Webots run, while the drones remain responsible for aerial locomotion and search.
 
 ---
 
