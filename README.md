@@ -27,11 +27,11 @@ The active world uses:
 | Four Mavic 2 Pro drones | Quadrant patrol, camera perception, visual approach, water drop |
 | Spot-like ground robot | Stable support posture and keyboard-triggered water burst |
 | Fire supervisor | Wind evolution, fire spread, active-fire cap, water extinction checks |
-| OpenCV perception | HSV smoke/fire segmentation and contour-based target selection |
-| Webots recognition overlays | Tree bounding boxes on drone camera displays |
+| OpenCV perception | Confirmed HSV smoke/fire segmentation and contour-based target selection |
+| Webots recognition overlays | Sparse tree boxes on drone camera displays |
 | Root-level tools | Preflight validation, timed mission runs, log analysis, result summaries |
 
-Each drone has a `vision overlay` display attached to its camera feed. During simulation, the display draws green tree boxes from Webots recognition, red smoke/fire boxes from OpenCV contours, and a red flash when fire is detected.
+Each drone has a `vision overlay` display attached to its camera feed. During simulation, Webots recognition is limited to a small number of tree boxes, while the controller reserves the manual overlay for red smoke/fire boxes and a red flash when fire is confirmed.
 
 ## Fleet Evolution
 
@@ -156,9 +156,9 @@ In Webots:
 
 - GPS waypoint patrol by quadrant.
 - Stabilized flight using GPS, IMU, gyro, and propeller motor control.
-- OpenCV HSV thresholding for smoke/fire detection.
+- OpenCV HSV thresholding for confirmed smoke/fire detection.
 - Contour-based target selection and red fire bounding boxes.
-- Tree bounding boxes through Webots camera recognition.
+- Sparse tree bounding boxes through Webots camera recognition.
 - Water drop through drone `customData`.
 
 ### Spot Controller
@@ -184,7 +184,7 @@ Manual Webots checks:
 
 - Four drones launch from separate quadrants.
 - Spot remains active for the full mission.
-- Drone overlays show tree boxes and fire/smoke boxes.
+- Drone overlays show sparse tree boxes and clear fire/smoke boxes.
 - Red overlay flash appears when fire/smoke is detected.
 - Drone water drops are logged after visual centering.
 - The simulation can run through the 5-8 minute mission window without a Webots segmentation fault.

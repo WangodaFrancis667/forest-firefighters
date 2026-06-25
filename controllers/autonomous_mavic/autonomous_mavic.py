@@ -72,6 +72,7 @@ class Mavic (Robot):
         self.pending_fire_coord = []
         self.pending_fire_bbox = None
         self.fire_confirmations = 0
+        self.tree_overlay_limit = 0
         self.WaterDropStatus = False
         self.debug_images = False
         self.display = self.get_optional_display()
@@ -245,15 +246,17 @@ class Mavic (Robot):
         self.display.setColor(0xFFFFFF)
         self.display.drawText(self.name, 6, 6)
 
-        if self.camera.hasRecognition():
+        if self.camera.hasRecognition() and self.tree_overlay_limit > 0:
+            tree_boxes = []
             for obj in self.camera.getRecognitionObjects():
                 box = self.get_recognition_box(obj, width, height)
                 if box is None:
                     continue
-                x, y, w, h = box
-                self.display.setColor(0x00FF66)
+                tree_boxes.append(box)
+            tree_boxes.sort(key=lambda item: item[2] * item[3], reverse=True)
+            for x, y, w, h in tree_boxes[:self.tree_overlay_limit]:
+                self.display.setColor(0x33CC66)
                 self.display.drawRectangle(x, y, w, h)
-                self.display.drawText("tree", x, max(0, y - 12))
 
         if self.fire_bbox:
             x, y, w, h = self.fire_bbox
@@ -269,6 +272,11 @@ class Mavic (Robot):
         self.fire_bbox = None
 
     def confirm_fire_candidate(self, coord_fire, fire_bbox, required_confirmations, verbose=True):
+        if not coord_fire or fire_bbox is None:
+            self.reset_fire_candidate()
+            self.draw_detection_overlay(False)
+            return []
+
         if self.pending_fire_coord:
             movement = np.linalg.norm(
                 np.array(coord_fire) - np.array(self.pending_fire_coord))
@@ -312,8 +320,8 @@ class Mavic (Robot):
         # reliable signal in this scene: bright, low-saturation blobs above the
         # forest. Temporal confirmation below prevents one-frame terrain flashes
         # from triggering water drops.
-        smoke_lower = np.array([0, 0, 190])
-        smoke_upper = np.array([179, 75, 255])
+        smoke_lower = np.array([0, 0, 180])
+        smoke_upper = np.array([179, 95, 255])
         mask_smoke = cv2.inRange(hsv, smoke_lower, smoke_upper)
         mask_fire = cv2.medianBlur(mask_smoke, 3)
         kernel = np.ones((3, 3), np.uint8)
@@ -322,7 +330,7 @@ class Mavic (Robot):
 
         fire_ratio = np.round(
             (cv2.countNonZero(mask_fire))/(img.size/3)*100, 2)
-        if 0.08 < fire_ratio < 20.0:
+        if 0.04 < fire_ratio < 20.0:
             coord_fire = []
             fire_bbox = None
             radius_max = 0
@@ -337,7 +345,7 @@ class Mavic (Robot):
             radius = [None]*len(contours)
             for i, c in enumerate(contours):
                 area = cv2.contourArea(c)
-                if area < 25 or area > 1800:
+                if area < 12 or area > 1800:
                     continue
                 contours_poly[i] = cv2.approxPolyDP(c, 3, True)
                 centers[i], radius[i] = cv2.minEnclosingCircle(
@@ -353,6 +361,11 @@ class Mavic (Robot):
                     coord_fire = centers[i]
                     radius_max = radius[i]
                     fire_bbox = (int(x), int(y), int(w), int(h))
+
+            if not coord_fire:
+                self.reset_fire_candidate()
+                self.draw_detection_overlay(False)
+                return []
 
             if coord_fire and self.debug_images:
                 drawing = img.copy()
@@ -391,10 +404,13 @@ class Mavic (Robot):
                               type=float, help="seconds to wait after reaching patrol altitude before detecting fire")
         opt_parser.add_option("--fire_confirmations", default=3,
                               type=int, help="consecutive matching detections required before targeting fire")
+        opt_parser.add_option("--tree_overlay_limit", default=0,
+                              type=int, help="manual tree boxes drawn on the display; 0 keeps the feed clear")
         opt_parser.add_option("--debug_images", action="store_true", default=False,
                               help="save annotated fire_detection.jpg when fire is detected")
         options, _ = opt_parser.parse_args()
         self.debug_images = options.debug_images
+        self.tree_overlay_limit = max(0, options.tree_overlay_limit)
 
         point_list = options.patrol_coords.split(',')
         number_of_waypoints = len(point_list)

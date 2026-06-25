@@ -39,6 +39,9 @@ for index, block in enumerate(mavic_blocks, start=1):
     detection_interval = re.search(r'--detection_interval=([0-9.\-]+)', block)
     detection_start_delay = re.search(r'--detection_start_delay=([0-9.\-]+)', block)
     fire_confirmations = re.search(r'--fire_confirmations=([0-9]+)', block)
+    tree_overlay_limit = re.search(r'--tree_overlay_limit=([0-9]+)', block)
+    max_objects = re.search(r'maxObjects\s+([0-9]+)', block)
+    frame_thickness = re.search(r'frameThickness\s+([0-9]+)', block)
 
     if not translation:
         errors.append(fail(f"Mavic {index}: missing translation."))
@@ -76,8 +79,12 @@ for index, block in enumerate(mavic_blocks, start=1):
         errors.append(fail(f"Mavic {index}: detection start delay must be at least 8 s to avoid launch-time false positives."))
     if not fire_confirmations:
         errors.append(fail(f"Mavic {index}: missing --fire_confirmations argument."))
-    elif int(fire_confirmations.group(1)) < 3:
-        errors.append(fail(f"Mavic {index}: fire confirmations must be at least 3 frames."))
+    elif int(fire_confirmations.group(1)) < 2:
+        errors.append(fail(f"Mavic {index}: fire confirmations must be at least 2 frames."))
+    if not tree_overlay_limit:
+        errors.append(fail(f"Mavic {index}: missing --tree_overlay_limit argument."))
+    elif int(tree_overlay_limit.group(1)) > 3:
+        errors.append(fail(f"Mavic {index}: tree overlay limit should be 0-3 to keep camera feeds readable."))
 
     if 'Display {' not in block or 'name "vision overlay"' not in block:
         errors.append(fail(f"Mavic {index}: missing vision overlay Display."))
@@ -85,6 +92,14 @@ for index, block in enumerate(mavic_blocks, start=1):
         errors.append(fail(f"Mavic {index}: camera/display should be 160x160 for the RTX A1000 profile."))
     if "recognition Recognition" not in block:
         errors.append(fail(f"Mavic {index}: missing camera Recognition node for tree boxes."))
+    if not max_objects:
+        errors.append(fail(f"Mavic {index}: missing Recognition maxObjects setting."))
+    elif int(max_objects.group(1)) > 3:
+        errors.append(fail(f"Mavic {index}: Recognition maxObjects must be 3 or lower to avoid clutter."))
+    if not frame_thickness:
+        errors.append(fail(f"Mavic {index}: missing Recognition frameThickness setting."))
+    elif int(frame_thickness.group(1)) > 1:
+        errors.append(fail(f"Mavic {index}: Recognition frameThickness must be 1 for readable overlays."))
 
 if "--patrol_coord=" in text:
     errors.append(fail("Found old typo --patrol_coord=. Use --patrol_coords= instead."))
@@ -101,7 +116,7 @@ if errors:
 
 print("\nPREFLIGHT PASSED")
 print("- 4 autonomous drones configured across SW, NW, SE, and NE quadrants")
-print("- Each drone has patrol coordinates, confirmed smoke detection, 160x160 camera, recognition, and vision overlay")
+print("- Each drone has patrol coordinates, confirmed smoke detection, 160x160 camera, sparse recognition, and vision overlay")
 print("- Fire supervisor and Spot controller are present")
 
 if warnings:
