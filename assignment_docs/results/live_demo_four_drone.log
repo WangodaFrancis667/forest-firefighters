@@ -7,3 +7,63 @@ INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --ta
 INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=16 16, 27 16, 27 27, 16 27" --detection_interval=1.0 --detection_start_delay=10 --fire_confirmations=2 --tree_overlay_limit=0
 Starting wildfire in a forest of 27 sassafras trees.
 Spot support active in stable posture. Press 'D' to throw water from Spot.
+First target:  [16.0, 16.0]
+First target:  [5.0, 16.0]
+First target:  [5.0, 5.0]
+First target:  [16.0, 5.0]
+Target reached! New target:  [14.0, 5.0]
+Target reached! New target:  [14.0, 16.0]
+fire detected, coordinates (128.0, 34.0)
+Water dropped on fire target: [16.0, 16.0] at position [17.461724596647258, 16.735753873207127]
+Target reached! New target:  [27.0, 16.0]
+Target reached! New target:  [27.0, 5.0]
+fire detected, coordinates (17.0, 15.0)
+Target reached! New target:  [14.0, 14.0]
+fire detected, coordinates (7.3913044929504395, 36.41304397583008)
+fire detected, coordinates (18.326086044311523, 141.8913116455078)
+fire detected, coordinates (29.0, 152.5)
+fire detected, coordinates (111.0, 157.5)
+Target reached! New target:  [14.0, 27.0]
+fire detected, coordinates (43.326087951660156, 151.8913116455078)
+fire detected, coordinates (32.5, 148.0)
+fire detected, coordinates (32.625, 146.125)
+fire detected, coordinates (35.343135833740234, 144.9509735107422)
+fire detected, coordinates (39.625, 144.125)
+fire detected, coordinates (44.0, 144.0)
+fire detected, coordinates (48.475608825683594, 143.10975646972656)
+fire detected, coordinates (53.0, 143.5)
+fire detected, coordinates (57.754547119140625, 143.42727661132812)
+fire detected, coordinates (63.0, 143.0)
+fire detected, coordinates (67.5, 142.5)
+fire detected, coordinates (72.3431396484375, 142.9509735107422)
+fire detected, coordinates (76.75454711914062, 142.42727661132812)
+fire detected, coordinates (81.67391204833984, 142.1086883544922)
+fire detected, coordinates (86.10869598388672, 141.67391967773438)
+fire detected, coordinates (91.32608795166016, 141.8913116455078)
+fire detected, coordinates (96.0, 141.5)
+fire detected, coordinates (100.5, 141.0)
+fire detected, coordinates (105.10869598388672, 141.32608032226562)
+Target reached! New target:  [5.0, 14.0]
+fire detected, coordinates (109.5, 141.0)
+Target reached! New target:  [27.0, 14.0]
+fire detected, coordinates (114.2272720336914, 140.5454559326172)
+fire detected, coordinates (119.04901885986328, 140.3431396484375)
+fire detected, coordinates (123.75454711914062, 140.42727661132812)
+fire detected, coordinates (128.3431396484375, 139.9509735107422)
+fire detected, coordinates (133.0, 140.0)
+fire detected, coordinates (125.5, 149.0)
+WARNING: fire: The process crashed some time after starting successfully.
+WARNING: 'fire' controller crashed.
+WARNING: spot: The process crashed some time after starting successfully.
+WARNING: 'spot' controller crashed.
+WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+WARNING: 'autonomous_mavic' controller crashed.
+WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+WARNING: 'autonomous_mavic' controller crashed.
+WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+WARNING: 'autonomous_mavic' controller crashed.
+WARNING: autonomous_mavic: The process crashed some time after starting successfully.
+WARNING: 'autonomous_mavic' controller crashed.
+[1782:1782:0625/103234.408189:ERROR:network_service_instance_impl.cc(262)] Network service crashed, restarting service.
+[1782:1782:0625/103234.892624:ERROR:zygote_communication_linux.cc(281)] Failed to send GetTerminationStatus message to zygote
+Warning: QXcbConnection: XCB error: 3 (BadWindow), sequence: 61036, resource id: 2097350, major code: 40 (TranslateCoords), minor code: 0
