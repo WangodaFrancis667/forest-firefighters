@@ -206,20 +206,20 @@ class Mavic (Robot):
         yaw = (self.current_pose[5] + 2*np.pi) % (2*np.pi)
         self.world_fire_quadrants = [0, 0]
 
-        center_tolerance = 50
-        offset_x = x_img - resolutionX / 2
-        offset_y = y_img - resolutionY / 2
-        if abs(offset_x) > center_tolerance:
-            self.world_fire_quadrants[0] = np.sign(offset_x)
-        if abs(offset_y) > center_tolerance:
-            self.world_fire_quadrants[1] = np.sign(offset_y)
+        center_tolerance = 40
+        if abs(x_img - resolutionX / 2) > center_tolerance:
+            self.world_fire_quadrants[0] = np.sign(x_img - resolutionX / 2)
+        if abs(y_img - resolutionY / 2) > center_tolerance:
+            self.world_fire_quadrants[1] = np.sign(y_img - resolutionY / 2)
+        # Use the drone's current yaw to correctly map image quadrants to
+        # world-space yaw/pitch corrections (original working logic).
+        self.world_fire_quadrants[1] *= np.sign(yaw)
+        self.world_fire_quadrants[0] *= -np.sign(yaw)
 
-        # Map image offsets to yaw/pitch: the rotated+flipped image means
-        # positive x-offset → turn right (negative yaw), positive y-offset → go forward (negative pitch)
-        yaw_disturbance = -self.world_fire_quadrants[0] * clamp(
-            abs(offset_x) / (resolutionX / 2), 0, self.MAX_YAW_DISTURBANCE)
-        pitch_disturbance = -self.world_fire_quadrants[1] * clamp(
-            abs(offset_y) / (resolutionY / 2), 0, abs(self.MAX_PITCH_DISTURBANCE))
+        yaw_disturbance = self.world_fire_quadrants[0] * clamp(
+            abs(x_img - resolutionX / 2), 0, self.MAX_YAW_DISTURBANCE)
+        pitch_disturbance = self.world_fire_quadrants[1] * clamp(
+            abs(y_img - resolutionY / 2), 0, abs(self.MAX_PITCH_DISTURBANCE))
 
         if self.world_fire_quadrants == [0, 0]:
             self.water_to_drop = 25
@@ -307,28 +307,56 @@ class Mavic (Robot):
             print("fire detected, coordinates {}".format(tuple(coord_fire)))
         return coord_fire
 
+    def _recognition_confirms_fire(self):
+        """Check if Webots camera recognition sees fire or smoke objects.
+
+        Returns the list of recognition objects whose model name contains
+        'fire' or 'smoke'.  An empty list means the recognition system
+        does not see any fire/smoke in the current frame.
+        """
+        if not self.camera.hasRecognition():
+            return []
+        try:
+            objects = self.camera.getRecognitionObjects()
+        except Exception:
+            return []
+        fire_objects = []
+        for obj in objects:
+            # getModel() / get_model() returns the PROTO 'model' field
+            model = self.call_recognition_method(obj, "getModel", "get_model")
+            if model and ('fire' in model.lower() or 'smoke' in model.lower()):
+                fire_objects.append(obj)
+        return fire_objects
+
     def fire_detection(self, verbose=True, required_confirmations=3):
         """
-        Detect the smoke and return the fire coordinate in the image
-        Parameters:
-            verbose (bool): whether to print status messages or not
-        Returns:
-            coord_fire (list):x,y image coordinates of the fire
+        Detect fire/smoke using a two-stage approach:
+          1) PRIMARY: Webots camera recognition (model='fire' or 'smoke')
+          2) SECONDARY: HSV colour thresholding to localise the smoke blob
+        This avoids false positives from bright terrain or sky pixels.
         """
+        # --- Stage 1: Recognition gate ---
+        # If camera recognition is available, require at least one recognised
+        # fire/smoke object before running the expensive HSV pipeline.
+        recognised_fire = self._recognition_confirms_fire()
+        if self.camera.hasRecognition() and not recognised_fire:
+            # Recognition is active but sees no fire/smoke → definitely clear
+            self.reset_fire_candidate()
+            self.draw_detection_overlay(False)
+            return []
+
+        # --- Stage 2: HSV localisation ---
         img = self.get_image_from_camera()
         if img is None:
             return []
 
-        # Segment the image by color in HSV color space.
         hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
-        # Webots ground and tree textures contain many orange/brown pixels, so
-        # flame-colour thresholding creates false positives. Smoke is the more
-        # reliable signal in this scene: bright, low-saturation blobs above the
-        # forest. Temporal confirmation below prevents one-frame terrain flashes
-        # from triggering water drops.
-        smoke_lower = np.array([0, 0, 180])
-        smoke_upper = np.array([179, 95, 255])
+        # Tight smoke thresholds: very bright (V≥200), very low saturation
+        # (S≤60).  This rejects sandy terrain (lower V, higher S) while
+        # still catching the bright-white Webots smoke plumes.
+        smoke_lower = np.array([0, 0, 200])
+        smoke_upper = np.array([179, 60, 255])
         mask_smoke = cv2.inRange(hsv, smoke_lower, smoke_upper)
         mask_fire = cv2.medianBlur(mask_smoke, 3)
         kernel = np.ones((3, 3), np.uint8)
@@ -336,35 +364,35 @@ class Mavic (Robot):
         mask_fire = cv2.morphologyEx(mask_fire, cv2.MORPH_CLOSE, kernel)
 
         fire_ratio = np.round(
-            (cv2.countNonZero(mask_fire))/(img.size/3)*100, 2)
-        if 0.04 < fire_ratio < 20.0:
+            (cv2.countNonZero(mask_fire)) / (img.size / 3) * 100, 2)
+
+        # Require at least 0.15% coverage (matching original) and cap at 20%
+        if 0.15 < fire_ratio < 20.0:
             coord_fire = []
             fire_bbox = None
             radius_max = 0
 
-            # Detect the contours on the binary image using cv2.CHAIN_APPROX_NONE
             contours, _ = cv2.findContours(
-                image=mask_fire, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
+                image=mask_fire, mode=cv2.RETR_EXTERNAL,
+                method=cv2.CHAIN_APPROX_SIMPLE)
 
-            # Approximate contours to polygons + get circles
-            contours_poly = [None]*len(contours)
-            centers = [None]*len(contours)
-            radius = [None]*len(contours)
+            contours_poly = [None] * len(contours)
+            centers = [None] * len(contours)
+            radius = [None] * len(contours)
             for i, c in enumerate(contours):
                 area = cv2.contourArea(c)
-                if area < 12 or area > 1800:
+                if area < 25 or area > 2500:
                     continue
                 contours_poly[i] = cv2.approxPolyDP(c, 3, True)
                 centers[i], radius[i] = cv2.minEnclosingCircle(
                     contours_poly[i])
                 x, y, w, h = cv2.boundingRect(contours_poly[i])
-                if w < 4 or h < 4:
+                if w < 5 or h < 5:
                     continue
                 aspect_ratio = float(w) / float(h)
                 if aspect_ratio < 0.25 or aspect_ratio > 4.0:
                     continue
-                # Keep the largest plausible smoke blob.
-                if radius[i] > 3 and radius[i] > radius_max:
+                if radius[i] > 4 and radius[i] > radius_max:
                     coord_fire = centers[i]
                     radius_max = radius[i]
                     fire_bbox = (int(x), int(y), int(w), int(h))
@@ -377,8 +405,11 @@ class Mavic (Robot):
             if coord_fire and self.debug_images:
                 drawing = img.copy()
                 x, y, w, h = fire_bbox
-                cv2.rectangle(drawing, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                cv2.circle(drawing, (int(coord_fire[0]), int(coord_fire[1])), int(radius_max), (255, 0, 0), 2)
+                cv2.rectangle(drawing, (x, y), (x + w, y + h),
+                              (255, 0, 0), 2)
+                cv2.circle(drawing,
+                           (int(coord_fire[0]), int(coord_fire[1])),
+                           int(radius_max), (255, 0, 0), 2)
                 cv2.imwrite("fire_detection.jpg", drawing)
 
             confirmed = self.confirm_fire_candidate(
