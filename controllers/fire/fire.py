@@ -250,8 +250,10 @@ class Fire(Supervisor):
                 self.propagate(tree)
                 if tree.fire_count == 1:
                     try:
+                        smoke_name = "smoke " + tree.node.getField('name').getSFString()
                         smoke = f'Smoke {{ translation {tree.translation[0]} {tree.translation[1]} {tree.translation[2]} ' \
-                            f'scale {0.01} {0.01} {0.01} }}'
+                            f'scale {0.01} {0.01} {0.01} ' \
+                            f'name "{smoke_name}" }}'
                         self.children.importMFNodeFromString(-1, smoke)
                         tree.smoke = self.children.getMFNode(-1)
                         tree.smoke_translation_field = tree.smoke.getField('translation')

@@ -16,7 +16,12 @@ if not log_path.exists():
 lines = log_path.read_text(errors="ignore").splitlines()
 text = "\n".join(lines)
 
-mission_warning_patterns = [
+mission_failure_patterns = [
+    r"Traceback \(most recent call last\)",
+    r"AttributeError:",
+    r"RuntimeError:",
+    r"ValueError:",
+    r"WARNING:.*controller exited with status:\s*[1-9]",
     r"WARNING:.*controller crashed",
     r"WARNING:.*process crashed",
 ]
@@ -42,6 +47,7 @@ targets_reached = len(re.findall(r"Target reached", text, flags=re.IGNORECASE))
 raw_error_lines = [
     line for line in lines
     if re.search(r"\bERROR\b", line, flags=re.IGNORECASE)
+    or matches_any(line, mission_failure_patterns)
 ]
 
 raw_crash_lines = [

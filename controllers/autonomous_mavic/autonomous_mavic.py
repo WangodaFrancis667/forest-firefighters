@@ -82,6 +82,33 @@ class Mavic (Robot):
         except Exception:
             return None
 
+    def call_recognition_method(self, obj, *names):
+        for name in names:
+            method = getattr(obj, name, None)
+            if method is None:
+                continue
+            try:
+                return method()
+            except Exception:
+                continue
+        return None
+
+    def get_recognition_box(self, obj, width, height):
+        center = self.call_recognition_method(obj, "getPositionOnImage", "get_position_on_image")
+        size = self.call_recognition_method(obj, "getSizeOnImage", "get_size_on_image")
+        if center is None or size is None:
+            return None
+
+        center_x, center_y = center
+        size_x, size_y = size
+        x = int(max(0, center_x - size_x / 2))
+        y = int(max(0, center_y - size_y / 2))
+        w = int(min(width - x - 1, size_x))
+        h = int(min(height - y - 1, size_y))
+        if w <= 2 or h <= 2:
+            return None
+        return x, y, w, h
+
     def get_image_from_camera(self):
         """
         Take an image from the camera and prepare it for OpenCV processing:
@@ -175,9 +202,10 @@ class Mavic (Robot):
         yaw = (self.current_pose[5] + 2*np.pi) % (2*np.pi)
         self.world_fire_quadrants = [0, 0]
 
-        if abs(x_img-resolutionX/2) > 20:
+        center_tolerance = 30
+        if abs(x_img-resolutionX/2) > center_tolerance:
             self.world_fire_quadrants[0] = np.sign(x_img-resolutionX/2)
-        if abs(y_img-resolutionY/2) > 20:
+        if abs(y_img-resolutionY/2) > center_tolerance:
             self.world_fire_quadrants[1] = np.sign(y_img-resolutionY/2)
         self.world_fire_quadrants[1] *= np.sign(yaw)
         self.world_fire_quadrants[0] *= -np.sign(yaw)
@@ -204,35 +232,25 @@ class Mavic (Robot):
         width = self.display.getWidth()
         height = self.display.getHeight()
 
+        if fire_detected:
+            self.display.setOpacity(0.25)
+            self.display.setColor(0xFF0000)
+            self.display.fillRectangle(0, 0, width, height)
+            self.display.setOpacity(1.0)
+
         self.display.setOpacity(0.9)
         self.display.setColor(0xFFFFFF)
         self.display.drawText(self.name, 6, 6)
 
         if self.camera.hasRecognition():
             for obj in self.camera.getRecognitionObjects():
-                model = obj.getModel() or ""
-                model_lower = model.lower()
-                if "sassafras" in model_lower:
-                    color = 0x00FF66
-                    label = "tree"
-                elif "fire" in model_lower:
-                    color = 0xFF3300
-                    label = "fire"
-                elif "smoke" in model_lower:
-                    color = 0xBBBBBB
-                    label = "smoke"
-                else:
+                box = self.get_recognition_box(obj, width, height)
+                if box is None:
                     continue
-                self.display.setColor(color)
-                center_x, center_y = obj.getPositionOnImage()
-                size_x, size_y = obj.getSizeOnImage()
-                x = int(max(0, center_x - size_x / 2))
-                y = int(max(0, center_y - size_y / 2))
-                w = int(min(width - x - 1, size_x))
-                h = int(min(height - y - 1, size_y))
-                if w > 2 and h > 2:
-                    self.display.drawRectangle(x, y, w, h)
-                    self.display.drawText(label, x, max(0, y - 12))
+                x, y, w, h = box
+                self.display.setColor(0x00FF66)
+                self.display.drawRectangle(x, y, w, h)
+                self.display.drawText("tree", x, max(0, y - 12))
 
         if self.fire_bbox:
             x, y, w, h = self.fire_bbox
@@ -240,12 +258,6 @@ class Mavic (Robot):
             self.display.drawRectangle(x, y, w, h)
             self.display.drawRectangle(max(0, x - 1), max(0, y - 1), w + 2, h + 2)
             self.display.drawText("fire/smoke", x, max(0, y - 12))
-
-        if fire_detected:
-            self.display.setOpacity(0.25)
-            self.display.setColor(0xFF0000)
-            self.display.fillRectangle(0, 0, width, height)
-            self.display.setOpacity(1.0)
 
     def fire_detection(self, verbose=True):
         """
@@ -259,36 +271,21 @@ class Mavic (Robot):
         if img is None:
             return []
 
-        if self.camera.hasRecognition():
-            recognized_fire = []
-            for obj in self.camera.getRecognitionObjects():
-                model = (obj.getModel() or "").lower()
-                if "fire" not in model and "smoke" not in model:
-                    continue
-                center_x, center_y = obj.getPositionOnImage()
-                size_x, size_y = obj.getSizeOnImage()
-                x = int(max(0, center_x - size_x / 2))
-                y = int(max(0, center_y - size_y / 2))
-                w = int(max(1, size_x))
-                h = int(max(1, size_y))
-                if w > 2 and h > 2:
-                    recognized_fire.append((w * h, [center_x, center_y], (x, y, w, h)))
-            if recognized_fire:
-                recognized_fire.sort(key=lambda item: item[0], reverse=True)
-                _, coord_fire, self.fire_bbox = recognized_fire[0]
-                if verbose:
-                    print("fire detected by recognition, coordinates {}".format(coord_fire))
-                self.draw_detection_overlay(True)
-                return coord_fire
-
         # Segment the image by color in HSV color space
         hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
-        # Range of the smoke
+        # Ranges for smoke and flame-like colors in the Webots fire assets.
         smoke_lower = np.array([0, 0, 168])
         smoke_upper = np.array([172, 111, 255])
+        flame_lower = np.array([0, 80, 80])
+        flame_upper = np.array([35, 255, 255])
+        red_lower = np.array([170, 80, 80])
+        red_upper = np.array([179, 255, 255])
 
-        mask_fire = cv2.inRange(hsv, smoke_lower, smoke_upper)
+        mask_smoke = cv2.inRange(hsv, smoke_lower, smoke_upper)
+        mask_flame = cv2.inRange(hsv, flame_lower, flame_upper)
+        mask_red = cv2.inRange(hsv, red_lower, red_upper)
+        mask_fire = cv2.bitwise_or(mask_smoke, cv2.bitwise_or(mask_flame, mask_red))
 
         fire_ratio = np.round(
             (cv2.countNonZero(mask_fire))/(img.size/3)*100, 2)
