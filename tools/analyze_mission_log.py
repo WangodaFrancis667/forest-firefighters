@@ -46,6 +46,7 @@ clean_shutdown_index = next(
     (
         index for index, line in enumerate(lines)
         if re.search(r"Mission duration reached|Requesting clean Webots shutdown", line, flags=re.IGNORECASE)
+        or re.search(r"^INFO: .*: Terminating\.$", line, flags=re.IGNORECASE)
     ),
     None,
 )
