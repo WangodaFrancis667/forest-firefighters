@@ -14,7 +14,7 @@ rm -f "$LOG_PATH"
 echo "Starting Webots mission test: $RUN_NAME"
 echo "Log file: $LOG_PATH"
 
-timeout 8m webots --stdout --stderr worlds/forest_firefighters.wbt \
+timeout --signal=INT --kill-after=20s 9m webots --stdout --stderr worlds/forest_firefighters.wbt \
   2>&1 | tee "$LOG_PATH" || true
 
 python3 tools/analyze_mission_log.py "$LOG_PATH"

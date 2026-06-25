@@ -28,7 +28,7 @@ This prevents testing with drones floating incorrectly in space and ensures each
 
 The system is organised as a closed-loop robotics pipeline.
 
-The Webots world provides the forest terrain, wildfire propagation, smoke, drones, Spot, sensors, and water-drop mechanism. The fire controller starts and propagates the wildfire. Each Mavic drone uses:
+The Webots world provides the forest terrain, wildfire propagation, smoke, drones, Spot, sensors, and water-drop mechanism. The fire controller starts the wildfire after 90 seconds, then propagates it while the drones are already patrolling. Each Mavic drone uses:
 - Camera for fire and smoke perception.
 - GPS for localisation and waypoint navigation.
 - IMU and gyro for stabilised locomotion.

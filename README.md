@@ -166,7 +166,7 @@ In Webots:
 
 ### Fire Supervisor
 
-`controllers/fire/fire.py` controls wildfire behavior. The current values slow propagation, reduce wind volatility, cap active fires, and increase water extinction tolerance so the simulation remains demonstrable on the available GPU.
+`controllers/fire/fire.py` controls wildfire behavior. The active world starts the wildfire after 90 seconds (`--start_delay=90`) so the drones have time to launch and begin patrol before smoke/fire appears. Timed mission tests request a clean Webots shutdown after 420 seconds (`--mission_duration=420`) to avoid timeout-kill crash logs.
 
 ## Verification Checklist
 
@@ -183,6 +183,7 @@ Manual Webots checks:
 
 - Four drones launch from separate quadrants.
 - Spot remains active for the full mission.
+- Wildfire appears after roughly 1 minute 30 seconds.
 - Drone overlays show green bars during patrol and red bars when fire is detected.
 - Drone water drops are logged after visual centering.
 - The simulation can run through the 5-8 minute mission window without a Webots segmentation fault.

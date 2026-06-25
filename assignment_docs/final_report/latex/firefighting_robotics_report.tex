@@ -67,7 +67,7 @@ The implementation was executed in a stable Webots R2021b Docker environment wit
 This ensured that all later results measured mission behaviour rather than incorrect spawn placement.
 
 \section{System Architecture}
-The system is organised as a closed-loop multi-robot firefighting pipeline. The Webots world provides terrain, fire propagation, smoke, robot bodies, sensors, and the water-drop mechanism. The four Mavic drones provide aerial coverage, camera perception, GPS localisation, and stabilised flight. The Spot-like ground robot remains active as a stable support platform with a keyboard-triggered water burst.
+The system is organised as a closed-loop multi-robot firefighting pipeline. The Webots world provides terrain, fire propagation, smoke, robot bodies, sensors, and the water-drop mechanism. The four Mavic drones provide aerial coverage, camera perception, GPS localisation, and stabilised flight. The fire supervisor starts the wildfire after 90 seconds, giving the drones time to launch and settle into patrol before visible smoke/fire appears. The Spot-like ground robot remains active as a stable support platform with a keyboard-triggered water burst.
 
 \begin{figure}[H]
 \centering
@@ -182,6 +182,6 @@ Shutdown warnings appeared in some runs. & The analyzer separated mission perfor
 \end{table}
 
 \section{Conclusion}
-The final system demonstrates an autonomous firefighting mission using four Mavic drones deployed across four forest quadrants in Webots, supported by a Spot-like ground robot. The drones patrol their assigned forest quadrants, detect smoke/fire with camera-based OpenCV processing, navigate toward detected fire regions, drop water, and continue patrolling for additional propagated fires. The updated four-drone configuration reduces simulation load while preserving full-area coverage, satisfying the mission requirements for locomotion, perception, navigation, integration, and documentation.
+The final system demonstrates an autonomous firefighting mission using four Mavic drones deployed across four forest quadrants in Webots, supported by a Spot-like ground robot. The drones patrol their assigned forest quadrants, the fire supervisor starts the wildfire after 90 seconds, and the drones then detect smoke/fire with camera-based OpenCV processing, navigate toward detected fire regions, drop water, and continue patrolling for additional propagated fires. The updated four-drone configuration reduces simulation load while preserving full-area coverage, satisfying the mission requirements for locomotion, perception, navigation, integration, and documentation.
 
 \end{document}

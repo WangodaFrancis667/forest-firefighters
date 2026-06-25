@@ -18,6 +18,7 @@ This supervisor controller simulate a wild fire in a Sassafras forest.
 
 import json
 import math
+import optparse
 import random
 
 from controller import Supervisor
@@ -142,12 +143,25 @@ class Fire(Supervisor):
     MAX_PROPAGATION = 5    # the maximum distance that the fire can propagate in meter
     MAX_EXTINCTION = 4      # the maximum distance from a tree where water can stop its fire in meter
     FIRE_DURATION = 50
+    FIRE_START_DELAY = 90.0
+    MISSION_DURATION = 420.0
 
     def __init__(self):
         super(Fire, self).__init__()
 
         self.time_step = int(self.getBasicTimeStep())
         self.fire_clock = 0
+        self.fire_started = False
+        self.update_fire = False
+
+        opt_parser = optparse.OptionParser()
+        opt_parser.add_option("--start_delay", default=self.FIRE_START_DELAY,
+                              type=float, help="seconds before the first wildfire starts")
+        opt_parser.add_option("--mission_duration", default=self.MISSION_DURATION,
+                              type=float, help="seconds before clean batch shutdown; 0 disables automatic shutdown")
+        options, _ = opt_parser.parse_args()
+        self.fire_start_delay = max(0.0, options.start_delay)
+        self.mission_duration = max(0.0, options.mission_duration)
 
         self.wind = Wind()
 
@@ -183,8 +197,15 @@ class Fire(Supervisor):
         if n == 0:
             print('No sassafras tree found.')
         else:
-            print(f'Starting wildfire in a forest of {n} sassafras trees.')
-            self.ignite(random.choice(self.trees))
+            print(f'Forest ready with {n} sassafras trees.')
+            print(f'Wildfire scheduled to start after {self.fire_start_delay:.1f} seconds.')
+
+    def startWildfire(self):
+        if self.fire_started or not self.trees:
+            return
+        self.fire_started = True
+        print(f'Starting wildfire in a forest of {len(self.trees)} sassafras trees at t={self.getTime():.1f}s.')
+        self.ignite(random.choice(self.trees))
 
     def ignite(self, tree):
         if tree.fire_count > 1:  # already burnt
@@ -249,10 +270,15 @@ class Fire(Supervisor):
         return False                    
 
     def run(self):
-        start_fire_now = False
         while True:
             step = self.step(self.time_step)
             if step == -1:
+                break
+
+            current_time = self.getTime()
+            if self.mission_duration > 0 and current_time >= self.mission_duration:
+                print(f'Mission duration reached at t={current_time:.1f}s. Requesting clean Webots shutdown.')
+                self.simulationQuit(0)
                 break
 
             message = self.wwiReceiveText()
@@ -270,7 +296,11 @@ class Fire(Supervisor):
                     quantity_of_water = int(customData)
                     if quantity_of_water > 0:
                         robot.dropWater(self.children, quantity_of_water)
-            if start_fire_now:
+
+            if not self.fire_started and current_time >= self.fire_start_delay:
+                self.startWildfire()
+
+            if self.fire_started:
                 # update the fire_clock
                 if self.fire_clock == self.FIRE_DURATION:
                     self.update_fire = True
@@ -287,10 +317,6 @@ class Fire(Supervisor):
                 
                 if True in extinction:
                         self.ignite(random.choice(self.trees))
-            else:
-                for robot in self.robots: # the simulation starts when the mavic got an altitude > 40
-                    if not start_fire_now and robot.name == "Mavic 2 PRO" and robot.altitude() > 40:
-                            start_fire_now = True
 
 controller = Fire()
 controller.run()

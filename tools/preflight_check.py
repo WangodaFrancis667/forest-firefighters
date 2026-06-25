@@ -70,6 +70,13 @@ if "--patrol_coords=" not in text:
 if 'controller "spot"' not in text:
     warnings.append("Spot controller not found. This may be okay if only drones are assessed.")
 
+if 'controller "fire"' not in text:
+    errors.append("Fire supervisor controller not found.")
+if "--start_delay=90" not in text:
+    errors.append("Fire supervisor must use --start_delay=90 so wildfire starts after 1 minute 30 seconds.")
+if "--mission_duration=420" not in text:
+    errors.append("Fire supervisor must use --mission_duration=420 for clean batch-test shutdown.")
+
 if errors:
     print("\nPREFLIGHT FAILED")
     for error in errors:

@@ -25,6 +25,10 @@ TexturedBackgroundLight {
 Robot {
   rotation 0 0 1 0
   controller "fire"
+  controllerArgs [
+    "--start_delay=90"
+    "--mission_duration=420"
+  ]
   supervisor TRUE
   window "fire"
 }
