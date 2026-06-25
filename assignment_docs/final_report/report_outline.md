@@ -1,20 +1,22 @@
 # Forest Firefighting Robotics Mission Report Outline
 
 ## Title
-Autonomous Forest Firefighting Mission using Webots Mavic Drones
+Autonomous Forest Firefighting Mission using Webots Robots
 
 ## 1. Introduction
 - State the mission objective.
 - Mention Webots Forest Firefighters project.
-- Mention use of Mavic drones for aerial patrol and firefighting.
+- Mention the original drone plus Spot baseline.
+- Explain the fleet evolution: eight experimental drones, six intermediate drones, final four drones plus Spot for RTX A1000 stability.
 
 ## 2. System Architecture
 - Webots world.
 - Fire controller.
-- Eight Mavic drone controllers deployed at four forest corners (two drones per corner).
-- Each drone: Camera, GPS, IMU, gyro.
-- OpenCV perception.
-- Water-drop mechanism.
+- Four Mavic drone controllers deployed across SW, NW, SE, and NE quadrants.
+- Spot-like ground robot as a support robot with continuous gait and keyboard-triggered water burst.
+- Each drone: camera, recognition overlay, GPS, IMU, gyro.
+- OpenCV perception and red fire/smoke overlays.
+- Water-drop mechanism through drone custom data and Spot support burst.
 - Quadrant-based patrol coverage.
 
 ## 3. Methodology
@@ -38,7 +40,8 @@ Autonomous Forest Firefighting Mission using Webots Mavic Drones
 - Drone launch-position verification.
 - Controller instrumentation instability.
 - Shutdown artifact interpretation.
+- Fleet-size tuning for laptop GPU stability.
 
 ## 6. Conclusion
 - Summarise autonomous behaviour achieved.
-- Mention patrol, detection, navigation, water drop, and repeated fire handling.
+- Mention patrol, detection, navigation, water drop, Spot support, and repeated fire handling.

@@ -1,33 +1,25 @@
 flowchart TD
-    A[Webots Forest Firefighters World] --> B[Fire Controller]
-    A --> C1[SW Corner<br/>Mavics 1 & 2]
-    A --> C2[NW Corner<br/>Mavics 3 & 4]
-    A --> C3[SE Corner<br/>Mavics 5 & 6]
-    A --> C4[NE Corner<br/>Mavics 7 & 8]
+    A[Webots Forest Firefighters World] --> B[Fire Supervisor]
+    B --> B1[Wind, fire spread, and extinction checks]
 
-    B --> F[Dynamic Wildfire and Smoke Propagation]
+    A --> C[Four Mavic 2 Pro Drones]
+    A --> D[Spot-like Ground Robot]
 
-    C1 --> G1[Sensors<br/>Camera/GPS/IMU]
-    C2 --> G2[Sensors<br/>Camera/GPS/IMU]
-    C3 --> G3[Sensors<br/>Camera/GPS/IMU]
-    C4 --> G4[Sensors<br/>Camera/GPS/IMU]
+    C --> C1[Quadrant waypoint patrol]
+    C --> C2[Camera plus Webots recognition]
+    C --> C3[GPS, IMU, and gyro state estimate]
+    C2 --> E[OpenCV HSV smoke/fire detection]
+    E --> E1[Fire box and red overlay flash]
+    C1 --> F[Visual approach to detected fire]
+    C3 --> F
+    E1 --> F
+    F --> G[Drone water drop via customData]
 
-    G1 --> M[OpenCV HSV Smoke/Fire Detection]
-    G2 --> M
-    G3 --> M
-    G4 --> M
+    D --> D1[Continuous gait loop]
+    D --> D2[Keyboard-triggered water burst]
 
-    M --> N[Waypoint Patrol Navigation<br/>Assigned Forest Quadrant]
-    G1 --> O[Stabilised Drone Locomotion]
-    G2 --> O
-    G3 --> O
-    G4 --> O
-
-    M --> P[Fire Image Coordinates]
-    P --> Q[Naive Visual Approach]
-    Q --> R[Hover Above Fire Target]
-    R --> S[Water Drop via Custom Data]
-
-    S --> T[Continue Patrol and Handle Propagation]
-    N --> T
-
+    G --> H[Mission decision loop]
+    D2 --> H
+    B1 --> H
+    H --> C1
+    H --> I[Mission logs, analysis, and report evidence]

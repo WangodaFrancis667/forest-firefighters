@@ -29,7 +29,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\textcolor{primary}{Forest Firefighting Robotics Mission}}
-\rhead{\textcolor{primary}{Webots + Mavic Drones}}
+\rhead{\textcolor{primary}{Webots + Drone/Ground Team}}
 \cfoot{\thepage}
 
 \titleformat{\section}
@@ -47,7 +47,7 @@
 \begin{document}
 
 \begin{center}
-    {\Large \textbf{\textcolor{primary}{Autonomous Forest Firefighting Mission using Webots Mavic Drones}}}\\[4pt]
+    {\Large \textbf{\textcolor{primary}{Autonomous Forest Firefighting Mission using Webots Robots}}}\\[4pt]
     {\normalsize Undergraduate Robotics Practical Simulation Test}\\[2pt]
     {\small Platform: Webots R2021b Forest Firefighters Project \quad | \quad Controller: Python}\\[6pt]
 \end{center}
@@ -55,7 +55,7 @@
 \vspace{-0.4em}
 
 \section{Introduction}
-This project implements an autonomous forest firefighting mission in the Webots Forest Firefighters simulation environment. The mission objective is to use robots to patrol a forest, detect fire or smoke using onboard cameras, navigate toward the detected fire, and extinguish it by dropping water. The final solution uses four Mavic drone controllers deployed across the four forest quadrants, supported by a Spot-like ground robot. This configuration preserves full forest coverage while reducing camera, controller, and overlay load on the NVIDIA RTX A1000 6 GB GPU.
+This project implements an autonomous forest firefighting mission in the Webots Forest Firefighters simulation environment. The mission objective is to use robots to patrol a forest, detect fire or smoke using onboard cameras, navigate toward the detected fire, and extinguish it by dropping water. The original project baseline contained two robot types: a Mavic 2 Pro drone and a Spot-like ground robot. During development, the aerial team was expanded experimentally to eight drones, then reduced to six after stability testing exposed excessive camera and controller load. The final solution uses four Mavic drone controllers deployed across the four forest quadrants, supported by the Spot-like ground robot. This configuration preserves full forest coverage while reducing camera, controller, and overlay load on the NVIDIA RTX A1000 6 GB GPU.
 
 The implementation was executed in a stable Webots R2021b Docker environment with NVIDIA GPU OpenGL rendering. Before each mission test, a preflight checker verified that all four drones started from separate quadrant base positions:
 \begin{itemize}
@@ -67,48 +67,56 @@ The implementation was executed in a stable Webots R2021b Docker environment wit
 This ensured that all later results measured mission behaviour rather than incorrect spawn placement.
 
 \section{System Architecture}
-The system is organised as a closed-loop autonomous robotics pipeline. The Webots world provides the terrain, fire propagation, smoke, drone bodies, sensors, and water-drop mechanism. Each Mavic drone uses its camera for perception, GPS for localisation, and IMU/gyro data for stabilised movement.
+The system is organised as a closed-loop multi-robot firefighting pipeline. The Webots world provides terrain, fire propagation, smoke, robot bodies, sensors, and the water-drop mechanism. The four Mavic drones provide aerial coverage, camera perception, GPS localisation, and stabilised flight. The Spot-like ground robot remains active as a support platform with a simple gait loop and keyboard-triggered water burst.
 
 \begin{figure}[H]
 \centering
+\resizebox{0.96\linewidth}{!}{%
 \begin{tikzpicture}[
-    node distance=0.8cm and 1.0cm,
-    block/.style={rectangle, rounded corners, draw=primary, fill=softgray, thick, align=center, minimum width=2.2cm, minimum height=0.65cm, font=\small},
-    sensor/.style={rectangle, rounded corners, draw=accent, fill=white, thick, align=center, minimum width=2.0cm, minimum height=0.6cm, font=\small},
-    arrow/.style={-{Latex[length=2mm]}, thick, color=primary}
+    system/.style={rectangle, rounded corners=3pt, draw=primary, fill=softgray, thick, align=center, minimum width=3.3cm, minimum height=0.75cm, font=\small},
+    team/.style={rectangle, rounded corners=3pt, draw=primary, fill=white, thick, align=center, minimum width=3.5cm, minimum height=0.85cm, font=\small},
+    process/.style={rectangle, rounded corners=3pt, draw=accent, fill=white, thick, align=center, minimum width=3.1cm, minimum height=0.7cm, font=\small},
+    action/.style={rectangle, rounded corners=3pt, draw=primary, fill=softgray, thick, align=center, minimum width=4.0cm, minimum height=0.8cm, font=\small},
+    arrow/.style={-{Latex[length=2.2mm]}, thick, color=primary},
+    softarrow/.style={-{Latex[length=2mm]}, thick, color=accent}
 ]
-\node[block] (world) {Webots Forest\\Firefighters World};
-\node[block, below left=of world] (fire) {Fire Controller\\Propagation};
-\node[block, below right=of world] (drones) {Four Mavic\\Drones\\(Quadrants)};
+\node[system] (world) at (0,0) {Webots Forest Firefighters World\\terrain, trees, smoke, fire, water physics};
+\node[system] (supervisor) at (0,-1.45) {Fire Supervisor\\wind evolution, spread, extinction checks};
 
-\node[sensor, below=of drones, xshift=-2.4cm] (camera) {Camera};
-\node[sensor, below=of drones] (gps) {GPS};
-\node[sensor, below=of drones, xshift=2.4cm] (imu) {IMU + Gyro};
+\node[team] (mavic) at (-4.35,-3.05) {Aerial Team\\4 Mavic 2 Pro drones\\quadrant patrol};
+\node[team] (spot) at (4.35,-3.05) {Ground Team\\Spot-like robot\\support water platform};
 
-\node[block, below=of camera] (detect) {OpenCV HSV\\Smoke/Fire Detection};
-\node[block, below=of gps] (nav) {Waypoint Patrol\\Navigation};
-\node[block, below=of imu] (stability) {Stabilised\\Locomotion};
+\node[process] (vision) at (-6.25,-4.75) {Camera + Recognition\\tree boxes};
+\node[process] (state) at (-2.45,-4.75) {GPS, IMU, Gyro\\state estimate};
+\node[process] (gait) at (2.45,-4.75) {Spot Gait Loop\\continuous motion};
+\node[process] (manual) at (6.25,-4.75) {Keyboard Water Burst\\operator support};
 
-\node[block, below=1.2cm of nav] (approach) {Visual Approach\\to Fire Target};
-\node[block, below=of approach] (drop) {Water Drop\\via Custom Data};
-\node[block, below=of drop] (loop) {Continue Patrol\\and Handle Spread};
+\node[action] (detect) at (-4.35,-6.25) {OpenCV HSV Detection\\fire/smoke box + red display flash};
+\node[action] (nav) at (0,-7.55) {Mission Decision Loop\\patrol, detect, approach, extinguish, resume};
+\node[action] (drop) at (4.35,-6.25) {Water Delivery\\drone custom data + Spot burst};
+\node[action] (logs) at (0,-9.05) {Mission Evidence\\preflight checks, logs, analysis, report};
 
-\draw[arrow] (world) -- (fire);
-\draw[arrow] (world) -- (drones);
-\draw[arrow] (drones) -- (camera);
-\draw[arrow] (drones) -- (gps);
-\draw[arrow] (drones) -- (imu);
-\draw[arrow] (camera) -- (detect);
-\draw[arrow] (gps) -- (nav);
-\draw[arrow] (imu) -- (stability);
-\draw[arrow] (detect) -- (approach);
-\draw[arrow] (nav) -- (approach);
-\draw[arrow] (stability) -- (approach);
-\draw[arrow] (approach) -- (drop);
-\draw[arrow] (drop) -- (loop);
-\draw[arrow] (loop.west) to[out=180,in=250] (nav.west);
+\draw[arrow] (world) -- (supervisor);
+\draw[arrow] (supervisor) -- (mavic);
+\draw[arrow] (supervisor) -- (spot);
+
+\draw[arrow] (mavic) -- (vision);
+\draw[arrow] (mavic) -- (state);
+\draw[arrow] (spot) -- (gait);
+\draw[arrow] (spot) -- (manual);
+
+\draw[arrow] (vision) -- (detect);
+\draw[arrow] (state) -- (nav);
+\draw[arrow] (gait) -- (drop);
+\draw[arrow] (manual) -- (drop);
+\draw[arrow] (detect) -- (nav);
+\draw[arrow] (drop) -- (nav);
+\draw[arrow] (nav) -- (logs);
+\draw[softarrow] (nav.west) to[out=180,in=260] (mavic.south);
+\draw[softarrow] (nav.east) to[out=0,in=280] (spot.south);
 \end{tikzpicture}
-\caption{System architecture for autonomous aerial firefighting.}
+}
+\caption{System architecture for the final four-drone and Spot firefighting team.}
 \end{figure}
 
 \vspace{-0.6em}
@@ -126,6 +134,9 @@ The onboard camera captures a downward-facing image. The image is converted into
 
 \subsection{Fire Approach and Water Drop}
 After a fire is detected, the controller compares the detected image coordinate with the centre of the camera frame. If the fire is not centred, yaw and pitch disturbances guide the drone toward it. When the fire is centred below the drone, the controller triggers a water-drop command using the drone custom data field. The drone then clears the current target and continues the patrol loop, allowing it to respond to additional propagated fires.
+
+\subsection{Spot Ground Robot Support}
+The Spot-like robot is retained from the original project baseline as a ground support robot. Its controller keeps it alive for the full mission, cycles a simple gait, and accepts a keyboard-triggered water burst. In the final architecture, Spot is not the main search platform; it provides visible legged-robot integration and a secondary water-delivery path while the Mavic drones perform wide-area patrol and visual detection.
 
 \section{Performance Results}
 Three repeated mission tests were executed after the launch-position preflight check passed. The first repeat was the cleanest run and is used as the primary demonstration result.
@@ -147,6 +158,8 @@ final\_demo\_test & 46 & 4 & 5 & 0 & 0 & 3 \\
 \end{table}
 
 The primary run, \texttt{stability\_repeat\_01}, achieved 107 camera-based detections, 5 water drops, 4 waypoint target transitions, and no mission errors or crashes. After identifying and fixing a safe perception bug in the fire detection routine, the final validation test achieved 46 detections, 4 water drops, 5 target transitions, and no mission errors or mission crashes. This confirms that the final controller is stable enough for live demonstration.
+
+The results table is retained as historical mission evidence from the tuning phase. The active world configuration is now the resource-conscious four-drone and Spot layout, so a final submission run should regenerate this table with \texttt{./tools/run\_mission\_test.sh} inside the Webots R2021b GPU container.
 \section{Challenges and Solutions}
 \begin{table}[H]
 \centering
@@ -162,6 +175,7 @@ Docker initially used software rendering, causing slow simulation. & NVIDIA GPU 
 Running Webots as root caused sandbox-related crashes. & A non-root Docker user was created for stable execution. \\
 The drones appeared high because of terrain elevation and target altitude values. & A static launch check confirmed correct base spawn positions before testing. \\
 Instrumentation changed timing and destabilised flight. & The controller was restored to the stable baseline; external log analysis was used instead. \\
+The fleet size needed to balance coverage against simulator stability. & The project moved from the original two-robot baseline to eight experimental drones, then six drones, and finally four drones plus Spot for stable operation on the 6 GB RTX A1000 laptop. \\
 Shutdown warnings appeared in some runs. & The analyzer separated mission performance from Webots/Chromium shutdown artifacts. \\
 \bottomrule
 \end{tabular}
@@ -171,4 +185,3 @@ Shutdown warnings appeared in some runs. & The analyzer separated mission perfor
 The final system demonstrates an autonomous firefighting mission using four Mavic drones deployed across four forest quadrants in Webots, supported by a Spot-like ground robot. The drones patrol their assigned forest quadrants, detect smoke/fire with camera-based OpenCV processing, navigate toward detected fire regions, drop water, and continue patrolling for additional propagated fires. The updated four-drone configuration reduces simulation load while preserving full-area coverage, satisfying the mission requirements for locomotion, perception, navigation, integration, and documentation.
 
 \end{document}
-```

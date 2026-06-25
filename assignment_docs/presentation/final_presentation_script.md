@@ -4,7 +4,7 @@
 
 Good day. My project is an autonomous forest firefighting robotics mission implemented in the Webots Forest Firefighters simulation environment. The aim was to program one or more robots to patrol a forest, detect fire or smoke using a camera, navigate toward the fire, and extinguish it by dropping water.
 
-For my implementation, I used four Mavic 2 Pro drones deployed across the four forest quadrants, supported by a Spot-like ground robot. I reduced the previous six-drone setup to four drones because the laptop has 6 GB of RTX A1000 VRAM, and four drones preserve full forest coverage while reducing Webots camera, controller, and overlay load. Aerial robots give wider forest coverage, faster movement, and direct top-down camera visibility of smoke and fire regions.
+For my implementation, I used four Mavic 2 Pro drones deployed across the four forest quadrants, supported by a Spot-like ground robot. The original project baseline had the drone and Spot robot. During development, I experimented with eight drones for maximum coverage, then six drones, and finally selected four drones plus Spot because the laptop has 6 GB of RTX A1000 VRAM. Four drones preserve full forest coverage while reducing Webots camera, controller, and overlay load.
 
 ---
 
@@ -48,7 +48,7 @@ For locomotion, the drone uses four propeller motors. The controller calculates 
 
 GPS gives the current position and altitude, while the inertial unit and gyro provide orientation and angular velocity. This allows the drone to take off, stabilise at its target altitude, patrol between waypoints, and hover above detected fire targets before dropping water.
 
-This addresses the locomotion requirement: stable drone movement, altitude control, and precise positioning for water drop.
+The Spot robot remains active using a simple continuous gait loop and supports the mission with a keyboard-triggered water burst. This addresses the locomotion requirement with both aerial movement and a visible legged-robot component.
 
 ---
 
@@ -80,7 +80,7 @@ This demonstrates localisation, path-following, and dynamic behaviour when new f
 
 When the detected fire becomes centred in the camera frame, the drone assumes it is positioned above the target. It then triggers water dropping using the drone's custom data field.
 
-After dropping water, the controller clears the current target and continues patrolling. This means the robot can continue responding to multiple fire detections caused by wildfire propagation.
+After dropping water, the controller clears the current target and continues patrolling. This means the robot can continue responding to multiple fire detections caused by wildfire propagation. Spot provides a secondary water-delivery path during the demo when I press `D`.
 
 The integration behaviour is fully autonomous: the system moves from patrol to detection, then approach, then water drop, then back to patrol.
 
@@ -88,7 +88,7 @@ The integration behaviour is fully autonomous: the system moves from patrol to d
 
 ## Results: 45-60 seconds
 
-I carried out repeated mission tests and analysed the logs automatically.
+I carried out repeated mission tests and analysed the logs automatically. The existing results are retained as tuning evidence from the pre-final mission runs; after this final four-drone configuration, the mission should be rerun with `./tools/run_mission_test.sh live_demo_four_drone` to regenerate the submission metrics.
 
 The primary clean run was `stability_repeat_01`, which achieved:
 - 107 fire detections.
@@ -118,6 +118,8 @@ The third challenge was drone launch verification. Because the terrain is elevat
 
 The fourth challenge was a perception bug. The controller could crash when smoke was detected but no valid contour was selected. I fixed it by safely initialising `coord_fire` so the function returns an empty list instead of crashing.
 
+The fifth challenge was choosing the fleet size. Eight drones maximised coverage but increased rendering and controller load. Six drones still produced Webots instability in the GPU container. Four drones plus Spot is the final balanced architecture for this laptop.
+
 ---
 
 ## Live Demo Commands
@@ -126,4 +128,21 @@ First, start the Webots Docker container from the host:
 
 ```bash
 cd ~/Desktop/ros/webots-r2021b-gpu
-./run-gpu.sh              Inside the container:
+./run-gpu.sh
+```
+
+Inside the container:
+
+```bash
+cd /workspace/webots-projects/projects/forest_firefighters
+python3 tools/preflight_check.py
+./tools/run_mission_test.sh live_demo_four_drone
+```
+
+For an interactive demo:
+
+```bash
+webots worlds/forest_firefighters.wbt
+```
+
+During the demo, I show the four drone camera overlays, point out the green tree boxes and red fire/smoke boxes, and select Spot to demonstrate the `D` water-burst command.
