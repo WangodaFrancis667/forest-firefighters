@@ -279,7 +279,7 @@ class Mavic (Robot):
                               help="Specify the patrol coordinates in the format [x1 y1, x2 y2, ...]")
         opt_parser.add_option("--target_altitude", default=42,
                               type=float, help="target altitude of the robot in meters")
-        opt_parser.add_option("--detection_interval", default=0.75,
+        opt_parser.add_option("--detection_interval", default=0.5,
                               type=float, help="seconds between camera fire-detection passes")
         opt_parser.add_option("--debug_images", action="store_true", default=False,
                               help="save fire_detection.jpg with detected contours")
@@ -330,7 +330,7 @@ class Mavic (Robot):
 
                 if not self.WaterDropStatus:
                     t3 = self.getTime()
-                if self.getTime() - t3 > 15:  # Wait 15 times to avoid detection of the dropping water as smoke
+                if self.getTime() - t3 > 10:  # Avoid re-detecting the water plume as smoke.
                     self.WaterDropStatus = False
 
             roll_input = self.K_ROLL_P * \

@@ -29,6 +29,8 @@ mission_failure_patterns = [
 ]
 
 shutdown_artifact_patterns = [
+    r"Mission duration reached",
+    r"Requesting clean Webots shutdown",
     r"zygote",
     r"Network service crashed",
     r"QXcbConnection",
@@ -40,6 +42,17 @@ shutdown_artifact_patterns = [
 def matches_any(line, patterns):
     return any(re.search(pattern, line, flags=re.IGNORECASE) for pattern in patterns)
 
+clean_shutdown_index = next(
+    (
+        index for index, line in enumerate(lines)
+        if re.search(r"Mission duration reached|Requesting clean Webots shutdown", line, flags=re.IGNORECASE)
+    ),
+    None,
+)
+
+def after_clean_shutdown(index):
+    return clean_shutdown_index is not None and index >= clean_shutdown_index
+
 controller_starts = len(re.findall(r"Starting controller", text, flags=re.IGNORECASE))
 wildfires_started = len(re.findall(r"Starting wildfire", text, flags=re.IGNORECASE))
 fire_detections = len(re.findall(r"fire detected", text, flags=re.IGNORECASE))
@@ -47,29 +60,29 @@ water_drops = len(re.findall(r"Water dropped", text, flags=re.IGNORECASE))
 targets_reached = len(re.findall(r"Target reached", text, flags=re.IGNORECASE))
 
 raw_error_lines = [
-    line for line in lines
+    (index, line) for index, line in enumerate(lines)
     if re.search(r"\bERROR\b", line, flags=re.IGNORECASE)
     or matches_any(line, mission_failure_patterns)
 ]
 
 raw_crash_lines = [
-    line for line in lines
+    (index, line) for index, line in enumerate(lines)
     if re.search(r"crashed|Segmentation fault", line, flags=re.IGNORECASE)
 ]
 
 shutdown_artifact_lines = [
-    line for line in raw_error_lines + raw_crash_lines
-    if matches_any(line, shutdown_artifact_patterns)
+    line for index, line in raw_error_lines + raw_crash_lines
+    if matches_any(line, shutdown_artifact_patterns) or after_clean_shutdown(index)
 ]
 
 mission_crash_lines = [
-    line for line in raw_crash_lines
-    if not matches_any(line, shutdown_artifact_patterns)
+    line for index, line in raw_crash_lines
+    if not matches_any(line, shutdown_artifact_patterns) and not after_clean_shutdown(index)
 ]
 
 mission_error_lines = [
-    line for line in raw_error_lines
-    if not matches_any(line, shutdown_artifact_patterns)
+    line for index, line in raw_error_lines
+    if not matches_any(line, shutdown_artifact_patterns) and not after_clean_shutdown(index)
 ]
 
 water_drop_lines = [

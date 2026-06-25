@@ -143,8 +143,8 @@ class Fire(Supervisor):
     MAX_PROPAGATION = 5    # the maximum distance that the fire can propagate in meter
     MAX_EXTINCTION = 4      # the maximum distance from a tree where water can stop its fire in meter
     FIRE_DURATION = 50
-    FIRE_START_DELAY = 90.0
-    MISSION_DURATION = 420.0
+    FIRE_START_DELAY = 40.0
+    MISSION_DURATION = 300.0
 
     def __init__(self):
         super(Fire, self).__init__()

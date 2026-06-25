@@ -9,6 +9,12 @@ expected_positions = {
     3: (26.0, 3.0, 15.25, "SE"),
     4: (28.0, 26.0, 19.34, "NE"),
 }
+expected_patrols = {
+    1: "6 6, 14 8, 14 14, 8 14, 10 10",
+    2: "6 24, 14 22, 14 16, 8 16, 10 20",
+    3: "24 6, 16 8, 16 14, 24 14, 20 10",
+    4: "24 24, 16 22, 16 16, 24 16, 20 20",
+}
 position_tolerance = 0.15
 
 if not world_path.exists():
@@ -50,12 +56,18 @@ for index, block in enumerate(mavic_blocks, start=1):
     elif controller.group(1) != "autonomous_mavic":
         errors.append(f"Mavic {index}: expected controller autonomous_mavic, found {controller.group(1)}.")
 
+    expected_patrol = expected_patrols.get(index)
     if "--patrol_coords=" not in block:
         errors.append(f"Mavic {index}: missing --patrol_coords argument.")
+    elif expected_patrol and f"--patrol_coords={expected_patrol}" not in block:
+        errors.append(
+            f"Mavic {index}: expected interior patrol route '{expected_patrol}' "
+            "so the central forest is covered."
+        )
     if "--target_altitude=" not in block:
         errors.append(f"Mavic {index}: missing --target_altitude argument.")
-    if "--detection_interval=" not in block:
-        errors.append(f"Mavic {index}: missing --detection_interval argument.")
+    if "--detection_interval=0.5" not in block:
+        errors.append(f"Mavic {index}: expected --detection_interval=0.5 for faster fire response.")
     if 'Display {' not in block or 'name "vision overlay"' not in block:
         errors.append(f"Mavic {index}: missing vision overlay Display for status bar.")
     if "width 160" not in block or "height 160" not in block:
@@ -72,10 +84,10 @@ if 'controller "spot"' not in text:
 
 if 'controller "fire"' not in text:
     errors.append("Fire supervisor controller not found.")
-if "--start_delay=90" not in text:
-    errors.append("Fire supervisor must use --start_delay=90 so wildfire starts after 1 minute 30 seconds.")
-if "--mission_duration=420" not in text:
-    errors.append("Fire supervisor must use --mission_duration=420 for clean batch-test shutdown.")
+if "--start_delay=40" not in text:
+    errors.append("Fire supervisor must use --start_delay=40 so wildfire starts after 40 seconds.")
+if "--mission_duration=300" not in text:
+    errors.append("Fire supervisor must use --mission_duration=300 for clean batch-test shutdown.")
 
 if errors:
     print("\nPREFLIGHT FAILED")
@@ -84,7 +96,7 @@ if errors:
     sys.exit(1)
 
 print("\nPREFLIGHT PASSED")
-print("Four drones are configured for quadrant patrol with autonomous_mavic controllers and status-bar overlays.")
+print("Four drones are configured for interior quadrant patrol with autonomous_mavic controllers and status-bar overlays.")
 
 if warnings:
     print("\nWarnings:")

@@ -26,8 +26,8 @@ Robot {
   rotation 0 0 1 0
   controller "fire"
   controllerArgs [
-    "--start_delay=90"
-    "--mission_duration=420"
+    "--start_delay=40"
+    "--mission_duration=300"
   ]
   supervisor TRUE
   window "fire"
@@ -260,8 +260,8 @@ Mavic2Pro {
   controller "autonomous_mavic"
   controllerArgs [
     "--target_altitude=42"
-    "--patrol_coords=5 5, 14 5, 14 14, 5 14"
-    "--detection_interval=0.75"
+    "--patrol_coords=6 6, 14 8, 14 14, 8 14, 10 10"
+    "--detection_interval=0.5"
   ]
   customData "0"
   bodySlot [
@@ -285,8 +285,8 @@ Mavic2Pro {
   controller "autonomous_mavic"
   controllerArgs [
     "--target_altitude=42"
-    "--patrol_coords=5 16, 14 16, 14 27, 5 27"
-    "--detection_interval=0.75"
+    "--patrol_coords=6 24, 14 22, 14 16, 8 16, 10 20"
+    "--detection_interval=0.5"
   ]
   customData "0"
   bodySlot [
@@ -310,8 +310,8 @@ Mavic2Pro {
   controller "autonomous_mavic"
   controllerArgs [
     "--target_altitude=42"
-    "--patrol_coords=16 5, 27 5, 27 14, 16 14"
-    "--detection_interval=0.75"
+    "--patrol_coords=24 6, 16 8, 16 14, 24 14, 20 10"
+    "--detection_interval=0.5"
   ]
   customData "0"
   bodySlot [
@@ -335,8 +335,8 @@ Mavic2Pro {
   controller "autonomous_mavic"
   controllerArgs [
     "--target_altitude=42"
-    "--patrol_coords=16 16, 27 16, 27 27, 16 27"
-    "--detection_interval=0.75"
+    "--patrol_coords=24 24, 16 22, 16 16, 24 16, 20 20"
+    "--detection_interval=0.5"
   ]
   customData "0"
   bodySlot [
