@@ -46,29 +46,19 @@ class Tree:
 
     def stopFire(self):
         if self.fire:
-            try:
-                fire_translation_field = self.fire.getField('translation')
-                fire_translation = fire_translation_field.getSFVec3f()
-                t = [fire_translation[0], fire_translation[1], fire_translation[2]]
-                t[1] = 10000000
-                fire_translation_field.setSFVec3f(t)
-                self.fire.remove()  # Actually remove from world
-            except:
-                pass
-            finally:
-                self.fire = None
+            fire_translation_field = self.fire.getField('translation')
+            fire_translation = fire_translation_field.getSFVec3f()
+            t = [fire_translation[0], fire_translation[1], fire_translation[2]]
+            t[1] = 10000000
+            fire_translation_field.setSFVec3f(t)
+            self.fire = None
         if self.smoke:
-            try:
-                smoke_translation_field = self.smoke.getField('translation')
-                smoke_translation = smoke_translation_field.getSFVec3f()
-                t = [smoke_translation[0], smoke_translation[1], smoke_translation[2]]
-                t[1] = 10000000
-                smoke_translation_field.setSFVec3f(t)
-                self.smoke.remove()  # Actually remove from world
-            except:
-                pass
-            finally:
-                self.smoke = None
+            smoke_translation_field = self.smoke.getField('translation')
+            smoke_translation = smoke_translation_field.getSFVec3f()
+            t = [smoke_translation[0], smoke_translation[1], smoke_translation[2]]
+            t[1] = 10000000
+            smoke_translation_field.setSFVec3f(t)
+            self.smoke = None
 
     def distance(self, coordinates):
         dx = self.translation[0] - coordinates[0]
@@ -105,25 +95,17 @@ class Robot():
             waterNode.setVelocity(velocity)
 
     def cleanWater(self):
-        # Use list comprehension to avoid modifying list during iteration
-        water_to_remove = []
         for waterBall in self.waterBalls:
             altitude = waterBall.getField('translation').getSFVec3f()[2]
             if altitude < 0:
-                water_to_remove.append(waterBall)
-        for waterBall in water_to_remove:
-            if waterBall in self.waterBalls:  # Safety check
                 self.waterBalls.remove(waterBall)
-            try:
                 waterBall.remove()
-            except:
-                pass  # Already removed
     def altitude(self):
         return self.node.getField('translation').getSFVec3f()[2]
 
 class Wind():
-    INTENSITY_EVOLVE = 0.004
-    ANGLE_EVOLVE = 0.002
+    INTENSITY_EVOLVE = 0.01
+    ANGLE_EVOLVE = 0.005
     RANDOM_EVOLUTION = True
 
     def __init__(self):
@@ -156,11 +138,10 @@ class Wind():
 
 class Fire(Supervisor):
     FLAME_CYCLE = 13        # there are 13 images in the flame animation
-    FLAME_PEAK = 20         # after 20 flame cycles, the fire starts to decrease
-    MAX_PROPAGATION = 32    # the maximum distance that the fire can propagate in meter
-    MAX_EXTINCTION = 5      # the maximum distance from a tree where water can stop its fire in meter
-    FIRE_DURATION = 90
-    MAX_ACTIVE_FIRES = 4
+    FLAME_PEAK = 17         # after 13 flame cycles, the fire starts to decrease
+    MAX_PROPAGATION = 5    # the maximum distance that the fire can propagate in meter
+    MAX_EXTINCTION = 4      # the maximum distance from a tree where water can stop its fire in meter
+    FIRE_DURATION = 50
 
     def __init__(self):
         super(Fire, self).__init__()
@@ -206,103 +187,65 @@ class Fire(Supervisor):
             self.ignite(random.choice(self.trees))
 
     def ignite(self, tree):
-        try:
-            if tree.fire_count > 1:  # already burnt
-                return
-            tree.fire_scale = tree.scale
-            fire_name = "fire " + tree.node.getField('name').getSFString()
-            fire = f'Fire {{ translation {tree.translation[0]} {tree.translation[1]} {tree.translation[2]} ' \
-                   f'scale {tree.fire_scale} {tree.fire_scale} {tree.fire_scale} ' \
-                   f'name "{fire_name}" }}'
-            self.children.importMFNodeFromString(-1, fire)
-            tree.fire = self.children.getMFNode(-1)
-            tree.fire_translation_field = tree.fire.getField('translation')
-            tree.fire_scale_field = tree.fire.getField('scale')
-            tree.fire_translation = tree.fire_translation_field.getSFVec3f()
-        except Exception as e:
-            print(f"Error igniting fire: {e}")
-            tree.fire = None
+        if tree.fire_count > 1:  # already burnt
+            return
+        tree.fire_scale = tree.scale
+        fire = f'Fire {{ translation {tree.translation[0]} {tree.translation[1]} {tree.translation[2]} ' \
+               f'scale {tree.fire_scale} {tree.fire_scale} {tree.fire_scale} }}'
+        self.children.importMFNodeFromString(-1, fire)
+        tree.fire = self.children.getMFNode(-1)
+        tree.fire_translation_field = tree.fire.getField('translation')
+        tree.fire_scale_field = tree.fire.getField('scale')
+        tree.fire_translation = tree.fire_translation_field.getSFVec3f()
 
     def burn(self, tree):
-        try:
-            if self.update_fire and tree.fire:
-                tree.fire_count += 1
-                if tree.fire_count % self.FLAME_CYCLE == 0:
-                    tree.fire_scale *= 1.2 if tree.fire_count < self.FLAME_PEAK * self.FLAME_CYCLE else 0.8
-                    if tree.fire_count == self.FLAME_PEAK * self.FLAME_CYCLE:
-                        try:
-                            tree.node.getField('burnt').setSFBool(True)
-                        except:
-                            pass
-                    try:
-                        tree.fire_scale_field.setSFVec3f([tree.fire_scale, tree.fire_scale, tree.fire_scale])
-                    except:
-                        tree.stopFire()
-                        return
-                    if tree.fire_scale < tree.scale:
-                        tree.stopFire()
-                        return
-                t = [tree.fire_translation[0], tree.fire_translation[1], tree.fire_translation[2]]
-                t[1] -= 100000 * tree.fire_scale * (tree.fire_count % 13)
-                try:
-                    tree.fire_translation_field.setSFVec3f(t)
-                except:
+        if self.update_fire:
+            tree.fire_count += 1
+            if tree.fire_count % self.FLAME_CYCLE == 0:
+                tree.fire_scale *= 1.2 if tree.fire_count < self.FLAME_PEAK * self.FLAME_CYCLE else 0.8
+                if tree.fire_count == self.FLAME_PEAK * self.FLAME_CYCLE:
+                    tree.node.getField('burnt').setSFBool(True)
+                tree.fire_scale_field.setSFVec3f([tree.fire_scale, tree.fire_scale, tree.fire_scale])
+                if tree.fire_scale < tree.scale:
                     tree.stopFire()
-                    return
-                self.propagate(tree)
-                if tree.fire_count == 1:
-                    try:
-                        smoke_name = "smoke " + tree.node.getField('name').getSFString()
-                        smoke = f'Smoke {{ translation {tree.translation[0]} {tree.translation[1]} {tree.translation[2]} ' \
-                            f'scale {0.01} {0.01} {0.01} ' \
-                            f'name "{smoke_name}" }}'
-                        self.children.importMFNodeFromString(-1, smoke)
-                        tree.smoke = self.children.getMFNode(-1)
-                        tree.smoke_translation_field = tree.smoke.getField('translation')
-                        tree.smoke_scale_field = tree.smoke.getField('scale')
-                        tree.smoke_translation = tree.smoke_translation_field.getSFVec3f()
-                    except:
-                        pass
-                if 0 < tree.fire_count < 70 and tree.smoke:
-                    try:
-                        tree.smoke_scale_field.setSFVec3f([tree.fire_count/100, tree.fire_count/100, tree.fire_count/100])
-                    except:
-                        pass
-        except Exception as e:
-            print(f"Error burning tree: {e}")
-            tree.stopFire()
+            t = [tree.fire_translation[0], tree.fire_translation[1], tree.fire_translation[2]]
+            t[1] -= 100000 * tree.fire_scale * (tree.fire_count % 13)
+            tree.fire_translation_field.setSFVec3f(t)
+            self.propagate(tree)
+            if tree.fire_count == 1:
+                smoke = f'Smoke {{ translation {tree.translation[0]} {tree.translation[1]} {tree.translation[2]} ' \
+                    f'scale {0.01} {0.01} {0.01} }}'
+                self.children.importMFNodeFromString(-1, smoke)
+                tree.smoke = self.children.getMFNode(-1)
+                tree.smoke_translation_field = tree.smoke.getField('translation')
+                tree.smoke_scale_field = tree.smoke.getField('scale')
+                tree.smoke_translation = tree.smoke_translation_field.getSFVec3f()
+            if 0 < tree.fire_count < 70:
+                tree.smoke_scale_field.setSFVec3f([tree.fire_count/100, tree.fire_count/100, tree.fire_count/100])
 
     def propagate(self, tree):  # propagate fire to neighbouring trees
-        try:
-            fire_peak = self.FLAME_PEAK * self.FLAME_CYCLE
-            fire_strength = (min(tree.fire_count, 2 * fire_peak - tree.fire_count) / fire_peak) ** 2
-            for t in self.trees:
-                if t == tree or not t or t.fire:
-                    continue
-                try:
-                    propagation_radius = self.MAX_PROPAGATION * fire_strength
-                    distance = self.wind.correctedDistance(tree, t, propagation_radius)
-                    if distance + t.robustness < propagation_radius * math.sqrt(tree.scale):
-                        self.ignite(t)
-                except:
-                    pass
-        except Exception as e:
-            print(f"Error propagating fire: {e}")
+        fire_peak = self.FLAME_PEAK * self.FLAME_CYCLE
+        fire_strength = (min(tree.fire_count, 2 * fire_peak - tree.fire_count) / fire_peak) ** 2
+        for t in self.trees:
+            if t == tree:
+                continue
+            propagation_radius = self.MAX_PROPAGATION * fire_strength
+            distance = self.wind.correctedDistance(tree, t, propagation_radius)
+
+            if distance + t.robustness < propagation_radius * math.sqrt(tree.scale):
+                self.ignite(t)
 
     def checkExtinction(self, tree):  # check and extinct the fire if there is water close enough
         for robot in self.robots:
             for water in robot.waterBalls:
-                try:
-                    water_position = water.getField('translation').getSFVec3f()
-                    water_radius = water.getField('radius').getSFFloat()
-                    water_extinction_radius = self.MAX_EXTINCTION * water_radius / robot.MAX_WATER_RADIUS
-                    if tree.distance(water_position) < water_extinction_radius:
-                        fire_size = tree.scale * tree.fire_scale / 20
-                        if water_radius / robot.MAX_WATER_RADIUS > fire_size:
-                            tree.stopFire()
-                            return True
-                except:
-                    pass  # Water may have been removed
+                water_position = water.getField('translation').getSFVec3f()
+                water_radius = water.getField('radius').getSFFloat()
+                water_extinction_radius = self.MAX_EXTINCTION * water_radius / robot.MAX_WATER_RADIUS
+                if tree.distance(water_position) < water_extinction_radius:
+                    fire_size = tree.scale * tree.fire_scale / 20
+                    if water_radius / robot.MAX_WATER_RADIUS > fire_size:
+                        tree.stopFire()
+                        return True
         return False                    
 
     def run(self):
@@ -339,24 +282,14 @@ class Fire(Supervisor):
                 extinction = [] 
                 for tree in self.trees:
                     if tree.fire:
-                        try:
-                            self.burn(tree)
-                            extinction.append(self.checkExtinction(tree))
-                        except:
-                            pass  # Handle edge cases where fire state is corrupted
+                        self.burn(tree)
+                        extinction.append(self.checkExtinction(tree))
                 
-                # Only ignite a new fire if one was actually extinguished
-                # and limit concurrent fires to prevent memory exhaustion
                 if True in extinction:
-                    active_fires = sum(1 for tree in self.trees if tree.fire)
-                    if active_fires < self.MAX_ACTIVE_FIRES:
-                        try:
-                            self.ignite(random.choice(self.trees))
-                        except:
-                            pass  # Ignore if ignition fails
+                        self.ignite(random.choice(self.trees))
             else:
-                for robot in self.robots: # the simulation starts when any mavic drone reaches altitude > 40
-                    if not start_fire_now and robot.name.startswith("Mavic 2 PRO") and robot.altitude() > 40:
+                for robot in self.robots: # the simulation starts when the mavic got an altitude > 40
+                    if not start_fire_now and robot.name == "Mavic 2 PRO" and robot.altitude() > 40:
                             start_fire_now = True
 
 controller = Fire()

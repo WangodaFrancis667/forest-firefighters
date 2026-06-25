@@ -1,5 +1,6 @@
 from controller import Robot
 import sys
+import random
 import optparse
 try:
     import numpy as np
@@ -34,15 +35,12 @@ class Mavic (Robot):
         Robot.__init__(self)
 
         self.time_step = int(self.getBasicTimeStep())
-        self.name = self.getName()
 
         self.water_to_drop = 0
 
         # Get and enable devices.
         self.camera = self.getDevice("camera")
         self.camera.enable(self.time_step)
-        if self.camera.hasRecognition():
-            self.camera.recognitionEnable(max(4 * self.time_step, 250))
         self.imu = self.getDevice("inertial unit")
         self.imu.enable(self.time_step)
         self.gps = self.getDevice("gps")
@@ -68,50 +66,7 @@ class Mavic (Robot):
 
         self.world_fire_quadrants = [0, 0]
         self.img_coord_fire = []
-        self.fire_bbox = None
-        self.pending_fire_coord = []
-        self.pending_fire_bbox = None
-        self.fire_confirmations = 0
-        self.tree_overlay_limit = 0
         self.WaterDropStatus = False
-        self.debug_images = False
-        self.display = self.get_optional_display()
-        if self.display:
-            self.display.attachCamera(self.camera)
-            self.display.setFont("Arial", 10, True)
-
-    def get_optional_display(self):
-        try:
-            return self.getDevice("vision overlay")
-        except Exception:
-            return None
-
-    def call_recognition_method(self, obj, *names):
-        for name in names:
-            method = getattr(obj, name, None)
-            if method is None:
-                continue
-            try:
-                return method()
-            except Exception:
-                continue
-        return None
-
-    def get_recognition_box(self, obj, width, height):
-        center = self.call_recognition_method(obj, "getPositionOnImage", "get_position_on_image")
-        size = self.call_recognition_method(obj, "getSizeOnImage", "get_size_on_image")
-        if center is None or size is None:
-            return None
-
-        center_x, center_y = center
-        size_x, size_y = size
-        x = int(max(0, center_x - size_x / 2))
-        y = int(max(0, center_y - size_y / 2))
-        w = int(min(width - x - 1, size_x))
-        h = int(min(height - y - 1, size_y))
-        if w <= 2 or h <= 2:
-            return None
-        return x, y, w, h
 
     def get_image_from_camera(self):
         """
@@ -122,12 +77,8 @@ class Mavic (Robot):
         Returns:
             image of the camera
         """
-        width = self.camera.getWidth()
-        height = self.camera.getHeight()
-        img = self.camera.getImage()
-        if img is None:
-            return None
-        img = np.frombuffer(img, np.uint8).reshape((height, width, 4))
+        img = self.camera.getImageArray()
+        img = np.asarray(img, dtype=np.uint8)
         img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
         img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
         return cv2.flip(img, 1)
@@ -206,20 +157,17 @@ class Mavic (Robot):
         yaw = (self.current_pose[5] + 2*np.pi) % (2*np.pi)
         self.world_fire_quadrants = [0, 0]
 
-        center_tolerance = 20
-        if abs(x_img - resolutionX / 2) > center_tolerance:
-            self.world_fire_quadrants[0] = np.sign(x_img - resolutionX / 2)
-        if abs(y_img - resolutionY / 2) > center_tolerance:
-            self.world_fire_quadrants[1] = np.sign(y_img - resolutionY / 2)
-        # Use the drone's current yaw to correctly map image quadrants to
-        # world-space yaw/pitch corrections (original working logic).
+        if abs(x_img-resolutionX/2) > 20:
+            self.world_fire_quadrants[0] = np.sign(x_img-resolutionX/2)
+        if abs(y_img-resolutionY/2) > 20:
+            self.world_fire_quadrants[1] = np.sign(y_img-resolutionY/2)
         self.world_fire_quadrants[1] *= np.sign(yaw)
         self.world_fire_quadrants[0] *= -np.sign(yaw)
 
-        yaw_disturbance = self.world_fire_quadrants[0] * clamp(
-            abs(x_img - resolutionX / 2), 0, self.MAX_YAW_DISTURBANCE)
-        pitch_disturbance = self.world_fire_quadrants[1] * clamp(
-            abs(y_img - resolutionY / 2), 0, abs(self.MAX_PITCH_DISTURBANCE))
+        yaw_disturbance = self.world_fire_quadrants[0]*clamp(
+            abs(x_img-resolutionX/2), 0, self.MAX_YAW_DISTURBANCE)
+        pitch_disturbance = self.world_fire_quadrants[1]*clamp(
+            abs(y_img-resolutionY/2), 0, abs(self.MAX_PITCH_DISTURBANCE))
 
         if self.world_fire_quadrants == [0, 0]:
             self.water_to_drop = 15
@@ -227,202 +175,62 @@ class Mavic (Robot):
                 print("Water dropped on fire target: {} at position {}".format(
                     self.target_position[0:2], self.current_pose[0:2]))
             self.img_coord_fire = []
-            self.fire_bbox = None
 
         return yaw_disturbance, pitch_disturbance
 
-    def draw_detection_overlay(self, fire_detected=False):
-        if not self.display:
-            return
-
-        width = self.display.getWidth()
-        height = self.display.getHeight()
-        bar_height = 14
-
-        # Status bar at the top of the camera feed
-        if self.WaterDropStatus:
-            # Blue bar — dropping water / cooldown
-            self.display.setOpacity(0.85)
-            self.display.setColor(0x2196F3)
-            self.display.fillRectangle(0, 0, width, bar_height)
-            self.display.setOpacity(1.0)
-            self.display.setColor(0xFFFFFF)
-            self.display.drawText(self.name + " WATER DROP", 4, 2)
-        elif fire_detected:
-            # Red bar — fire detected
-            self.display.setOpacity(0.85)
-            self.display.setColor(0xFF2200)
-            self.display.fillRectangle(0, 0, width, bar_height)
-            self.display.setOpacity(1.0)
-            self.display.setColor(0xFFFFFF)
-            self.display.drawText(self.name + " FIRE", 4, 2)
-
-            # Draw a single bounding box around the detected fire
-            if self.fire_bbox:
-                x, y, w, h = self.fire_bbox
-                self.display.setColor(0xFF3300)
-                self.display.drawRectangle(x, y, w, h)
-                self.display.drawRectangle(max(0, x - 1), max(0, y - 1), w + 2, h + 2)
-        else:
-            # Green bar — patrolling, no fire
-            self.display.setOpacity(0.85)
-            self.display.setColor(0x4CAF50)
-            self.display.fillRectangle(0, 0, width, bar_height)
-            self.display.setOpacity(1.0)
-            self.display.setColor(0xFFFFFF)
-            self.display.drawText(self.name, 4, 2)
-
-    def reset_fire_candidate(self):
-        self.pending_fire_coord = []
-        self.pending_fire_bbox = None
-        self.fire_confirmations = 0
-        self.fire_bbox = None
-
-    def confirm_fire_candidate(self, coord_fire, fire_bbox, required_confirmations, verbose=True):
-        if not coord_fire or fire_bbox is None:
-            self.reset_fire_candidate()
-            self.draw_detection_overlay(False)
-            return []
-
-        if self.pending_fire_coord:
-            movement = np.linalg.norm(
-                np.array(coord_fire) - np.array(self.pending_fire_coord))
-            if movement <= 35:
-                self.fire_confirmations += 1
-            else:
-                self.fire_confirmations = 1
-        else:
-            self.fire_confirmations = 1
-
-        self.pending_fire_coord = [float(coord_fire[0]), float(coord_fire[1])]
-        self.pending_fire_bbox = fire_bbox
-
-        if self.fire_confirmations < required_confirmations:
-            self.fire_bbox = None
-            self.draw_detection_overlay(False)
-            return []
-
-        self.fire_bbox = fire_bbox
-        if verbose:
-            print("fire detected, coordinates {}".format(tuple(coord_fire)))
-        return coord_fire
-
-    def _recognition_confirms_fire(self):
-        """Check if Webots camera recognition sees fire or smoke objects.
-
-        Returns the list of recognition objects whose model name contains
-        'fire' or 'smoke'.  An empty list means the recognition system
-        does not see any fire/smoke in the current frame.
+    def fire_detection(self, verbose=True):
         """
-        if not self.camera.hasRecognition():
-            return []
-        try:
-            objects = self.camera.getRecognitionObjects()
-        except Exception:
-            return []
-        fire_objects = []
-        for obj in objects:
-            # getModel() / get_model() returns the PROTO 'model' field
-            model = self.call_recognition_method(obj, "getModel", "get_model")
-            if model:
-                if isinstance(model, bytes):
-                    model = model.decode('utf-8', errors='ignore')
-                if 'fire' in model.lower() or 'smoke' in model.lower():
-                    fire_objects.append(obj)
-        return fire_objects
-
-    def fire_detection(self, verbose=True, required_confirmations=3):
+        Detect the smoke and return the fire coordinate in the image
+        Parameters:
+            verbose (bool): whether to print status messages or not
+        Returns:
+            coord_fire (list):x,y image coordinates of the fire
         """
-        Detect fire/smoke using a two-stage approach:
-          1) PRIMARY: Webots camera recognition (model='fire' or 'smoke')
-          2) SECONDARY: HSV colour thresholding to localise the smoke blob
-        This avoids false positives from bright terrain or sky pixels.
-        """
-        # --- Stage 1: Recognition gate ---
-        # If camera recognition is available, require at least one recognised
-        # fire/smoke object before running the expensive HSV pipeline.
-        recognised_fire = self._recognition_confirms_fire()
-        if self.camera.hasRecognition() and not recognised_fire:
-            # Recognition is active but sees no fire/smoke → definitely clear
-            self.reset_fire_candidate()
-            self.draw_detection_overlay(False)
-            return []
-
-        # --- Stage 2: HSV localisation ---
         img = self.get_image_from_camera()
-        if img is None:
-            return []
-
+        # Segment the image by color in HSV color space
         hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
-        # Tight smoke thresholds: very bright (V≥200), very low saturation
-        # (S≤60).  This rejects sandy terrain (lower V, higher S) while
-        # still catching the bright-white Webots smoke plumes.
-        smoke_lower = np.array([0, 0, 200])
-        smoke_upper = np.array([179, 60, 255])
-        mask_smoke = cv2.inRange(hsv, smoke_lower, smoke_upper)
-        mask_fire = cv2.medianBlur(mask_smoke, 3)
-        kernel = np.ones((3, 3), np.uint8)
-        mask_fire = cv2.morphologyEx(mask_fire, cv2.MORPH_OPEN, kernel)
-        mask_fire = cv2.morphologyEx(mask_fire, cv2.MORPH_CLOSE, kernel)
+        # Range of the smoke
+        smoke_lower = np.array([0, 0, 168])
+        smoke_upper = np.array([172, 111, 255])
+
+        mask_fire = cv2.inRange(hsv, smoke_lower, smoke_upper)
 
         fire_ratio = np.round(
-            (cv2.countNonZero(mask_fire)) / (img.size / 3) * 100, 2)
+            (cv2.countNonZero(mask_fire))/(img.size/3)*100, 2)
+        if fire_ratio > 0.15:  # Higher the fire ratio, higher the number of fire in the image
 
-        # Require at least 0.15% coverage (matching original) and cap at 20%
-        if 0.15 < fire_ratio < 20.0:
-            coord_fire = []
-            fire_bbox = None
-            radius_max = 0
-
+            # Detect the contours on the binary image using cv2.CHAIN_APPROX_NONE
             contours, _ = cv2.findContours(
-                image=mask_fire, mode=cv2.RETR_EXTERNAL,
-                method=cv2.CHAIN_APPROX_SIMPLE)
+                image=mask_fire, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
 
-            contours_poly = [None] * len(contours)
-            centers = [None] * len(contours)
-            radius = [None] * len(contours)
+            # Approximate contours to polygons + get circles
+            contours_poly = [None]*len(contours)
+            centers = [None]*len(contours)
+            radius = [None]*len(contours)
+            radius_max = 0
             for i, c in enumerate(contours):
-                area = cv2.contourArea(c)
-                if area < 25 or area > 2500:
-                    continue
                 contours_poly[i] = cv2.approxPolyDP(c, 3, True)
                 centers[i], radius[i] = cv2.minEnclosingCircle(
                     contours_poly[i])
-                x, y, w, h = cv2.boundingRect(contours_poly[i])
-                if w < 5 or h < 5:
-                    continue
-                aspect_ratio = float(w) / float(h)
-                if aspect_ratio < 0.25 or aspect_ratio > 4.0:
-                    continue
-                if radius[i] > 4 and radius[i] > radius_max:
+                # We keep only the biggest circle and > 3
+                if radius[i] > 3 and radius[i] > radius_max:
                     coord_fire = centers[i]
                     radius_max = radius[i]
-                    fire_bbox = (int(x), int(y), int(w), int(h))
+                    if verbose:
+                        print(
+                            "fire detected, coordinates {}".format(centers[i]))
 
-            if not coord_fire:
-                self.reset_fire_candidate()
-                self.draw_detection_overlay(False)
-                return []
-
-            if coord_fire and self.debug_images:
+            if verbose:  # Draw polygonal contour + circles and save the image
                 drawing = img.copy()
-                x, y, w, h = fire_bbox
-                cv2.rectangle(drawing, (x, y), (x + w, y + h),
-                              (255, 0, 0), 2)
-                cv2.circle(drawing,
-                           (int(coord_fire[0]), int(coord_fire[1])),
-                           int(radius_max), (255, 0, 0), 2)
+                for i in range(len(contours)):
+                    color = (random.randint(0, 256), random.randint(
+                        0, 256), random.randint(0, 256))
+                    cv2.drawContours(drawing, contours_poly, i, color)
+                    cv2.circle(drawing, (int(centers[i][0]), int(
+                        centers[i][1])), int(radius[i]), color, 2)
                 cv2.imwrite("fire_detection.jpg", drawing)
-
-            confirmed = self.confirm_fire_candidate(
-                coord_fire, fire_bbox, required_confirmations, verbose)
-            self.draw_detection_overlay(bool(confirmed))
-            return confirmed
-
-        self.reset_fire_candidate()
-        self.draw_detection_overlay(False)
-        return []
+            return coord_fire
 
     def run(self):
         t1 = self.getTime()
@@ -439,19 +247,7 @@ class Mavic (Robot):
                               help="Specify the patrol coordinates in the format [x1 y1, x2 y2, ...]")
         opt_parser.add_option("--target_altitude", default=42,
                               type=float, help="target altitude of the robot in meters")
-        opt_parser.add_option("--detection_interval", default=0.5,
-                              type=float, help="seconds between OpenCV fire detection passes")
-        opt_parser.add_option("--detection_start_delay", default=10.0,
-                              type=float, help="seconds to wait after reaching patrol altitude before detecting fire")
-        opt_parser.add_option("--fire_confirmations", default=3,
-                              type=int, help="consecutive matching detections required before targeting fire")
-        opt_parser.add_option("--tree_overlay_limit", default=0,
-                              type=int, help="manual tree boxes drawn on the display; 0 keeps the feed clear")
-        opt_parser.add_option("--debug_images", action="store_true", default=False,
-                              help="save annotated fire_detection.jpg when fire is detected")
         options, _ = opt_parser.parse_args()
-        self.debug_images = options.debug_images
-        self.tree_overlay_limit = max(0, options.tree_overlay_limit)
 
         point_list = options.patrol_coords.split(',')
         number_of_waypoints = len(point_list)
@@ -462,7 +258,6 @@ class Mavic (Robot):
             waypoints[i].append(float(point_list[i].split()[1]))
 
         target_altitude = options.target_altitude
-        detection_ready_time = None
 
         while self.step(self.time_step) != -1:
 
@@ -481,9 +276,6 @@ class Mavic (Robot):
                 self.setCustomData(str(0))
 
             if altitude > target_altitude - 1:
-                if detection_ready_time is None:
-                    detection_ready_time = self.getTime() + options.detection_start_delay
-
                 # Motion
                 if self.getTime() - t1 > 0.1:
                     if self.img_coord_fire:
@@ -492,23 +284,15 @@ class Mavic (Robot):
                         yaw_disturbance, pitch_disturbance = self.move_to_target(
                             waypoints)
                     t1 = self.getTime()
-                # Fire detection — keep running even during approach so
-                # coordinates stay fresh and the drone can converge on fire
-                if self.getTime() >= detection_ready_time and self.getTime() - t2 > options.detection_interval:
+                # Fire detection
+                if self.getTime() - t2 > 1:
                     if not self.WaterDropStatus:
-                        new_detection = self.fire_detection(
-                            required_confirmations=options.fire_confirmations)
-                        if new_detection:
-                            self.img_coord_fire = new_detection
-                        elif self.img_coord_fire:
-                            # Lost sight of fire — abandon approach
-                            self.img_coord_fire = []
-                            self.fire_bbox = None
+                        self.img_coord_fire = self.fire_detection()
                     t2 = self.getTime()
 
                 if not self.WaterDropStatus:
                     t3 = self.getTime()
-                if self.getTime() - t3 > 8:  # Cooldown after water drop before re-detecting
+                if self.getTime() - t3 > 15:  # Wait 15 times to avoid detection of the dropping water as smoke
                     self.WaterDropStatus = False
 
             roll_input = self.K_ROLL_P * \

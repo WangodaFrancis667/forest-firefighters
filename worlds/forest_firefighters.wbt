@@ -222,189 +222,48 @@ Solid {
 SquareManhole {
   translation 4 4 17.3
   rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
-  name "manhole(0)"
 }
 SquareManhole {
   translation 4 3 17.3
   rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
   name "manhole(1)"
 }
-SquareManhole {
-  translation 2 24 17.79
-  rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
-  name "manhole(2)"
-}
-SquareManhole {
-  translation 2 26 18.70
-  rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
-  name "manhole(3)"
-}
-SquareManhole {
-  translation 26 3 15.13
-  rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
-  name "manhole(4)"
-}
-SquareManhole {
-  translation 28 3 16.21
-  rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
-  name "manhole(5)"
-}
-SquareManhole {
-  translation 28 26 19.22
-  rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
-  name "manhole(6)"
-}
-SquareManhole {
-  translation 28 28 17.86
-  rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 -2.094395307179586
-  name "manhole(7)"
-}
-
 Spot {
   translation 6.5 3.254 17.12
   rotation 1 0 0 1.5708
   controller "spot"
   customData "0"
 }
-
 Mavic2Pro {
-  translation 4 4 17.40
+  translation 4 4 17.4
   rotation 0 0 1 0
-  name "Mavic 2 PRO(1)"
   controller "autonomous_mavic"
   controllerArgs [
-    "--target_altitude=42"
-    "--patrol_coords=5 5, 14 5, 14 14, 5 14"
-    "--detection_interval=1.0"
-    "--detection_start_delay=10"
-    "--fire_confirmations=3"
-    "--tree_overlay_limit=0"
+    "--target_altitude=45"
+    "--patrol_coords=11 11, 21 11, 21 21, 11 21"
   ]
   customData "0"
-  bodySlot [
-    Display {
-      name "vision overlay"
-      width 160
-      height 160
-    }
-  ]
   cameraSlot [
     Camera {
-      width 160
-      height 160
-      recognition Recognition {
-        maxRange 70
-        maxObjects 3
-        occlusion FALSE
-        frameColor 0 1 0
-        frameThickness 1
-      }
+      width 200
+      height 200
     }
   ]
 }
 Mavic2Pro {
-  translation 2 26 18.82
+  translation 4 3 17.43
   rotation 0 0 1 0
   name "Mavic 2 PRO(2)"
   controller "autonomous_mavic"
   controllerArgs [
-    "--target_altitude=42"
-    "--patrol_coords=5 16, 14 16, 14 27, 5 27"
-    "--detection_interval=1.0"
-    "--detection_start_delay=10"
-    "--fire_confirmations=3"
-    "--tree_overlay_limit=0"
+    "--target_altitude=43"
+    "--patrol_coords=21 21, 11 21, 11 11, 21 11"
   ]
   customData "0"
-  bodySlot [
-    Display {
-      name "vision overlay"
-      width 160
-      height 160
-    }
-  ]
   cameraSlot [
     Camera {
-      width 160
-      height 160
-      recognition Recognition {
-        maxRange 70
-        maxObjects 3
-        occlusion FALSE
-        frameColor 0 1 0
-        frameThickness 1
-      }
-    }
-  ]
-}
-
-Mavic2Pro {
-  translation 26 3 15.25
-  rotation 0 0 1 0
-  name "Mavic 2 PRO(3)"
-  controller "autonomous_mavic"
-  controllerArgs [
-    "--target_altitude=42"
-    "--patrol_coords=16 5, 27 5, 27 14, 16 14"
-    "--detection_interval=1.0"
-    "--detection_start_delay=10"
-    "--fire_confirmations=3"
-    "--tree_overlay_limit=0"
-  ]
-  customData "0"
-  bodySlot [
-    Display {
-      name "vision overlay"
-      width 160
-      height 160
-    }
-  ]
-  cameraSlot [
-    Camera {
-      width 160
-      height 160
-      recognition Recognition {
-        maxRange 70
-        maxObjects 3
-        occlusion FALSE
-        frameColor 0 1 0
-        frameThickness 1
-      }
-    }
-  ]
-}
-Mavic2Pro {
-  translation 28 26 19.34
-  rotation 0 0 1 0
-  name "Mavic 2 PRO(4)"
-  controller "autonomous_mavic"
-  controllerArgs [
-    "--target_altitude=42"
-    "--patrol_coords=16 16, 27 16, 27 27, 16 27"
-    "--detection_interval=1.0"
-    "--detection_start_delay=10"
-    "--fire_confirmations=3"
-    "--tree_overlay_limit=0"
-  ]
-  customData "0"
-  bodySlot [
-    Display {
-      name "vision overlay"
-      width 160
-      height 160
-    }
-  ]
-  cameraSlot [
-    Camera {
-      width 160
-      height 160
-      recognition Recognition {
-        maxRange 70
-        maxObjects 3
-        occlusion FALSE
-        frameColor 0 1 0
-        frameThickness 1
-      }
+      width 200
+      height 200
     }
   ]
 }

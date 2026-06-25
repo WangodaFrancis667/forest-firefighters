@@ -5,7 +5,6 @@ class Spot (Robot):
     NUMBER_OF_LEDS = 8
     NUMBER_OF_JOINTS = 12
     NUMBER_OF_CAMERAS = 5
-    WATER_BURST = 8
 
     def __init__(self):
         Robot.__init__(self)
@@ -30,23 +29,21 @@ class Spot (Robot):
             self.motors.append(motor)
 
         # Display manual control message.
-        print("Spot support active in stable posture. Press 'D' to throw water from Spot.")
+        print("You can throw water from Spot robot with your computer keyboard by pressing 'D'.")
 
     def robotStep(self):
-        if self.step(self.time_step) == -1:
-            return False
+        if self.step(self.time_step) != -1:
 
-        key = self.keyboard.getKey()
+            key = self.keyboard.getKey()
 
-        # throw the water from the robot
-        if key == ord('D'):
-            self.water_to_drop += self.WATER_BURST
-        elif self.water_to_drop > 0:
-            self.setCustomData(str(self.water_to_drop))
-            self.water_to_drop = 0
-        else:
-            self.setCustomData(str(0))
-        return True
+            # throw the water from the robot
+            if key == ord('D'):
+                self.water_to_drop += 1
+            elif self.water_to_drop > 0:
+                self.setCustomData(str(self.water_to_drop))
+                self.water_to_drop = 0
+            else:
+                self.setCustomData(str(0))
 
     def movementDecomposition(self, target, duration):
         n_steps_to_achieve_target = int(duration * 1000 / self.time_step)
@@ -62,47 +59,34 @@ class Spot (Robot):
             for j in range(self.NUMBER_OF_JOINTS):
                 current_position[j] += step_difference[j]
                 self.motors[j].setPosition(current_position[j])
-                if not self.robotStep():
-                    return False
-        return True
+                self.robotStep()
 
     def lieDown(self, duration):
         motors_target_pos = [-0.40, -0.99, 1.59,  # Front left leg
                              0.40,  -0.99, 1.59,  # Front right leg
                              -0.40, -0.99, 1.59,  # Rear left leg
                              0.40,  -0.99, 1.59]  # Rear right
-        return self.movementDecomposition(motors_target_pos, duration)
+        self.movementDecomposition(motors_target_pos, duration)
 
     def standUp(self, duration):
         motors_target_pos = [-0.1, 0, 0,  # Front left leg
                              0.1,  0, 0,  # Front right leg
                              -0.1, 0, 0,  # Rear left leg
                              0.1,  0, 0]  # Rear right
-        return self.movementDecomposition(motors_target_pos, duration)
+        self.movementDecomposition(motors_target_pos, duration)
 
     def sitDown(self, duration):
         motors_target_pos = [-0.20, -0.40, -0.19,  # Front left leg
                              0.20,  -0.40, -0.19,  # Front right leg
                              -0.40, -0.90, 1.18,   # Rear left leg
                              0.40,  -0.90, 1.18]   # Rear right
-        return self.movementDecomposition(motors_target_pos, duration)
+        self.movementDecomposition(motors_target_pos, duration)
 
-    def holdSupportPosture(self):
-        motors_target_pos = [-0.20, -0.40, -0.19,  # Front left leg
-                             0.20,  -0.40, -0.19,  # Front right leg
-                             -0.40, -0.90, 1.18,   # Rear left leg
-                             0.40,  -0.90, 1.18]   # Rear right
-        for i in range(self.NUMBER_OF_JOINTS):
-            self.motors[i].setPosition(motors_target_pos[i])
-
-    def run(self):
-        if not self.sitDown(1.5):
-            return
-
-        while True:
-            self.holdSupportPosture()
-            if not self.robotStep():
-                return
+    def run(self):      
+        while self.getTime() < 40:
+            self.lieDown(1)
+            self.standUp(1)
+            self.sitDown(1)
 
 
 robot = Spot()
