@@ -1,0 +1,33 @@
+flowchart TD
+    A[Webots Forest Firefighters World] --> B[Fire Controller]
+    A --> C1[SW Corner<br/>Mavics 1 & 2]
+    A --> C2[NW Corner<br/>Mavics 3 & 4]
+    A --> C3[SE Corner<br/>Mavics 5 & 6]
+    A --> C4[NE Corner<br/>Mavics 7 & 8]
+
+    B --> F[Dynamic Wildfire and Smoke Propagation]
+
+    C1 --> G1[Sensors<br/>Camera/GPS/IMU]
+    C2 --> G2[Sensors<br/>Camera/GPS/IMU]
+    C3 --> G3[Sensors<br/>Camera/GPS/IMU]
+    C4 --> G4[Sensors<br/>Camera/GPS/IMU]
+
+    G1 --> M[OpenCV HSV Smoke/Fire Detection]
+    G2 --> M
+    G3 --> M
+    G4 --> M
+
+    M --> N[Waypoint Patrol Navigation<br/>Assigned Forest Quadrant]
+    G1 --> O[Stabilised Drone Locomotion]
+    G2 --> O
+    G3 --> O
+    G4 --> O
+
+    M --> P[Fire Image Coordinates]
+    P --> Q[Naive Visual Approach]
+    Q --> R[Hover Above Fire Target]
+    R --> S[Water Drop via Custom Data]
+
+    S --> T[Continue Patrol and Handle Propagation]
+    N --> T
+

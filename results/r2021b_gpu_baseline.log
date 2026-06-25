@@ -1,0 +1,7 @@
+Info: Sandboxing disabled by user.
+INFO: fire: Starting controller: python3 -u fire.py
+INFO: spot: Starting controller: python3 -u spot.py
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=45 "--patrol_coords=11 11, 21 11, 21 21, 11 21"
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=43 "--patrol_coords=21 21, 11 21, 11 11, 21 11"
+Starting wildfire in a forest of 27 sassafras trees.
+You can throw water from Spot robot with your computer keyboard by pressing 'D'.

@@ -1,0 +1,105 @@
+Warning: QXcbConnection: XCB error: 3 (BadWindow), sequence: 1329, resource id: 2097202, major code: 40 (TranslateCoords), minor code: 0
+Info: Sandboxing disabled by user.
+INFO: fire: Starting controller: python3 -u fire.py
+INFO: spot: Starting controller: python3 -u spot.py
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=46 "--patrol_coords=6 6, 12 6, 12 12, 6 12"
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=44 "--patrol_coords=12 12, 6 12, 6 6, 12 6"
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=45 "--patrol_coords=6 18, 12 18, 12 26, 6 26"
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=43 "--patrol_coords=12 26, 6 26, 6 18, 12 18"
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=18 6, 26 6, 26 12, 18 12"
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=40 "--patrol_coords=26 12, 18 12, 18 6, 26 6"
+Starting wildfire in a forest of 27 sassafras trees.
+You can throw water from Spot robot with your computer keyboard by pressing 'D'.
+First target:  [26.0, 12.0]
+First target:  [12.0, 26.0]
+First target:  [12.0, 12.0]
+First target:  [18.0, 6.0]
+First target:  [6.0, 18.0]
+First target:  [6.0, 6.0]
+Target reached! New target:  [6.0, 26.0]
+Target reached! New target:  [12.0, 18.0]
+INFO: 'spot' controller exited successfully.
+fire detected, coordinates (92.97826385498047, 1.1521738767623901)
+fire detected, coordinates (94.5, 1.5)
+fire detected, coordinates (94.5, 6.5)
+fire detected, coordinates (22.5, 52.0)
+fire detected, coordinates (94.89436340332031, 13.936619758605957)
+fire detected, coordinates (51.0, 111.0)
+fire detected, coordinates (94.7727279663086, 21.590909957885742)
+fire detected, coordinates (120.19230651855469, 122.26923370361328)
+fire detected, coordinates (49.46154022216797, 117.76923370361328)
+fire detected, coordinates (19.0, 64.0)
+fire detected, coordinates (94.05555725097656, 29.907407760620117)
+fire detected, coordinates (122.75, 134.0)
+fire detected, coordinates (138.23077392578125, 82.46154022216797)
+fire detected, coordinates (50.5, 124.0)
+fire detected, coordinates (47.5, 124.5)
+fire detected, coordinates (17.399999618530273, 70.4000015258789)
+fire detected, coordinates (94.17375946044922, 37.77659606933594)
+fire detected, coordinates (127.63793182373047, 119.60344696044922)
+fire detected, coordinates (128.40322875976562, 65.08064270019531)
+fire detected, coordinates (189.05172729492188, 106.25862121582031)
+fire detected, coordinates (47.19230651855469, 131.11538696289062)
+fire detected, coordinates (15.42727279663086, 76.75454711914062)
+fire detected, coordinates (93.92105102539062, 46.28947448730469)
+fire detected, coordinates (131.5, 102.5)
+fire detected, coordinates (112.96341705322266, 50.06097412109375)
+fire detected, coordinates (194.8586883544922, 19.54347801208496)
+fire detected, coordinates (190.0, 100.5)
+fire detected, coordinates (46.0, 138.0)
+fire detected, coordinates (13.77419376373291, 83.90322875976562)
+fire detected, coordinates (93.92105102539062, 54.28947448730469)
+fire detected, coordinates (133.0, 92.5)
+fire detected, coordinates (94.7727279663086, 51.54545593261719)
+fire detected, coordinates (187.0, 77.0)
+fire detected, coordinates (44.735294342041016, 145.61764526367188)
+fire detected, coordinates (11.269230842590332, 91.11538696289062)
+fire detected, coordinates (93.5, 62.5)
+fire detected, coordinates (87.0, 108.0)
+fire detected, coordinates (132.77272033691406, 86.45454406738281)
+fire detected, coordinates (82.61764526367188, 59.264705657958984)
+fire detected, coordinates (173.625, 40.875)
+fire detected, coordinates (43.5, 153.0)
+fire detected, coordinates (9.421052932739258, 98.71052551269531)
+fire detected, coordinates (93.42308044433594, 70.65384674072266)
+fire detected, coordinates (90.0, 115.5)
+fire detected, coordinates (132.61764526367188, 86.44117736816406)
+fire detected, coordinates (78.7727279663086, 67.91818237304688)
+fire detected, coordinates (159.0, 55.0)
+fire detected, coordinates (125.5, 21.0)
+fire detected, coordinates (148.125, 18.625)
+fire detected, coordinates (42.269229888916016, 161.11538696289062)
+fire detected, coordinates (6.597560882568359, 106.71951293945312)
+fire detected, coordinates (92.65384674072266, 79.19230651855469)
+fire detected, coordinates (90.0, 121.5)
+fire detected, coordinates (134.5, 92.5)
+fire detected, coordinates (79.72222137451172, 72.72222137451172)
+fire detected, coordinates (139.875, 37.25)
+fire detected, coordinates (94.72222137451172, 19.94444465637207)
+fire detected, coordinates (114.82786560058594, 8.073770523071289)
+fire detected, coordinates (41.161766052246094, 169.44117736816406)
+fire detected, coordinates (4.599999904632568, 114.80000305175781)
+fire detected, coordinates (92.92105102539062, 87.28947448730469)
+Water dropped on fire target: [26.0, 12.0] at position [25.199245328583878, 15.202696361839507]
+fire detected, coordinates (82.54545593261719, 124.7727279663086)
+fire detected, coordinates (133.5454559326172, 107.13636016845703)
+fire detected, coordinates (84.42105102539062, 75.28947448730469)
+fire detected, coordinates (136.1288604736328, 8.510309219360352)
+fire detected, coordinates (121.5, 31.5)
+fire detected, coordinates (72.61111450195312, 29.61111068725586)
+fire detected, coordinates (87.55796813964844, 11.601449012756348)
+fire detected, coordinates (77.5, 129.5)
+fire detected, coordinates (131.5, 118.0)
+fire detected, coordinates (85.5, 79.5)
+fire detected, coordinates (145.1170196533203, 20.414894104003906)
+fire detected, coordinates (63.84782791137695, 38.934783935546875)
+fire detected, coordinates (76.5, 18.5)
+fire detected, coordinates (2.0, 12.0)
+fire detected, coordinates (82.69230651855469, 139.76922607421875)
+fire detected, coordinates (135.5, 119.5)
+fire detected, coordinates (82.70587921142578, 89.39215850830078)
+fire detected, coordinates (132.49114990234375, 21.4115047454834)
+fire detected, coordinates (66.25, 42.9375)
+fire detected, coordinates (79.92857360839844, 22.85714340209961)
+fire detected, coordinates (6.0, 13.8125)
+/usr/local/webots/webots: line 90:    72 Segmentation fault      (core dumped) "$webots_home/bin/webots-bin" "$@"

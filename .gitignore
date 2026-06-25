@@ -1,0 +1,9 @@
+
+# Local Webots GUI/cache files
+worlds/*.wbproj
+
+# Auto-generated controller preview image
+controllers/autonomous_mavic/fire_detection.jpg
+
+# Generated launch-position test worlds
+worlds/*static_launch_check*.wbt
