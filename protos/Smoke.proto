@@ -9,10 +9,14 @@ PROTO Smoke [
   field SFVec3f    scale             1 1 1
 ]
 {
-  Transform {
+  Solid {
     translation IS translation
     rotation IS rotation
     scale IS scale
+    model "smoke"
+    recognitionColors [
+      0.8 0.8 0.8
+    ]
     children [
       DEF SMOKE Shape {
         appearance SmokeAppearance {}

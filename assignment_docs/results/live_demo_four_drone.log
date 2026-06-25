@@ -1,0 +1,66 @@
+Info: Sandboxing disabled by user.
+INFO: fire: Starting controller: python3 -u fire.py
+INFO: spot: Starting controller: python3 -u spot.py
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=5 5, 14 5, 14 14, 5 14" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=5 16, 14 16, 14 27, 5 27" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=16 5, 27 5, 27 14, 16 14" --detection_interval=0.5
+INFO: autonomous_mavic: Starting controller: python3 -u autonomous_mavic.py --target_altitude=42 "--patrol_coords=16 16, 27 16, 27 27, 16 27" --detection_interval=0.5
+Starting wildfire in a forest of 27 sassafras trees.
+Spot patrol active. Press 'D' to throw water from Spot.
+WARNING: Smoke (PROTO): 'name' field value should be unique: 'solid' already used by a sibling Solid node.
+Traceback (most recent call last):
+  File "autonomous_mavic.py", line 428, in <module>
+    robot.run()
+  File "autonomous_mavic.py", line 394, in run
+    self.img_coord_fire = self.fire_detection()
+  File "autonomous_mavic.py", line 265, in fire_detection
+    model = (obj.getModel() or "").lower()
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
+    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
+    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
+AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
+First target:  [16.0, 16.0]
+WARNING: 'autonomous_mavic' controller exited with status: 1.
+Traceback (most recent call last):
+  File "autonomous_mavic.py", line 428, in <module>
+    robot.run()
+  File "autonomous_mavic.py", line 394, in run
+    self.img_coord_fire = self.fire_detection()
+  File "autonomous_mavic.py", line 265, in fire_detection
+    model = (obj.getModel() or "").lower()
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
+    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
+    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
+AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
+First target:  [5.0, 16.0]
+WARNING: 'autonomous_mavic' controller exited with status: 1.
+Traceback (most recent call last):
+  File "autonomous_mavic.py", line 428, in <module>
+    robot.run()
+  File "autonomous_mavic.py", line 394, in run
+    self.img_coord_fire = self.fire_detection()
+  File "autonomous_mavic.py", line 265, in fire_detection
+    model = (obj.getModel() or "").lower()
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
+    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
+    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
+AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
+First target:  [5.0, 5.0]
+WARNING: 'autonomous_mavic' controller exited with status: 1.
+Traceback (most recent call last):
+  File "autonomous_mavic.py", line 428, in <module>
+    robot.run()
+  File "autonomous_mavic.py", line 394, in run
+    self.img_coord_fire = self.fire_detection()
+  File "autonomous_mavic.py", line 265, in fire_detection
+    model = (obj.getModel() or "").lower()
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 310, in <lambda>
+    __getattr__ = lambda self, name: _swig_getattr(self, CameraRecognitionObject, name)
+  File "/usr/local/webots/lib/controller/python38/controller.py", line 96, in _swig_getattr
+    raise AttributeError("'%s' object has no attribute '%s'" % (class_type.__name__, name))
+AttributeError: 'CameraRecognitionObject' object has no attribute 'getModel'
+First target:  [16.0, 5.0]
+WARNING: 'autonomous_mavic' controller exited with status: 1.

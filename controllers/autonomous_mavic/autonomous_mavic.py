@@ -209,11 +209,21 @@ class Mavic (Robot):
         self.display.drawText(self.name, 6, 6)
 
         if self.camera.hasRecognition():
-            self.display.setColor(0x00FF66)
             for obj in self.camera.getRecognitionObjects():
                 model = obj.getModel() or ""
-                if "sassafras" not in model.lower():
+                model_lower = model.lower()
+                if "sassafras" in model_lower:
+                    color = 0x00FF66
+                    label = "tree"
+                elif "fire" in model_lower:
+                    color = 0xFF3300
+                    label = "fire"
+                elif "smoke" in model_lower:
+                    color = 0xBBBBBB
+                    label = "smoke"
+                else:
                     continue
+                self.display.setColor(color)
                 center_x, center_y = obj.getPositionOnImage()
                 size_x, size_y = obj.getSizeOnImage()
                 x = int(max(0, center_x - size_x / 2))
@@ -222,7 +232,7 @@ class Mavic (Robot):
                 h = int(min(height - y - 1, size_y))
                 if w > 2 and h > 2:
                     self.display.drawRectangle(x, y, w, h)
-                    self.display.drawText("tree", x, max(0, y - 12))
+                    self.display.drawText(label, x, max(0, y - 12))
 
         if self.fire_bbox:
             x, y, w, h = self.fire_bbox
@@ -248,6 +258,29 @@ class Mavic (Robot):
         img = self.get_image_from_camera()
         if img is None:
             return []
+
+        if self.camera.hasRecognition():
+            recognized_fire = []
+            for obj in self.camera.getRecognitionObjects():
+                model = (obj.getModel() or "").lower()
+                if "fire" not in model and "smoke" not in model:
+                    continue
+                center_x, center_y = obj.getPositionOnImage()
+                size_x, size_y = obj.getSizeOnImage()
+                x = int(max(0, center_x - size_x / 2))
+                y = int(max(0, center_y - size_y / 2))
+                w = int(max(1, size_x))
+                h = int(max(1, size_y))
+                if w > 2 and h > 2:
+                    recognized_fire.append((w * h, [center_x, center_y], (x, y, w, h)))
+            if recognized_fire:
+                recognized_fire.sort(key=lambda item: item[0], reverse=True)
+                _, coord_fire, self.fire_bbox = recognized_fire[0]
+                if verbose:
+                    print("fire detected by recognition, coordinates {}".format(coord_fire))
+                self.draw_detection_overlay(True)
+                return coord_fire
+
         # Segment the image by color in HSV color space
         hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 

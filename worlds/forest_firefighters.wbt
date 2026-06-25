@@ -292,7 +292,7 @@ Mavic2Pro {
       recognition Recognition {
         maxRange 70
         maxObjects 8
-        occlusion 0
+        occlusion FALSE
         frameColor 0 1 0
         frameThickness 2
       }
@@ -324,7 +324,7 @@ Mavic2Pro {
       recognition Recognition {
         maxRange 70
         maxObjects 8
-        occlusion 0
+        occlusion FALSE
         frameColor 0 1 0
         frameThickness 2
       }
@@ -357,7 +357,7 @@ Mavic2Pro {
       recognition Recognition {
         maxRange 70
         maxObjects 8
-        occlusion 0
+        occlusion FALSE
         frameColor 0 1 0
         frameThickness 2
       }
@@ -389,7 +389,7 @@ Mavic2Pro {
       recognition Recognition {
         maxRange 70
         maxObjects 8
-        occlusion 0
+        occlusion FALSE
         frameColor 0 1 0
         frameThickness 2
       }
