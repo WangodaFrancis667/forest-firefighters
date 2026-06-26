@@ -11,20 +11,9 @@ The project is designed around reproducible Webots runs. Docker provides the Web
 
 ## Video Demonstration
 
-A walkthrough/demo video can be linked here after it is uploaded to YouTube:
+Click the image below to watch the demo video:
 
-```text
-YouTube demo: https://www.youtube.com/watch?v=YOUR_VIDEO_ID
-```
-
-Recommended video coverage:
-
-- Opening the repository and explaining the folder structure.
-- Building and starting the Docker/Webots environment.
-- Running the preflight validation command.
-- Launching the Webots world.
-- Showing the four drones patrolling, detecting fire, and dropping water.
-- Showing the generated log and analysis files after a headless run.
+[![Video Demonstration](https://img.youtube.com/vi/--n1_oPIITE/0.jpg)](https://youtu.be/--n1_oPIITE)
 
 ## System Overview
 
