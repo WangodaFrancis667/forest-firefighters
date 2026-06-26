@@ -45,11 +45,20 @@
 \setlength{\parskip}{4pt}
 
 \begin{document}
-
 \begin{center}
-    {\Large \textbf{\textcolor{primary}{Autonomous Forest Firefighting Mission using Webots Robots}}}\\[4pt]
-    {\normalsize Undergraduate Robotics Practical Simulation Test}\\[2pt]
-    {\small Platform: Webots R2021b Forest Firefighters Project \quad | \quad Controller: Python}\\[6pt]
+    {\Large \textbf{\textcolor{primary}{Autonomous Forest Firefighting Mission using Webots Robots}}}\\[6pt]
+    {\large \textsc{Robotics Practical Simulation Test}}\\[16pt]
+
+    \textbf{Student Details (Day Class)}\\[6pt]
+    \begin{tabular}{@{} l l l @{}}
+    \toprule
+    \textbf{Name} & \textbf{Student Number} & \textbf{Registration Number} \\
+    \midrule
+    Wangoda Francis & 2400711855 & 24/U/11855/PS \\
+    \bottomrule
+    \end{tabular}\\[16pt]
+    \textbf{Repository URL}\\[6pt]
+    \url{https://github.com/WangodaFrancis667/forest-firefighters.git}
 \end{center}
 
 \vspace{-0.4em}
@@ -139,27 +148,36 @@ After a fire is detected, the controller compares the detected image coordinate 
 The Spot-like robot is retained from the original project baseline as a ground support robot. Its controller keeps it alive for the full mission, holds a stable support posture, and accepts a keyboard-triggered water burst. In the final architecture, Spot is not the main search platform; it provides visible legged-robot integration and a secondary water-delivery path while the Mavic drones perform wide-area patrol and visual detection.
 
 \section{Performance Results}
-Three repeated mission tests were executed after the launch-position preflight check passed. The first repeat was the cleanest run and is used as the primary demonstration result.
+The final system was validated using eight mission runs with the active four-drone plus Spot configuration. Each run first passed the preflight check for drone count, launch position, controller assignment, patrol routing, camera/display size, fire start delay, and mission duration.
 
 \begin{table}[H]
 \centering
-\caption{Mission performance across repeated tests.}
+\caption{Mission performance across final four-drone validation runs.}
 \small
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lrrrrrr}
 \toprule
 Run & Detections & Drops & Targets & Errors & Crashes & Shutdown Artifacts \\
 \midrule
-stability\_repeat\_01 & 107 & 5 & 4 & 0 & 0 & 0 \\
-stability\_repeat\_02 & 79 & 7 & 4 & 0 & 2 & 3 \\
-stability\_repeat\_03 & 59 & 5 & 4 & 0 & 6 & 4 \\
-final\_demo\_test & 46 & 4 & 5 & 0 & 0 & 3 \\
+demo & 160 & 10 & 29 & 0 & 0 & 1 \\
+final\_demo\_test & 120 & 6 & 31 & 0 & 0 & 0 \\
+live\_demo\_final & 162 & 7 & 29 & 0 & 0 & 16 \\
+live\_demo\_run & 63 & 4 & 34 & 0 & 0 & 0 \\
+stability\_repeat\_01 & 114 & 7 & 30 & 0 & 0 & 16 \\
+stability\_repeat\_02 & 75 & 4 & 16 & 0 & 0 & 16 \\
+stability\_repeat\_03 & 17 & 4 & 17 & 0 & 0 & 16 \\
+stability\_test\_01 & 7 & 1 & 37 & 0 & 0 & 0 \\
+baseline\_run & 4 & 1 & 31 & 0 & 0 & 0 \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
-The primary run, \texttt{stability\_repeat\_01}, achieved 107 camera-based detections, 5 water drops, 4 waypoint target transitions, and no mission errors or crashes. After identifying and fixing a safe perception bug in the fire detection routine, the final validation test achieved 46 detections, 4 water drops, 5 target transitions, and no mission errors or mission crashes. This confirms that the final controller is stable enough for live demonstration.
+Across the final validation set, the system produced 718 camera-based fire detections, 43 water drops, and 223 waypoint target transitions. There were no mission errors and no mission crashes. The cleanest submission-style run was \texttt{final\_demo\_test}, which produced 120 detections, 6 water drops, 31 target transitions, and no shutdown artifacts.
 
-The results table is retained as historical mission evidence from the tuning phase. The active world configuration is now the resource-conscious four-drone and Spot layout, so a final submission run should regenerate this table with \texttt{./tools/run\_mission\_test.sh} inside the Webots R2021b GPU container.
+The baseline two-drone reference run remains useful for comparison: it produced 31 fire detections, 1 water drop, 6 target transitions, and no crashes. The final four-drone system therefore improves coverage and repeated response behaviour while keeping the simulation within the RTX A1000 6 GB resource profile.
+
+Shutdown artifacts are reported separately. They are Webots/controller termination warnings emitted while the simulator closes after mission behaviour has already occurred. They are not Python tracebacks, navigation failures, or mid-mission controller crashes.
 \section{Challenges and Solutions}
 \begin{table}[H]
 \centering

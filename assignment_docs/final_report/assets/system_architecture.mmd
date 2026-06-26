@@ -5,11 +5,11 @@ flowchart TD
     A --> C[Four Mavic 2 Pro Drones]
     A --> D[Spot-like Ground Robot]
 
-    C --> C1[Quadrant waypoint patrol]
-    C --> C2[Camera plus status-bar overlay]
+    C --> C1[Interior quadrant waypoint patrol]
+    C --> C2[160x160 camera plus status-bar overlay]
     C --> C3[GPS, IMU, and gyro state estimate]
     C2 --> E[OpenCV HSV smoke/fire detection]
-    E --> E1[Green normal bar or red fire bar]
+    E --> E1[Green normal bar or red FIRE bar]
     C1 --> F[Visual approach to detected fire]
     C3 --> F
     E1 --> F
@@ -18,7 +18,7 @@ flowchart TD
     D --> D1[Stable support posture]
     D --> D2[Keyboard-triggered water burst]
 
-    G --> H[Mission decision loop]
+    G --> H[Mission decision loop: patrol, detect, approach, drop, resume]
     D2 --> H
     B1 --> H
     H --> C1

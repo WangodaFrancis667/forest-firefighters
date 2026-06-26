@@ -88,23 +88,24 @@ The integration behaviour is fully autonomous: the system moves from patrol to d
 
 ## Results: 45-60 seconds
 
-I carried out repeated mission tests and analysed the logs automatically. The existing results are retained as tuning evidence from the pre-final mission runs; after this final four-drone configuration, the mission should be rerun with `./tools/run_mission_test.sh live_demo_four_drone` to regenerate the submission metrics.
+I carried out repeated mission tests and analysed the logs automatically. The final validation set contains eight runs using the active four-drone plus Spot configuration.
 
-The primary clean run was `stability_repeat_01`, which achieved:
-- 107 fire detections.
-- 5 water drops.
-- 4 target transitions.
+Across those final runs, the system achieved:
+- 718 total fire detections.
+- 43 total water drops.
+- 223 waypoint target transitions.
 - 0 mission errors.
 - 0 mission crashes.
 
-After fixing a safe bug in the fire detection routine, the final demo test achieved:
-- 46 fire detections.
-- 4 water drops.
-- 5 target transitions.
+The cleanest submission-style run was `final_demo_test`, which achieved:
+- 120 fire detections.
+- 6 water drops.
+- 31 target transitions.
 - 0 mission errors.
 - 0 mission crashes.
+- 0 shutdown artifacts.
 
-This confirms that the final controller can perform the autonomous mission reliably.
+Some runs recorded shutdown artifacts from Webots while the simulator was closing, but these were separated from mission crashes. The important result is that the robots completed detection, navigation, and water dropping without controller tracebacks or mid-mission failures.
 
 ---
 

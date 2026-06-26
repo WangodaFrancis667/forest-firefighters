@@ -1,65 +1,74 @@
 from pathlib import Path
 import re
 
-result_dir = Path("assignment_docs/results")
-logs = sorted(result_dir.glob("stability_repeat_*.log"))
 
-shutdown_patterns = [
-    r"Mission duration reached",
-    r"Requesting clean Webots shutdown",
-    r"zygote",
-    r"Network service crashed",
-    r"QXcbConnection",
-    r"GetTerminationStatus",
-    r"Terminating",
-    r"Terminated",
+RESULT_DIR = Path("assignment_docs/results")
+EXCLUDED_RUNS = {"baseline_run"}
+METRIC_KEYS = [
+    "Controller Starts",
+    "Wildfires Started",
+    "Fire Detections",
+    "Water Drops",
+    "Targets Reached",
+    "Mission Errors",
+    "Mission Crashes",
+    "Shutdown Artifacts",
 ]
 
-def is_shutdown_artifact(line):
-    return any(re.search(pattern, line, flags=re.IGNORECASE) for pattern in shutdown_patterns)
 
-def clean_shutdown_index(lines):
-    for index, line in enumerate(lines):
-        if is_shutdown_artifact(line):
-            return index
-    return None
+def parse_analysis(path):
+    metrics = {}
+    for line in path.read_text(errors="ignore").splitlines():
+        match = re.match(r"\| ([A-Za-z ]+) \| (\d+) \|", line)
+        if match:
+            metrics[match.group(1)] = int(match.group(2))
+    return metrics
+
+
+def run_name(path):
+    return path.name.replace(".analysis.md", "")
+
+
+analysis_files = [
+    path for path in sorted(RESULT_DIR.glob("*.analysis.md"))
+    if run_name(path) not in EXCLUDED_RUNS
+]
 
 print("# Performance Results Summary")
 print()
-print("| Run | Fire Detections | Water Drops | Targets Reached | Mission Errors | Mission Crashes | Shutdown Artifacts |")
-print("|---|---:|---:|---:|---:|---:|---:|")
+print("| Run | Controller Starts | Wildfires Started | Fire Detections | Water Drops | Targets Reached | Mission Errors | Mission Crashes | Shutdown Artifacts |")
+print("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
 
-for log in logs:
-    lines = log.read_text(errors="ignore").splitlines()
-    text = "\n".join(lines)
+totals = {key: 0 for key in METRIC_KEYS}
+valid_runs = 0
 
-    fire_detections = len(re.findall(r"fire detected", text, flags=re.IGNORECASE))
-    water_drops = len(re.findall(r"Water dropped", text, flags=re.IGNORECASE))
-    targets_reached = len(re.findall(r"Target reached", text, flags=re.IGNORECASE))
-
-    raw_errors = [line for line in lines if re.search(r"\bERROR\b", line, flags=re.IGNORECASE)]
-    raw_crashes = [
-        (index, line) for index, line in enumerate(lines)
-        if re.search(r"crashed|Segmentation fault", line, flags=re.IGNORECASE)
-    ]
-    shutdown_at = clean_shutdown_index(lines)
-
-    shutdown_artifacts = [
-        line for index, line in raw_crashes
-        if is_shutdown_artifact(line) or (shutdown_at is not None and index >= shutdown_at)
-    ]
-
-    mission_errors = [
-        line for line in raw_errors
-        if not is_shutdown_artifact(line)
-    ]
-
-    mission_crashes = [
-        line for index, line in raw_crashes
-        if not is_shutdown_artifact(line) and not (shutdown_at is not None and index >= shutdown_at)
-    ]
-
+for path in analysis_files:
+    metrics = parse_analysis(path)
+    if not metrics:
+        continue
+    valid_runs += 1
+    for key in METRIC_KEYS:
+        totals[key] += metrics.get(key, 0)
     print(
-        f"| {log.stem} | {fire_detections} | {water_drops} | {targets_reached} | "
-        f"{len(mission_errors)} | {len(mission_crashes)} | {len(shutdown_artifacts)} |"
+        f"| {run_name(path)} | "
+        f"{metrics.get('Controller Starts', 0)} | "
+        f"{metrics.get('Wildfires Started', 0)} | "
+        f"{metrics.get('Fire Detections', 0)} | "
+        f"{metrics.get('Water Drops', 0)} | "
+        f"{metrics.get('Targets Reached', 0)} | "
+        f"{metrics.get('Mission Errors', 0)} | "
+        f"{metrics.get('Mission Crashes', 0)} | "
+        f"{metrics.get('Shutdown Artifacts', 0)} |"
     )
+
+print()
+print("## Aggregate Final Metrics")
+print()
+print("| Metric | Value |")
+print("|---|---:|")
+print(f"| Final validation runs | {valid_runs} |")
+print(f"| Total fire detections | {totals['Fire Detections']} |")
+print(f"| Total water drops | {totals['Water Drops']} |")
+print(f"| Total waypoint target transitions | {totals['Targets Reached']} |")
+print(f"| Mission errors | {totals['Mission Errors']} |")
+print(f"| Mission crashes | {totals['Mission Crashes']} |")

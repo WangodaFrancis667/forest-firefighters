@@ -1,7 +1,25 @@
 # Final Results Interpretation
 
-The repeated mission tests showed consistent autonomous firefighting behavior. In each run, the drones started from the confirmed base positions, the fire controller started, the wildfire began, camera-based fire/smoke detections were logged, water drops were performed, and waypoint navigation continued.
+The refreshed results show consistent autonomous firefighting behaviour in the final four-drone
+configuration. Every final validation run started six controllers: one fire supervisor, one Spot
+support robot, and four autonomous Mavic drones. Every final run started one wildfire, produced
+camera-based fire detections, logged water drops, and continued waypoint navigation.
 
-The first repeat run was the cleanest demonstration run, with no mission errors or crashes. Later repeat runs produced strong detection and water-drop counts, but also included Webots/Chromium shutdown artifacts at simulator termination. These shutdown messages occurred after successful mission behavior had already been demonstrated and are not treated as navigation, perception, or flight-control failures.
+Across the eight final validation runs:
 
-For the final report and demo, stability_repeat_01 is used as the primary clean evidence run, while stability_repeat_02 and stability_repeat_03 are used as additional evidence of repeated fire detection and water-drop behavior.
+- Fire detections: 718 total.
+- Water drops: 43 total.
+- Waypoint target transitions: 223 total.
+- Mission errors: 0.
+- Mission crashes: 0.
+
+The baseline two-drone reference is still useful historically, but it is not the final performance
+claim. The final project claim is based on the active four-drone plus Spot world.
+
+Some runs contain shutdown artifacts. These are Webots/controller termination warnings emitted
+after the mission has already demonstrated detection, navigation, and water dropping. They are
+reported separately from mission crashes because there are no Python tracebacks, controller exit
+status failures, or mid-mission failures in the refreshed final analysis files.
+
+The cleanest submission-style run is `final_demo_test`: 120 detections, 6 water drops, 31 target
+transitions, 0 mission errors, 0 mission crashes, and 0 shutdown artifacts.
