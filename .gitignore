@@ -16,9 +16,9 @@ __pycache__/
 worlds/*static_launch_check*.wbt
 
 # Report build files
-assignment_docs/final_report/latex/*.aux
-assignment_docs/final_report/latex/*.fdb_latexmk
-assignment_docs/final_report/latex/*.fls
-assignment_docs/final_report/latex/*.log
-assignment_docs/final_report/latex/*.out
-assignment_docs/final_report/latex/*.synctex.gz
+assignment_docs/final_report/*.aux
+assignment_docs/final_report/*.fdb_latexmk
+assignment_docs/final_report/*.fls
+assignment_docs/final_report/*.log
+assignment_docs/final_report/*.out
+assignment_docs/final_report/*.synctex.gz
