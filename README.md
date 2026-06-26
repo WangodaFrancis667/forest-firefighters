@@ -1,302 +1,154 @@
 # Forest Firefighters Robotics Mission
 
-![Webots R2021b](assignment_docs/readme_assets/webots-r2021b.svg)
-![Fleet: 4 drones plus Spot](assignment_docs/readme_assets/fleet-profile.svg)
-![GPU profile: RTX A1000 6GB](assignment_docs/readme_assets/gpu-profile.svg)
+![Webots](https://img.shields.io/badge/Webots-R2021b-blue.svg?style=for-the-badge)
+![Fleet](https://img.shields.io/badge/Fleet-4_Drones_|_1_Spot-brightgreen.svg?style=for-the-badge)
+![GPU Profile](https://img.shields.io/badge/GPU-RTX_A1000_6GB-orange.svg?style=for-the-badge)
 
-This repository contains an autonomous forest firefighting robotics mission built in the Webots
-R2021b Forest Firefighters environment. The final system uses four Mavic 2 Pro drones for aerial
-search and response, plus a Spot-like ground robot as a stable support platform.
+This repository contains an autonomous forest firefighting robotics mission built within the Webots R2021b environment. The final system employs a fleet of four Mavic 2 Pro drones for aerial search and response, alongside a Spot-like ground robot functioning as a stable support platform.
 
-The project deliberately keeps the original working setup available in `original/` for baseline
-review. The active implementation is at the repository root and is tuned for a laptop with an
-NVIDIA RTX A1000 6 GB GPU.
+The primary objective of this project is to demonstrate robust autonomous behavior in a dynamic simulated environment, specifically tailored for a laptop equipped with an NVIDIA RTX A1000 6GB GPU. 
 
-## What the Project Demonstrates
+---
 
-The mission objective is to make robots:
+## 🎯 Mission Objectives
 
-- Patrol a forest environment.
-- Detect smoke/fire using onboard cameras.
-- Navigate toward the detected fire.
-- Drop water to extinguish active fire.
-- Continue patrolling while wind and fire propagation are active.
-- Produce logs and analysis that prove the behaviour happened.
+The robotic fleet is designed to autonomously:
+- **Patrol** a simulated forest environment divided into quadrants.
+- **Detect** smoke and active fire using onboard downward-facing cameras.
+- **Navigate** directly toward the detected fire source.
+- **Extinguish** the active fire by dropping water accurately.
+- **Resume Patrol** while the simulation continues to run wind and fire propagation dynamics.
+- **Log and Analyze** mission data to prove successful execution without crashes.
 
-The final autonomous loop is:
+**Mission Loop:**
+`Preflight` ➔ `Take Off` ➔ `Patrol` ➔ `Detect Fire` ➔ `Approach` ➔ `Drop Water` ➔ `Resume Patrol`
 
-```text
-preflight -> take off -> patrol -> detect smoke/fire -> approach fire -> drop water -> resume patrol
-```
+---
 
-## Final System Architecture
+## 📁 Repository Structure
 
-| Layer | Component | Responsibility |
-|---|---|---|
-| Simulation world | `worlds/forest_firefighters.wbt` | Terrain, trees, drones, Spot, fire supervisor, sensors, and water mechanics |
-| Fire supervisor | `controllers/fire/fire.py` | Delayed wildfire start, wind evolution, fire spread, smoke creation, water extinction checks, clean timed shutdown |
-| Aerial robots | `controllers/autonomous_mavic/autonomous_mavic.py` | Four Mavic drones, GPS patrol, camera detection, visual fire approach, water-drop command |
-| Ground robot | `controllers/spot/spot.py` | Stable support posture and keyboard-triggered water burst |
-| Validation tools | `tools/` | Preflight checks, timed mission runs, log analysis, and result summaries |
-| Documentation | `assignment_docs/` | Final report, presentation script, notes, results, screenshots, and historical evidence |
-
-### Why Four Drones
-
-The project evolved from the original two-drone baseline. Larger six- and eight-drone experiments
-increased camera/controller load and reduced stability on the 6 GB GPU laptop. The final four-drone
-layout is the practical balance:
-
-- More coverage than the original two-drone baseline.
-- One aerial robot per forest quadrant.
-- Interior-biased patrol routes, so drones do not only scan the forest edges.
-- 160 by 160 camera/display resolution to keep GPU and CPU load controlled.
-- Minimal green/red status-bar overlays instead of dense bounding-box rendering.
-
-## Algorithm Summary
-
-### 1. Locomotion and Stabilisation
-
-Each Mavic uses four propeller motors. The controller combines altitude error, roll, pitch, yaw,
-IMU readings, gyro feedback, and GPS position to maintain stable flight. Patrol speed is increased
-from the baseline while keeping the original controller structure.
-
-### 2. Interior Quadrant Patrol
-
-Patrol coordinates are passed through the world file with `--patrol_coords`. Each drone gets a
-separate route covering its quadrant and scanning toward the central forest:
-
-| Drone | Area | Patrol Purpose |
-|---|---|---|
-| Mavic 1 | South-west | Covers lower-left forest and central-left approach |
-| Mavic 2 | North-west | Covers upper-left forest and central-left approach |
-| Mavic 3 | South-east | Covers lower-right forest and central-right approach |
-| Mavic 4 | North-east | Covers upper-right forest and central-right approach |
-
-### 3. Camera Fire Detection
-
-Each drone camera points downward. The image is converted into an OpenCV-compatible format, then
-converted to HSV colour space. The detector thresholds bright, low-saturation smoke/fire regions,
-extracts contours, and chooses the largest valid contour as the current target.
-
-The camera overlay is intentionally simple:
-
-- Green top bar: normal patrol.
-- Red top bar with `FIRE`: active fire target detected.
-
-This avoids cluttering the screen with tree boxes and keeps rendering cost low.
-
-### 4. Visual Approach and Water Drop
-
-When a fire target is detected, the drone compares the target image coordinate with the centre of
-the camera frame. Yaw and pitch corrections move the drone toward the target. When the target is
-centred, the drone sends a water-drop command through its `customData` field. The fire supervisor
-then spawns water and checks whether it extinguishes nearby active fire.
-
-### 5. Fire Timing and Shutdown
-
-The active world starts the wildfire after 40 seconds:
-
-```text
---start_delay=40
-```
-
-Timed mission tests request clean shutdown after 300 simulation seconds:
-
-```text
---mission_duration=300
-```
-
-The shell runner allows a 12-minute wall-clock timeout to avoid killing slow GUI runs too early.
-
-## Results Summary
-
-The refreshed final validation set contains eight four-drone runs.
-
-| Metric | Value |
-|---|---:|
-| Final validation runs | 8 |
-| Total fire detections | 718 |
-| Total water drops | 43 |
-| Total waypoint target transitions | 223 |
-| Mission errors | 0 |
-| Mission crashes | 0 |
-
-The cleanest submission-style run is `final_demo_test`:
-
-| Run | Fire Detections | Water Drops | Targets Reached | Mission Errors | Mission Crashes | Shutdown Artifacts |
-|---|---:|---:|---:|---:|---:|---:|
-| final_demo_test | 120 | 6 | 31 | 0 | 0 | 0 |
-
-Some other runs contain shutdown artifacts. These are Webots/controller termination warnings after
-mission behaviour has already completed. They are documented separately from mission crashes.
-
-Full results are in:
-
-- `assignment_docs/results/performance_results_summary.md`
-- `assignment_docs/results/*.analysis.md`
-
-## Repository Layout
+Understanding the codebase is straightforward. The repository is organized into specific domains:
 
 ```text
 .
-├── controllers/
-│   ├── autonomous_mavic/      # Four-drone patrol, OpenCV detection, status bars, water-drop command
-│   ├── fire/                  # Wildfire supervisor, propagation, extinction, timed shutdown
+├── controllers/               # Core logic for the robots and environment
+│   ├── autonomous_mavic/      # Logic for the 4 drones (patrol, OpenCV detection, water-drop)
+│   ├── fire/                  # Wildfire supervisor (propagation, extinction, timed shutdown)
 │   ├── mavic/                 # Manual/example Mavic controller
-│   └── spot/                  # Stable Spot support posture and keyboard water burst
-├── protos/                    # Fire, smoke, water, tree, and terrain assets
-├── worlds/
+│   └── spot/                  # Ground robot posture and manual water burst (keyboard 'D')
+├── protos/                    # Simulation assets (Fire, smoke, water, trees, terrain)
+├── worlds/                    # Webots simulation world files
 │   └── forest_firefighters.wbt
-├── tools/
-│   ├── preflight_check.py     # Validates active four-drone world configuration
-│   ├── run_mission_test.sh    # Runs Webots, captures logs, analyzes mission output
-│   ├── analyze_mission_log.py # Extracts detections, drops, target transitions, errors, crashes
+├── tools/                     # Scripts for validation, running, and analysis
+│   ├── preflight_check.py     # Validates the active four-drone configuration
+│   ├── run_mission_test.sh    # Runs Webots headlessly, captures logs, and analyzes output
+│   ├── analyze_mission_log.py # Extracts mission metrics (detections, drops, errors)
 │   └── summarize_runs.py      # Summarizes repeated mission evidence
-├── original/                  # Preserved upstream baseline; do not edit for active implementation
-├── assignment_docs/
-│   ├── final_report/          # LaTeX report source, PDF, sections, diagrams
-│   ├── presentation/          # Final presentation script
-│   ├── results/               # Run logs, analysis files, performance summary
-│   ├── notes/                 # Rubric mapping and interpretation notes
-│   ├── archive/               # Historical development notes and retired tools
-│   ├── backups/               # Earlier controller/world snapshots
-│   └── screenshots/           # Visual evidence
-├── Dockerfile
-├── run-gpu.sh
-└── Robotics Q and A guiding questions.pdf
+├── assignment_docs/           # Project documentation, reports, and generated results
+├── Dockerfile                 # Defines the Ubuntu 20.04 Webots R2021b environment
+├── build.sh                   # Script to build the Docker image
+└── run-gpu.sh                 # Script to launch the Docker container with GPU support
 ```
 
-## Running the Project
+---
 
-### 1. Start the Webots GPU Container
+## ⚙️ System Architecture & Algorithms
 
-From the host machine:
+### Aerial Fleet (Four Mavic Drones)
+The project utilizes four drones to efficiently cover the entire forest. Each drone is assigned to a specific quadrant (NW, NE, SW, SE) and performs an **interior-biased patrol**. This ensures comprehensive coverage while minimizing computational load. 
+- **Flight Stabilization:** Combines altitude error, roll, pitch, yaw, IMU, gyro, and GPS.
+- **Fire Detection:** Downward cameras process frames using OpenCV HSV thresholding to detect bright, low-saturation smoke/fire pixels.
+- **Targeting:** Once detected, the drone aligns the target to the center of its camera frame. Upon centering, it signals the `fire supervisor` via `customData` to deploy water.
+
+### Ground Support (Spot Robot)
+Acts as a stable ground unit. While the drones perform the primary autonomous mission, Spot provides a keyboard-triggered (`D`) water burst for auxiliary support.
+
+### Environment Supervisor
+The `fire.py` controller acts as the environment supervisor. It handles the delayed ignition of the wildfire (after 40 seconds), wind evolution, fire spread, and determines if a drone's water drop successfully extinguished nearby active fire.
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to set up the environment using Docker and run the simulation. 
+
+### 1. Build the Docker Image
+To ensure a consistent environment, we use Docker. First, build the image that contains Webots R2021b and all necessary dependencies.
 
 ```bash
-cd ~/Desktop/ros/webots-r2021b-gpu
-./run-gpu.sh
+# Make sure the script is executable
+chmod +x build.sh
+
+# Build the Docker image (this will take a few minutes)
+./build.sh
 ```
 
-Inside the container:
+### 2. Start the GPU Container
+Once built, run the container with GPU passthrough enabled:
+
+```bash
+chmod +x run-gpu.sh
+./run-gpu.sh
+```
+*This script will mount your current directory into the container's `/workspace` folder and start an interactive bash session.*
+
+### 3. Navigate the Workspace
+Inside the Docker container, navigate to the project root:
 
 ```bash
 cd /workspace
 ```
 
-### 2. Clone or Enter the Repository
-
-If the repository is not already present:
-
-```bash
-mkdir -p /workspace/webots-projects/projects
-cd /workspace/webots-projects/projects
-git clone <repository-url> forest_firefighters
-cd forest_firefighters
-```
-
-If it already exists:
-
-```bash
-cd /workspace/webots-projects/projects/forest_firefighters
-```
-
-### 3. Validate Before Running Webots
+### 4. Validate the Configuration
+Before running a mission, ensure the environment is correctly configured:
 
 ```bash
 python3 tools/preflight_check.py
 ```
+**Expected Output:**
+> `PREFLIGHT PASSED`
+> `Four drones are configured for interior quadrant patrol with autonomous_mavic controllers...`
 
-Expected result:
-
-```text
-PREFLIGHT PASSED
-Four drones are configured for interior quadrant patrol with autonomous_mavic controllers and status-bar overlays.
-```
-
-### 4. Run a Timed Mission Test
-
-```bash
-./tools/run_mission_test.sh live_demo_four_drone
-```
-
-This creates:
-
-```text
-assignment_docs/results/live_demo_four_drone.log
-assignment_docs/results/live_demo_four_drone.analysis.md
-```
-
-### 5. Run an Interactive Demo
+### 5. Run an Interactive Mission
+To view the simulation with the 3D GUI:
 
 ```bash
 webots worlds/forest_firefighters.wbt
 ```
+- Arrange the four drone camera overlays across your screen.
+- Observe the **green top bar** (Patrol Mode) and **red FIRE bar** (Detection Mode).
+- Select the Spot robot and press `D` to manually fire a water burst.
 
-In Webots:
-
-- Arrange the four drone camera overlays across the bottom or side of the screen.
-- Keep overlays near their native 160 by 160 size for performance.
-- Watch for green bars during patrol and red `FIRE` bars during detection.
-- Select Spot and press `D` to demonstrate the support water burst.
-
-## Verification Checklist
-
-Run before submission or live demonstration:
+### 6. Run an Automated Timed Test
+To run a headless mission test and generate logs/analysis:
 
 ```bash
-python3 tools/preflight_check.py
-python3 -m py_compile controllers/autonomous_mavic/autonomous_mavic.py controllers/fire/fire.py controllers/spot/spot.py tools/*.py
-./tools/run_mission_test.sh final_demo_test
+./tools/run_mission_test.sh live_demo_four_drone
 ```
+This will output results in `assignment_docs/results/live_demo_four_drone.log` and the corresponding Markdown analysis file.
 
-Optional summary review:
+---
 
+## 📊 Results Summary
+
+The system is rigorously tested to ensure robustness. Across eight validation runs, the four-drone system achieved:
+
+- **718** total fire detections
+- **43** successful water drops
+- **223** waypoint target transitions
+- **0** Mission errors or crashes
+
+You can summarize your own runs using the provided tools:
 ```bash
 python3 tools/summarize_runs.py
 ```
 
-## If Asked Questions
+---
 
-### What is the architecture?
+## 📚 Report and Presentation
 
-The Webots world is the integration layer. The fire supervisor controls wildfire behaviour. Four
-Mavic drones perform autonomous aerial patrol, detection, visual approach, and water dropping. Spot
-is a ground support robot. The tools folder validates the world and turns logs into mission metrics.
-
-### Why not use six or eight drones?
-
-The assignment needs robust mission behaviour, not maximum robot count. Six/eight drones increased
-camera and controller load on the RTX A1000 6 GB laptop. Four drones provide full quadrant coverage
-while keeping the simulation stable and readable.
-
-### How is fire detected?
-
-Each Mavic camera frame is processed with OpenCV-style HSV thresholding. Bright, low-saturation
-smoke/fire pixels are segmented, contours are extracted, and the largest valid contour becomes the
-target image coordinate.
-
-### How does the drone know where to drop water?
-
-The detected target is represented in camera coordinates. The drone moves until the target is near
-the image centre. At that point, the fire is assumed to be below the drone and a water-drop command
-is sent through `customData`.
-
-### Why are there shutdown artifacts in some logs?
-
-Webots can print controller crash warnings while closing controllers at the end of a run. The
-analyzer separates those from mission crashes. The final validation analysis shows zero mission
-errors and zero mission crashes.
-
-### What proves the project works?
-
-The final validation logs show 718 total detections, 43 water drops, 223 waypoint transitions, and
-zero mission crashes across eight four-drone runs. The cleanest run, `final_demo_test`, has 120
-detections, 6 water drops, 31 target transitions, and no shutdown artifacts.
-
-## Report and Presentation
-
-- Final report PDF: `assignment_docs/final_report/latex/firefighting_robotics_report.pdf`
-- Report source: `assignment_docs/final_report/latex/firefighting_robotics_report.tex`
-- Presentation script: `assignment_docs/presentation/final_presentation_script.md`
-- Results summary: `assignment_docs/results/performance_results_summary.md`
-- Assignment brief: `Robotics Q and A guiding questions.pdf`
+- **Final report PDF:** `assignment_docs/final_report/latex/firefighting_robotics_report.pdf`
+- **Report source:** `assignment_docs/final_report/latex/firefighting_robotics_report.tex`
+- **Presentation script:** `assignment_docs/presentation/final_presentation_script.md`
+- **Results summary:** `assignment_docs/results/performance_results_summary.md`
+- **Assignment brief:** `Robotics Q and A guiding questions.pdf`
