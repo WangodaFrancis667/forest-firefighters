@@ -137,27 +137,17 @@ The Docker image installs:
 - OpenCV
 - OpenGL/X11 libraries required by Webots
 
-## Clone the Repository
-
-Start by cloning the project from GitHub:
-
-```bash
-git clone https://github.com/WangodaFrancis667/forest-firefighters.git
-cd forest-firefighters
-```
-
-All commands below should be run from the repository root unless a section says otherwise.
-
 ## Docker Setup
 
-Run these commands from the repository root.
+The Docker image and launcher scripts are stored in this repository, so the host machine needs access to these files first. After the container starts, clone the working project copy inside the container under `/workspace`.
 
-### 1. Make Scripts Executable
+Run the Docker setup commands below from the repository root on the host machine.
+
+### 1. Make Docker Scripts Executable
 
 ```bash
 chmod +x build.sh
 chmod +x run-gpu.sh
-chmod +x tools/run_mission_test.sh
 ```
 
 ### 2. Build the Docker Image
@@ -189,29 +179,25 @@ The script:
 - Passes X11 display variables into the container.
 - Mounts the host path `./workspace` to `/workspace` inside the container.
 
-Important: because the current script mounts `./workspace`, the project files must be available under that host folder if you want to access them at `/workspace` in the container. If you want the repository root mounted directly, change the volume line in `run-gpu.sh` from:
+Important: because the current script mounts `./workspace`, anything cloned or generated inside `/workspace` in the container is stored on the host under `./workspace`. That is why the project is cloned after the container starts.
 
-```bash
--v "$PWD/workspace:/workspace" \
-```
-
-to:
-
-```bash
--v "$PWD:/workspace" \
-```
-
-After the container starts, move to the project directory inside the container. If you mounted the repository root directly, use:
+After the container starts, you will be inside an interactive shell. Move to `/workspace` inside the container:
 
 ```bash
 cd /workspace
 ```
 
-If you placed the repository inside the mounted `workspace` folder, use the matching path, for example:
+### 4. Clone the Repository Inside the Container
+
+Clone the project inside the container so all Webots commands run from the container environment:
 
 ```bash
+git clone https://github.com/WangodaFrancis667/forest-firefighters.git
 cd /workspace/forest-firefighters
+chmod +x tools/run_mission_test.sh
 ```
+
+All commands below should be run inside the container from `/workspace/forest-firefighters` unless a section says otherwise.
 
 ## Validate the Project
 
