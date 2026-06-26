@@ -4,6 +4,8 @@ worlds/*.wbproj
 
 # Local upstream reference copy used for baseline review
 original/
+.DS_Store
+.DS_STORE
 
 # Auto-generated controller preview image
 controllers/autonomous_mavic/fire_detection.jpg
