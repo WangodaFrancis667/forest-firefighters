@@ -39,14 +39,12 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
 
-
-\IfFileExists{images/muk-logo.png}{\includegraphics[width=1\textwidth]{images/muk-logo.png}\\[1.0em]}{}
-
-
 \begin{document}
 \begin{center}
-    {\Large \textbf{\textcolor{primary}{Autonomous Forest Firefighting Mission using Webots Robots}}}\\[6pt]
-    {\large \textsc{Robotics Practical Simulation Test}}\\[16pt]
+    \IfFileExists{images/muk-logo.png}{\includegraphics[width=1\textwidth]{images/muk-logo.png}\\[1.0em]}{}
+
+    {\Large \textbf{\textcolor{primary}{Autonomous Forest Firefighting Mission using Webots}}}\\[6pt]
+    {\large \textsc{Robotics Practical Simulation}}\\[16pt]
 
     \textbf{Student Details (Day Class)}\\[6pt]
     \begin{tabular}{@{} l l l @{}}
@@ -129,7 +127,6 @@ The system is organised as a closed-loop multi-robot firefighting pipeline. The 
 
 \vspace{-0.6em}
 
-\newpage
 \section{Methodology and Key Algorithms}
 \subsection{Locomotion and Stabilisation}
 The Mavic drone is controlled using four propeller motors. The controller computes motor velocities from vertical thrust, roll, pitch, yaw, and altitude error. GPS provides position and altitude feedback, while the inertial unit and gyro provide orientation and angular velocity. The final tuning increases yaw and forward pitch authority relative to the original baseline so the drones patrol and approach detected fire more quickly while remaining stable.
